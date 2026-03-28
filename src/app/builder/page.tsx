@@ -106,7 +106,7 @@ export default function BuilderPage() {
   // ── Auth gate modal ───────────────────────────────────────────────────
   const AuthGateModal = () => (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="card max-w-md w-full mx-4 text-center space-y-5">
+      <div className="card max-w-md w-full mx-4 text-center space-y-5 !p-8">
         <div className="text-5xl">🔒</div>
         <h2 className="font-[family-name:var(--font-heading)] text-2xl tracking-wide text-gradient-brand">
           Free Limit Reached

@@ -215,7 +215,7 @@ export default function FeedPage() {
               </div>
 
               {/* Caption */}
-              <p style={{ fontSize: "0.95rem", lineHeight: 1.6, margin: "0 0 0.75rem" }}>
+              <p style={{ fontSize: "0.95rem", lineHeight: 1.6, margin: "0 0 0.75rem", overflowWrap: "break-word" }}>
                 {post.caption}
               </p>
 

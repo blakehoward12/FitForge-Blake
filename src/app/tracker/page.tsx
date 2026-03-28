@@ -195,7 +195,7 @@ export default function TrackerPage() {
       {/* ── Celebration Modal ─────────────────────────────────────────── */}
       {showCelebration && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-          <div className="card max-w-md w-full mx-4 text-center space-y-6 py-8">
+          <div className="card max-w-md w-full mx-4 text-center space-y-6 !p-8">
             <div className="text-6xl">🎉</div>
             <h2 className="font-[family-name:var(--font-heading)] text-3xl tracking-wide text-gradient-brand">
               WORKOUT COMPLETE!
@@ -333,14 +333,16 @@ export default function TrackerPage() {
                 >
                   {/* Exercise header */}
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">{ex.emoji}</span>
+                    <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-lg shrink-0">
+                      {ex.emoji}
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className={`font-semibold text-sm ${allDone ? 'text-[var(--gr)]' : 'text-white'}`}>
+                      <h4 className={`font-semibold text-sm truncate ${allDone ? 'text-[var(--gr)]' : 'text-white'}`}>
                         {ex.name}
                       </h4>
-                      <p className="text-xs text-gray-500">{ex.sets} &times; {ex.reps} &middot; {ex.category}</p>
+                      <p className="text-xs text-gray-500 truncate">{ex.sets} &times; {ex.reps} &middot; {ex.category}</p>
                     </div>
-                    {allDone && <span className="text-[var(--gr)] text-lg">✓</span>}
+                    {allDone && <span className="text-[var(--gr)] text-lg shrink-0">✓</span>}
                   </div>
 
                   {/* Weight input */}
@@ -375,7 +377,7 @@ export default function TrackerPage() {
                   </div>
 
                   {/* Tip */}
-                  <p className="text-xs text-gray-600 mt-2 italic">{ex.tip}</p>
+                  <p className="text-xs text-gray-600 mt-2 italic line-clamp-2">{ex.tip}</p>
                 </div>
               );
             })}

@@ -122,9 +122,9 @@ export default function ReviewPage() {
           </h2>
           <div className="card space-y-2">
             {day.warmup.map((w, i) => (
-              <div key={i} className="flex items-center gap-3 text-sm text-gray-300">
-                <span className="text-[var(--og)] font-bold text-xs w-5">{i + 1}</span>
-                {w}
+              <div key={i} className="flex items-center gap-3 text-sm text-gray-300 min-w-0">
+                <span className="text-[var(--og)] font-bold text-xs w-5 shrink-0">{i + 1}</span>
+                <span className="truncate">{w}</span>
               </div>
             ))}
           </div>
@@ -137,23 +137,28 @@ export default function ReviewPage() {
           </h2>
           <div className="space-y-3">
             {day.exercises.map((ex) => (
-              <div key={ex.id} className="card flex items-start gap-4">
-                <div className="text-3xl mt-0.5">{ex.emoji}</div>
+              <div key={ex.id} className="card flex items-center gap-3">
+                {/* Emoji circle */}
+                <div className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xl shrink-0">
+                  {ex.emoji}
+                </div>
+                {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-semibold text-white">{ex.name}</h3>
-                    <span className="chip text-[11px] py-0.5 px-2">{ex.category}</span>
+                    <h3 className="font-semibold text-white text-sm truncate max-w-[180px] sm:max-w-none">{ex.name}</h3>
+                    <span className="chip text-[10px] py-0.5 px-2 shrink-0">{ex.category}</span>
                   </div>
-                  <div className="text-[var(--og)] font-bold text-sm mt-1">
+                  <div className="text-[var(--og)] font-bold text-sm mt-0.5">
                     {ex.sets} sets &times; {ex.reps} reps
                   </div>
-                  <p className="text-gray-500 text-xs mt-1">{ex.tip}</p>
+                  <p className="text-gray-500 text-xs mt-0.5 line-clamp-2">{ex.tip}</p>
                 </div>
+                {/* YouTube button */}
                 <a
                   href={`https://www.youtube.com/results?search_query=${encodeURIComponent(ex.youtubeQuery)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 text-sm text-[var(--pl)] hover:text-white transition-colors flex items-center gap-1"
+                  className="shrink-0 w-9 h-9 rounded-full bg-[var(--pl)]/10 border border-[var(--pl)]/20 flex items-center justify-center text-[var(--pl)] hover:text-white hover:bg-[var(--pl)]/20 transition-colors"
                   title="Watch on YouTube"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -172,9 +177,9 @@ export default function ReviewPage() {
           </h2>
           <div className="card space-y-2">
             {day.cooldown.map((c, i) => (
-              <div key={i} className="flex items-center gap-3 text-sm text-gray-300">
-                <span className="text-[var(--pl)] font-bold text-xs w-5">{i + 1}</span>
-                {c}
+              <div key={i} className="flex items-center gap-3 text-sm text-gray-300 min-w-0">
+                <span className="text-[var(--pl)] font-bold text-xs w-5 shrink-0">{i + 1}</span>
+                <span className="truncate">{c}</span>
               </div>
             ))}
           </div>
@@ -183,7 +188,7 @@ export default function ReviewPage() {
         {/* Action buttons */}
         <div className="flex flex-col gap-3 pt-4">
           <button
-            className="btn-primary w-full text-xl py-5 btn-glow font-[family-name:var(--font-heading)] tracking-wider"
+            className="btn-primary w-full !text-xl !py-5 btn-glow font-[family-name:var(--font-heading)] tracking-wider justify-center"
             onClick={() => router.push('/tracker')}
           >
             LET&apos;S GO &rarr;
