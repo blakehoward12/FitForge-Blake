@@ -31,8 +31,7 @@ export const accounts = sqliteTable("accounts", {
 }, (table) => [primaryKey({ columns: [table.provider, table.providerAccountId] })]);
 
 export const sessions = sqliteTable("sessions", {
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
-  sessionToken: text("sessionToken").unique().notNull(),
+  sessionToken: text("sessionToken").primaryKey(),
   userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
   expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
 });
