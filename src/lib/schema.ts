@@ -17,7 +17,6 @@ export const users = sqliteTable("users", {
 });
 
 export const accounts = sqliteTable("accounts", {
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
   type: text("type").notNull(),
   provider: text("provider").notNull(),
@@ -29,7 +28,7 @@ export const accounts = sqliteTable("accounts", {
   scope: text("scope"),
   id_token: text("id_token"),
   session_state: text("session_state"),
-});
+}, (table) => [primaryKey({ columns: [table.provider, table.providerAccountId] })]);
 
 export const sessions = sqliteTable("sessions", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
