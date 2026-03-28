@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';">
+<title>FitForge — Build. Track. Share.</title>
+<meta name="description" content="FitForge — Build AI workouts around your equipment. Track progress with gamified gym tracking and share your fitness journey.">
+<link rel="canonical" href="https://fitforge.com/">
+<meta property="og:title" content="FitForge — Build. Track. Share.">
+<meta property="og:description" content="AI workout building, gamified gym tracking, social fitness feed, and creator monetization — all in one place.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fitforge.com/">
+<meta property="og:image" content="https://fitforge.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FitForge — Build. Track. Share.">
+<meta name="twitter:description" content="AI workout building, gamified gym tracking, social fitness feed, and creator monetization.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── DESIGN TOKENS (matching screenshot exactly) ─────────────────── */
+:root{
+  --bg:#0a0a0f;
+  --pm:#5a2d82;
+  --oe:#7a2e0e;
+  --og:#e07830;
+  --og2:#c85a8a;
+  --pl:#9b5ecb;
+  --gr:#22c55e;
+  --whi:rgba(255,255,255,.92);
+  --whm:rgba(255,255,255,.45);
+  --whl:rgba(255,255,255,.12);
+  --whh:rgba(255,255,255,.04);
+  --br:rgba(255,255,255,.08);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--whi);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;min-height:100vh;-webkit-tap-highlight-color:transparent}
+
+/* Grain texture */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");opacity:.22;pointer-events:none;z-index:9999}
+
+/* Background radial gradients - matching screenshot (deep orange-brown left, deep purple right) */
+.bgl{position:fixed;inset:0;z-index:0;background:
+  radial-gradient(ellipse at 5% 90%, rgba(120,45,15,.55) 0%, transparent 45%),
+  radial-gradient(ellipse at 90% 10%, rgba(70,20,110,.55) 0%, transparent 45%),
+  var(--bg);pointer-events:none}
+
+/* Pages */
+.page{display:none;position:relative;z-index:10;min-height:100vh;padding-top:62px}
+.page.active{display:block}
+
+/* ── NAV ─────────────────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:14px 40px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(10,10,15,.6)}
+.nlogo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#fff;cursor:pointer;opacity:.9}
+.nlogo span{color:var(--og)}
+.nlinks{display:flex;align-items:center;gap:28px}
+.nl{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);cursor:pointer;font-weight:500;transition:color .3s;background:none;border:none;font-family:'DM Sans',sans-serif}
+.nl:hover,.nl.active{color:rgba(255,255,255,.85)}
+
+/* Primary button - gradient pill (matching screenshot "START BUILDING" style) */
+.bp{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--og),var(--og2),var(--pm));color:#fff;padding:11px 24px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border:none;cursor:pointer;transition:transform .25s,opacity .25s;font-family:'DM Sans',sans-serif}
+.bp:hover{transform:translateY(-1px);opacity:.92}
+.bp:active{transform:scale(.97)}
+
+/* Ghost button */
+.bg{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);padding:11px 24px;border-radius:100px;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;border:1px solid rgba(255,255,255,.12);cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif}
+.bg:hover{color:#fff;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+
+/* Sign In button style from screenshot */
+.bsi{display:inline-flex;align-items:center;background:linear-gradient(135deg,rgba(180,60,30,.7),rgba(120,40,160,.7));color:#fff;padding:10px 22px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;border:1px solid rgba(255,255,255,.15);cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif}
+.bsi:hover{opacity:.85}
+
+/* Cards */
+.card{background:rgba(255,255,255,.03);border:1px solid var(--br);border-radius:20px}
+
+/* Chip / badge */
+.chip{display:inline-block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);padding:5px 14px;border-radius:100px;font-weight:500}
+
+/* Input */
+.inp{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 18px;color:#fff;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:400;outline:none;transition:border-color .3s}
+.inp::placeholder{color:rgba(255,255,255,.25)}
+.inp:focus{border-color:rgba(224,120,48,.5);box-shadow:0 0 0 3px rgba(224,120,48,.08)}
+
+/* Font helpers */
+.fd{font-family:'Bebas Neue',sans-serif}
+
+/* Gradient text - orange to pink/purple (matching FORGE in screenshot) */
+.tb{background:linear-gradient(135deg,#e07830,#c85a8a,#9b5ecb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* White gradient text (FIT in screenshot) */
+.twg{background:linear-gradient(160deg,#fff,rgba(255,255,255,.55));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* Marquee */
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes mqr{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+.mqw{overflow:hidden;padding:20px 0;border-top:1px solid var(--br);border-bottom:1px solid var(--br)}
+.mqt{display:flex;gap:60px;width:max-content;animation:mq 22s linear infinite}
+.mqtr{display:flex;gap:60px;width:max-content;animation:mqr 26s linear infinite}
+.mqi{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:rgba(255,255,255,.18);white-space:nowrap;display:flex;align-items:center;gap:18px}
+.mqd{width:4px;height:4px;border-radius:50%;background:linear-gradient(135deg,var(--og),var(--pl));display:inline-block;flex-shrink:0}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@keyframes pop{0%{transform:scale(.4);opacity:0}65%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes setBounce{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes glow{0%,100%{box-shadow:0 12px 40px rgba(139,58,26,.4)}50%{box-shadow:0 16px 60px rgba(224,120,48,.5),0 0 80px rgba(224,120,48,.15)}}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--oe),var(--pm));border-radius:2px}
+
+/* Set buttons */
+.sb{flex:1;padding:20px 6px;border-radius:14px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--whm);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;transition:all .2s;user-select:none;min-height:68px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px}
+.sb:active{transform:scale(.95)}
+.sb.done{background:var(--gr);border-color:var(--gr);color:#fff;animation:setBounce .3s ease}
+
+/* Auth CTA banner */
+.auth-cta{background:linear-gradient(135deg,rgba(120,45,15,.2),rgba(90,45,130,.2));border:1px solid rgba(224,120,48,.2);border-radius:16px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:20px 0}
+
+/* Mobile */
+.mob-menu{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.mob-menu span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .3s}
+.mob-drawer{display:none;position:fixed;inset:0;z-index:400;background:rgba(10,10,15,.97);backdrop-filter:blur(24px);flex-direction:column;align-items:center;justify-content:center;gap:28px}
+.mob-drawer.open{display:flex}
+
+@media(max-width:768px){
+  nav{padding:12px 18px}
+  .nl{display:none}
+  .bg{display:none}
+  .mob-menu{display:flex}
+  .page{padding-top:56px}
+  .home-grid{grid-template-columns:1fr !important}
+  .home-grid>*{grid-column:span 1 !important}
+  .home-grid>div>div{grid-template-columns:1fr !important}
+  .eq-grid{grid-template-columns:repeat(2,1fr) !important}
+  .goal-grid{grid-template-columns:repeat(2,1fr) !important}
+  .plan-grid{grid-template-columns:repeat(2,1fr) !important}
+  .rv-stats{grid-template-columns:repeat(2,1fr) !important}
+  #tk-header{top:56px}
+  #celeb>div{padding:0}
+  #page-feed>div{padding:12px 10px}
+  .prof-stats{grid-template-columns:repeat(2,1fr) !important}
+  .mkt-grid{grid-template-columns:1fr !important}
+  #page-builder>div,#page-review>div,#page-marketplace>div,#page-profile>div{padding-left:14px;padding-right:14px}
+  .sb{min-height:80px;font-size:15px}
+  .auth-cta{flex-direction:column;align-items:flex-start}
+  .auth-cta .bp{width:100%;justify-content:center}
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* Focus visible styles */
+:focus-visible{outline:2px solid var(--og);outline-offset:2px;border-radius:4px}
+.inp:focus-visible{outline:none}
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏋️</text></svg>">
+</head>
+<body>
+<div class="bgl"></div>
+
+<!-- NAV -->
+<nav>
+  <span class="nlogo" onclick="go('home')">FIT<span>FORGE</span></span>
+  <div class="nlinks">
+    <button class="nl" onclick="go('builder')">Build</button>
+    <button class="nl" onclick="go('feed')">Feed</button>
+    <button class="nl" onclick="go('marketplace')">Marketplace</button>
+    <button class="nl" onclick="go('profile')">Profile</button>
+    <button class="bsi" onclick="go('login')">Sign In</button>
+    <button class="mob-menu" onclick="toggleMobMenu()" id="hamburger" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- Mobile nav drawer -->
+<div class="mob-drawer" id="mob-drawer">
+  <button onclick="go('home');closeMobMenu()" class="nl" style="font-size:20px;letter-spacing:3px;color:#fff">Home</button>
+  <button onclick="go('builder');closeMobMenu()" class="nl" style="font-size:20px;letter-spacing:3px;color:#fff">Build</button>
+  <button onclick="go('feed');closeMobMenu()" class="nl" style="font-size:20px;letter-spacing:3px;color:#fff">Feed</button>
+  <button onclick="go('marketplace');closeMobMenu()" class="nl" style="font-size:20px;letter-spacing:3px;color:#fff">Marketplace</button>
+  <button onclick="go('profile');closeMobMenu()" class="nl" style="font-size:20px;letter-spacing:3px;color:#fff">Profile</button>
+  <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;width:220px">
+    <button class="bg" style="justify-content:center;padding:14px" onclick="go('login');closeMobMenu()">Log In</button>
+    <button class="bp" style="justify-content:center;padding:14px" onclick="go('login');closeMobMenu()">Sign Up Free</button>
+  </div>
+  <button onclick="closeMobMenu()" style="position:absolute;top:20px;right:20px;background:none;border:none;color:var(--whm);font-size:28px;cursor:pointer" title="Close navigation menu">✕</button>
+</div>
+
+<main>
+<!-- ════════════════════════════════ HOME ════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <section style="min-height:calc(100vh - 62px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 32px 60px">
+    <span class="chip" style="margin-bottom:36px;animation:fadeUp .7s ease both">The world's first social fitness marketplace</span>
+    <h1 class="fd" style="line-height:.9;letter-spacing:1px;animation:fadeUp .7s ease .1s both" style="font-size:clamp(90px,14vw,180px)">
+      <span class="twg" style="display:block;font-size:clamp(90px,14vw,180px)">FIT</span>
+      <span class="tb" style="display:block;font-size:clamp(90px,14vw,180px)">FORGE</span>
+    </h1>
+    <p style="font-size:clamp(14px,1.8vw,17px);color:rgba(255,255,255,.55);max-width:440px;line-height:1.75;margin:28px auto 46px;font-weight:300;animation:fadeUp .7s ease .2s both">Workouts built around what you need.<br>Track it. Share it. Get paid for it.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;animation:fadeUp .7s ease .3s both">
+      <button class="bp" style="padding:15px 34px;font-size:12px" onclick="go('builder')">Start Building →</button>
+      <button class="bg" style="padding:15px 34px;font-size:12px" onclick="go('feed')">Explore Community</button>
+    </div>
+    <p style="font-size:11px;color:rgba(255,255,255,.28);margin-bottom:70px;animation:fadeUp .7s ease .35s both;letter-spacing:.5px">No credit card needed. 1-day workouts are free forever.</p>
+    <div style="display:flex;gap:52px;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s ease .4s both">
+      <div style="text-align:center"><div class="fd twg" style="font-size:44px;line-height:1">1,000+</div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:5px">Workouts Created</div></div>
+      <div style="text-align:center"><div class="fd twg" style="font-size:44px;line-height:1">500+</div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:5px">Active Users</div></div>
+      <div style="text-align:center"><div class="fd twg" style="font-size:44px;line-height:1">100+</div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:5px">Creator Plans</div></div>
+    </div>
+  </section>
+
+  <div class="mqw"><div class="mqt" id="mq1"></div></div>
+
+  <section style="padding:90px 32px;max-width:1160px;margin:0 auto">
+    <span class="chip" style="margin-bottom:16px">What we built</span>
+    <h2 class="fd" style="font-size:clamp(40px,6vw,70px);line-height:1;color:#fff;margin-bottom:14px">Four features.<br>One platform.</h2>
+    <p style="color:rgba(255,255,255,.4);font-size:15px;max-width:480px;line-height:1.7;font-weight:300;margin-bottom:48px">AI workout building, gamified gym tracking, social fitness feed, and creator monetization — all in one place.</p>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px" class="home-grid">
+      <!-- Row 1: big AI card + social feed -->
+      <div class="card" style="padding:40px;cursor:pointer;background:radial-gradient(ellipse at 75% 0%,rgba(90,45,130,.14) 0%,transparent 55%),rgba(255,255,255,.025);transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column;min-height:280px" onclick="go('builder')" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 20px 50px rgba(120,45,15,.15)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div style="font-size:28px;margin-bottom:14px">🏋️</div>
+        <span class="chip" style="margin-bottom:12px;align-self:flex-start">Equipment-First</span>
+        <h3 class="fd" style="font-size:clamp(28px,3.5vw,40px);color:#fff;margin-bottom:10px;line-height:1;flex:1">Workouts Built<br>Around Your Gym</h3>
+        <p style="font-size:14px;color:rgba(255,255,255,.45);line-height:1.7;font-weight:300;margin-bottom:22px">Select your equipment and goal — we build a program using only what you actually have. No generic plans.</p>
+        <span style="color:var(--og);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">Build My Workout →</span>
+      </div>
+      <div class="card" style="padding:36px;cursor:pointer;transition:transform .3s;display:flex;flex-direction:column;min-height:280px" onclick="go('feed')" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
+        <div style="font-size:26px;margin-bottom:14px">📱</div>
+        <span class="chip" style="margin-bottom:12px;align-self:flex-start">Community</span>
+        <h3 class="fd" style="font-size:clamp(24px,2.8vw,32px);color:#fff;margin-bottom:10px;line-height:1;flex:1">Social Fitness<br>Feed</h3>
+        <p style="font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;font-weight:300;margin-bottom:20px">Share PRs, post workout wins, follow athletes who push you.</p>
+        <span style="color:var(--og);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">Open Feed →</span>
+      </div>
+      <!-- Row 2: gamified + creator marketplace (combined) -->
+      <div class="card" style="padding:32px;cursor:pointer;background:radial-gradient(ellipse at 20% 80%,rgba(34,197,94,.07) 0%,transparent 60%),rgba(255,255,255,.02);transition:transform .3s;border-color:rgba(34,197,94,.14);display:flex;flex-direction:column" onclick="go('builder')" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
+        <div style="font-size:24px;margin-bottom:12px">🎮</div>
+        <span class="chip" style="margin-bottom:10px;align-self:flex-start;color:#22c55e;border-color:rgba(34,197,94,.2);background:rgba(34,197,94,.15)">Gamified</span>
+        <h3 class="fd" style="font-size:clamp(20px,2.2vw,26px);color:#fff;margin-bottom:8px;line-height:1;flex:1">Gamified Gym<br>Tracking</h3>
+        <p style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.65;font-weight:300;margin-bottom:16px">Earn XP, unlock achievements, build streaks.</p>
+        <span style="color:#22c55e;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">Start Tracking →</span>
+      </div>
+      <div class="card" style="padding:32px;cursor:pointer;position:relative;overflow:hidden;background:radial-gradient(ellipse at 10% 90%,rgba(120,45,15,.16) 0%,transparent 60%),rgba(255,255,255,.02);transition:transform .3s;display:flex;flex-direction:column" onclick="go('marketplace')" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
+        <div style="position:absolute;top:14px;right:14px;background:linear-gradient(135deg,#b45309,#92400e);color:#fff;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:4px 9px;border-radius:100px">Soon</div>
+        <div style="font-size:24px;margin-bottom:12px">🎨</div>
+        <span class="chip" style="margin-bottom:10px;align-self:flex-start">Creator Economy</span>
+        <h3 class="fd" style="font-size:clamp(20px,2.2vw,26px);color:#fff;margin-bottom:8px;line-height:1">Creator<br>Marketplace</h3>
+        <p style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.65;font-weight:300;margin-bottom:14px">Buy programs from real coaches. Or become one — upload your plan, set your price, keep 80%.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
+          <span style="background:rgba(255,255,255,.05);border-radius:100px;padding:3px 10px;font-size:10px;color:rgba(255,255,255,.4)">📖 Buy plans</span>
+          <span style="background:rgba(255,255,255,.05);border-radius:100px;padding:3px 10px;font-size:10px;color:rgba(255,255,255,.4)">💰 Sell plans</span>
+          <span style="background:rgba(255,255,255,.05);border-radius:100px;padding:3px 10px;font-size:10px;color:rgba(255,255,255,.4)">🤖 AI formatting</span>
+        </div>
+        <span style="color:var(--og);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase">Join Waitlist →</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="mqw"><div class="mqtr" id="mq2"></div></div>
+
+  <section style="padding:80px 32px;text-align:center">
+    <h2 class="fd" style="font-size:clamp(40px,6vw,72px);line-height:1;margin-bottom:14px"><span class="twg" style="display:block">READY TO</span><span class="tb" style="display:block">START FORGING?</span></h2>
+    <p style="color:rgba(255,255,255,.4);font-size:15px;font-weight:300;max-width:400px;margin:0 auto 32px;line-height:1.7">Free to start. Your equipment, your goals, your program — built in seconds.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap" id="home-cta-btns">
+      <button class="bp" style="padding:16px 42px;font-size:12px" onclick="go('login')">Create Free Account →</button>
+    </div>
+  </section>
+</div>
+
+<!-- ════════════════════════════════ LOGIN ════════════════════════════════ -->
+<div id="page-login" class="page">
+  <div style="min-height:calc(100vh - 62px);display:flex;align-items:center;justify-content:center;padding:60px 20px">
+    <div style="width:100%;max-width:420px">
+      <div style="text-align:center;margin-bottom:36px">
+        <span class="fd" style="font-size:28px;letter-spacing:3px;color:#fff;cursor:pointer" onclick="go('home')">FIT<span style="background:linear-gradient(135deg,var(--og),var(--og2),var(--pm));-webkit-background-clip:text;-webkit-text-fill-color:transparent">FORGE</span></span>
+        <p id="lsub" style="color:rgba(255,255,255,.4);font-size:13px;margin-top:8px;font-weight:300">Join 500+ people already forging.</p>
+      </div>
+      <div class="card" style="padding:32px 28px">
+        <div style="display:flex;background:rgba(255,255,255,.04);border-radius:100px;padding:4px;margin-bottom:26px">
+          <button id="tli" onclick="sAuth('login')" style="flex:1;padding:10px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:transparent;color:var(--whm);transition:all .3s">Sign In</button>
+          <button id="tsu" onclick="sAuth('signup')" style="flex:1;padding:10px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,var(--oe),var(--pm));color:#fff;transition:all .3s">Create Account</button>
+        </div>
+        <div id="suname" style="margin-bottom:12px"><label for="signup-name" class="sr-only">Full name</label><input class="inp" placeholder="Full name" id="signup-name" maxlength="100" autocomplete="name"></div>
+        <div style="position:relative;margin-bottom:12px"><span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--whm)">✉</span><label for="signup-email" class="sr-only">Email address</label><input class="inp" type="email" placeholder="Email address" style="padding-left:40px" id="signup-email" maxlength="254" autocomplete="email"></div>
+        <div style="position:relative;margin-bottom:20px"><span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--whm)">🔒</span><label for="signup-password" class="sr-only">Password</label><input class="inp" type="password" placeholder="Password" style="padding-left:40px" id="signup-password" maxlength="128" autocomplete="new-password" disabled><div style="font-size:10px;color:var(--whm);margin-top:4px;text-align:center">Demo mode — no real password required</div></div>
+        <button class="bp" style="width:100%;justify-content:center;padding:15px" id="authbtn" onclick="signInFromLoginPage()">Create Free Account →</button>
+        <div style="display:flex;align-items:center;gap:12px;margin:18px 0"><div style="flex:1;height:1px;background:var(--br)"></div><span style="font-size:10px;color:var(--whm);letter-spacing:2px;text-transform:uppercase">or</span><div style="flex:1;height:1px;background:var(--br)"></div></div>
+        <button onclick="alert('Google sign-in coming soon!')" style="width:100%;padding:12px;margin-bottom:10px;background:rgba(255,255,255,.03);border:1px solid var(--br);border-radius:12px;color:var(--whi);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;display:flex;align-items:center;justify-content:center;gap:12px"><b>G</b> Continue with Google</button>
+        <button onclick="alert('Apple sign-in coming soon!')" style="width:100%;padding:12px;background:rgba(255,255,255,.03);border:1px solid var(--br);border-radius:12px;color:var(--whi);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;display:flex;align-items:center;justify-content:center;gap:12px">🍎 Continue with Apple</button>
+        <p style="text-align:center;font-size:11px;color:var(--whm);margin-top:16px;font-weight:300">By continuing you agree to our <span style="color:var(--og);cursor:pointer">Terms</span> & <span style="color:var(--og);cursor:pointer">Privacy Policy</span>.</p>
+      </div>
+      <div style="margin-top:20px;text-align:center">
+        <p style="font-size:12px;color:var(--whm);font-weight:300">Join <strong style="color:#fff">500+ athletes</strong> already using FitForge</p>
+        <div style="display:flex;justify-content:center;gap:-8px;margin-top:10px">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--oe),var(--pm));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid var(--bg)">MR</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4a1a6a,#8a3ab0);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid var(--bg);margin-left:-8px">SC</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1a6a4a,#3ab080);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid var(--bg);margin-left:-8px">JO</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6a1a1a,#b03a3a);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid var(--bg);margin-left:-8px">PS</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--whm);border:2px solid var(--bg);margin-left:-8px">+496</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ BUILDER ════════════════════════════════ -->
+<div id="page-builder" class="page">
+  <div style="max-width:820px;margin:0 auto;padding:48px 24px">
+    <span class="chip" style="margin-bottom:14px">Equipment-First · Up to 3 Free Workouts</span>
+    <h2 class="fd" style="font-size:clamp(44px,7vw,88px);line-height:.95;margin-bottom:14px">
+      <span class="twg" style="display:block">BUILD YOUR</span><span class="tb" style="display:block">PROGRAM</span>
+    </h2>
+    <p style="color:rgba(255,255,255,.4);font-size:14px;font-weight:300;max-width:460px;line-height:1.7;margin-bottom:40px">Select your equipment and goal. We build a program using only what you have. Free accounts get 3 workouts — upgrade for unlimited multi-day plans.</p>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:32px">
+      <div id="sd1" style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--oe),var(--pm));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">1</div>
+      <span id="sl1" style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#fff;font-weight:500">Equipment</span>
+      <div style="width:24px;height:1px;background:var(--br)"></div>
+      <div id="sd2" style="width:26px;height:26px;border-radius:50%;background:var(--whh);border:1px solid var(--br);color:var(--whm);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">2</div>
+      <span id="sl2" style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--whm);font-weight:500">Goal & Length</span>
+    </div>
+    <div id="bst1" class="card" style="padding:28px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <h3 style="font-size:15px;color:#fff;font-weight:600">What equipment do you have access to?</h3>
+        <span style="font-size:11px;color:var(--whm)">Select all that apply</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:8px" class="eq-grid">
+        <div class="eqb" data-eq="full_gym" onclick="toggleEq(this)" style="padding:16px 8px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s;user-select:none"><div style="font-size:22px;margin-bottom:6px">🏋️</div><div style="font-size:11px;font-weight:600;letter-spacing:.5px">Full Gym</div><div style="font-size:10px;color:var(--whm);margin-top:2px">All equipment</div></div>
+        <div class="eqb" data-eq="dumbbells" onclick="toggleEq(this)" style="padding:16px 8px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s;user-select:none"><div style="font-size:22px;margin-bottom:6px">💪</div><div style="font-size:11px;font-weight:600;letter-spacing:.5px">Dumbbells</div><div style="font-size:10px;color:var(--whm);margin-top:2px">Fixed or adjustable</div></div>
+        <div class="eqb" data-eq="barbell" onclick="toggleEq(this)" style="padding:16px 8px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s;user-select:none"><div style="font-size:22px;margin-bottom:6px">⚡</div><div style="font-size:11px;font-weight:600;letter-spacing:.5px">Barbell</div><div style="font-size:10px;color:var(--whm);margin-top:2px">+ plates</div></div>
+        <div class="eqb" data-eq="cables" onclick="toggleEq(this)" style="padding:16px 8px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s;user-select:none"><div style="font-size:22px;margin-bottom:6px">🔗</div><div style="font-size:11px;font-weight:600;letter-spacing:.5px">Cables</div><div style="font-size:10px;color:var(--whm);margin-top:2px">Cable machine</div></div>
+        <div class="eqb" data-eq="bands" onclick="toggleEq(this)" style="padding:16px 8px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s;user-select:none"><div style="font-size:22px;margin-bottom:6px">🎗️</div><div style="font-size:11px;font-weight:600;letter-spacing:.5px">Bands</div><div style="font-size:10px;color:var(--whm);margin-top:2px">Resistance bands</div></div>
+        <div class="eqb" data-eq="bench" onclick="toggleEq(this)" style="padding:16px 8px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s;user-select:none"><div style="font-size:22px;margin-bottom:6px">🛋️</div><div style="font-size:11px;font-weight:600;letter-spacing:.5px">Bench</div><div style="font-size:10px;color:var(--whm);margin-top:2px">Flat or adjustable</div></div>
+        <div class="eqb" data-eq="pullup" onclick="toggleEq(this)" style="padding:16px 8px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s;user-select:none"><div style="font-size:22px;margin-bottom:6px">🔝</div><div style="font-size:11px;font-weight:600;letter-spacing:.5px">Pull-up Bar</div><div style="font-size:10px;color:var(--whm);margin-top:2px">Doorway or rack</div></div>
+        <div class="eqb" data-eq="bodyweight" onclick="toggleEq(this)" style="padding:16px 8px;border-radius:14px;background:linear-gradient(135deg,rgba(120,45,15,.25),rgba(90,45,130,.25));border:1px solid rgba(224,120,48,.35);color:#fff;cursor:pointer;text-align:center;transition:all .22s;user-select:none" id="eq-bodyweight-btn"><div style="font-size:22px;margin-bottom:6px">🤸</div><div style="font-size:11px;font-weight:600;letter-spacing:.5px">Bodyweight</div><div style="font-size:10px;color:var(--og);margin-top:2px">Always available</div></div>
+      </div>
+      <p style="font-size:11px;color:var(--whm);margin-top:8px;margin-bottom:20px">💡 Bodyweight exercises are always included. Select additional equipment you have.</p>
+      <div style="text-align:right"><button class="bp" style="padding:12px 28px;font-size:12px" onclick="goStep(2)">Next →</button></div>
+    </div>
+    <div id="bst2" style="display:none">
+      <div class="card" style="padding:28px;margin-bottom:14px">
+        <h3 style="font-size:15px;color:#fff;font-weight:600;margin-bottom:18px">What's your primary goal?</h3>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px" class="goal-grid">
+          <div class="glb" onclick="selGoal(this)" data-goal="muscle" style="padding:16px 10px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s"><div style="font-size:24px;margin-bottom:6px">💪</div><div style="font-size:13px;font-weight:600">Build Muscle</div><div style="font-size:11px;color:var(--whm);margin-top:2px">Hypertrophy focus</div></div>
+          <div class="glb" onclick="selGoal(this)" data-goal="fat_loss" style="padding:16px 10px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s"><div style="font-size:24px;margin-bottom:6px">🔥</div><div style="font-size:13px;font-weight:600">Fat Loss</div><div style="font-size:11px;color:var(--whm);margin-top:2px">Burn calories</div></div>
+          <div class="glb" onclick="selGoal(this)" data-goal="strength" style="padding:16px 10px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s"><div style="font-size:24px;margin-bottom:6px">🏆</div><div style="font-size:13px;font-weight:600">Strength</div><div style="font-size:11px;color:var(--whm);margin-top:2px">Move more weight</div></div>
+          <div class="glb" onclick="selGoal(this)" data-goal="tone" style="padding:16px 10px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s"><div style="font-size:24px;margin-bottom:6px">✨</div><div style="font-size:13px;font-weight:600">Tone & Define</div><div style="font-size:11px;color:var(--whm);margin-top:2px">Lean muscle</div></div>
+          <div class="glb" onclick="selGoal(this)" data-goal="athletic" style="padding:16px 10px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s"><div style="font-size:24px;margin-bottom:6px">⚡</div><div style="font-size:13px;font-weight:600">Athletic</div><div style="font-size:11px;color:var(--whm);margin-top:2px">Speed & power</div></div>
+          <div class="glb" onclick="selGoal(this)" data-goal="endurance" style="padding:16px 10px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s"><div style="font-size:24px;margin-bottom:6px">🏃</div><div style="font-size:13px;font-weight:600">Endurance</div><div style="font-size:11px;color:var(--whm);margin-top:2px">Stamina & cardio</div></div>
+        </div>
+      </div>
+      <!-- Experience Level -->
+      <div class="card" style="padding:28px;margin-bottom:14px">
+        <h3 style="font-size:15px;color:#fff;font-weight:600;margin-bottom:4px">Experience level</h3>
+        <p style="font-size:13px;color:var(--whm);font-weight:300;margin-bottom:18px">We use this to calibrate your sets, reps, and rest times.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div class="xlb" data-level="beginner" onclick="selLevel(this)" style="padding:18px 10px;border-radius:14px;background:linear-gradient(135deg,rgba(120,45,15,.3),rgba(90,45,130,.3));border:1px solid rgba(224,120,48,.4);color:#fff;cursor:pointer;text-align:center;transition:all .22s">
+            <div style="font-size:24px;margin-bottom:8px">🌱</div>
+            <div style="font-size:13px;font-weight:600">Beginner</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:3px;line-height:1.4">Under 1 year training</div>
+          </div>
+          <div class="xlb" data-level="intermediate" onclick="selLevel(this)" style="padding:18px 10px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s">
+            <div style="font-size:24px;margin-bottom:8px">💪</div>
+            <div style="font-size:13px;font-weight:600">Intermediate</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:3px;line-height:1.4">1–3 years training</div>
+          </div>
+          <div class="xlb" data-level="advanced" onclick="selLevel(this)" style="padding:18px 10px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;transition:all .22s">
+            <div style="font-size:24px;margin-bottom:8px">🔥</div>
+            <div style="font-size:13px;font-weight:600">Advanced</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:3px;line-height:1.4">3+ years, structured training</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:28px;margin-bottom:14px">
+        <h3 style="font-size:15px;color:#fff;font-weight:600;margin-bottom:6px">Plan length</h3>
+        <p style="font-size:13px;color:var(--whm);margin-bottom:20px;font-weight:300">1-day is free. Multi-day plans unlock with Premium ($20/mo).</p>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px" class="plan-grid">
+          <div class="plb" data-days="1" data-prem="false" onclick="selPlan(this)" style="padding:20px 10px;border-radius:16px;background:#fff;border:2px solid #fff;color:#07070d;cursor:pointer;text-align:center;position:relative;transition:all .22s">
+            <div class="fd" style="font-size:26px;color:#07070d;line-height:1;margin-bottom:3px">1 Day</div>
+            <div style="font-size:11px;color:#666;margin-bottom:6px">Quick workout</div>
+            <div style="font-size:12px;font-weight:700;color:#16a34a">✓ Free</div>
+          </div>
+          <div class="plb" data-days="3" data-prem="true" onclick="selPlan(this)" style="padding:20px 10px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;position:relative;transition:all .22s">
+            <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--og),var(--og2));color:#fff;font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:100px;white-space:nowrap">🔒 Premium</div>
+            <div class="fd" style="font-size:26px;line-height:1;margin-bottom:3px">3 Days</div>
+            <div style="font-size:11px;color:var(--whm);margin-bottom:6px">Mon · Wed · Fri</div>
+            <div style="font-size:12px;font-weight:700;color:var(--og)">$20/mo</div>
+          </div>
+          <div class="plb" data-days="5" data-prem="true" onclick="selPlan(this)" style="padding:20px 10px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;position:relative;transition:all .22s">
+            <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#b45309,#92400e);color:#fff;font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:100px;white-space:nowrap">⭐ Popular</div>
+            <div class="fd" style="font-size:26px;line-height:1;margin-bottom:3px">5 Days</div>
+            <div style="font-size:11px;color:var(--whm);margin-bottom:6px">Mon – Fri</div>
+            <div style="font-size:12px;font-weight:700;color:var(--og)">$20/mo</div>
+          </div>
+          <div class="plb" data-days="7" data-prem="true" onclick="selPlan(this)" style="padding:20px 10px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--br);color:var(--whm);cursor:pointer;text-align:center;position:relative;transition:all .22s">
+            <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--og),var(--og2));color:#fff;font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:100px;white-space:nowrap">🔒 Premium</div>
+            <div class="fd" style="font-size:26px;line-height:1;margin-bottom:3px">7 Days</div>
+            <div style="font-size:11px;color:var(--whm);margin-bottom:6px">Full week</div>
+            <div style="font-size:12px;font-weight:700;color:var(--og)">$20/mo</div>
+          </div>
+        </div>
+      </div>
+      <!-- Auth note — only shown when not signed in -->
+      <div id="builder-auth-note" style="background:rgba(224,120,48,.06);border:1px solid rgba(224,120,48,.15);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="font-size:13px;color:rgba(255,255,255,.6);font-weight:300;flex:1">🔐 You'll sign in or create a free account right before your workout is generated.</div>
+      </div>
+      <!-- Free usage counter -->
+      <div id="free-usage-bar" style="background:rgba(255,255,255,.03);border:1px solid var(--br);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <div style="flex:1">
+          <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:6px;letter-spacing:.5px">Free workouts used</div>
+          <div style="display:flex;gap:5px">
+            <div id="fu-1" style="height:5px;flex:1;border-radius:100px;background:var(--br);transition:background .3s"></div>
+            <div id="fu-2" style="height:5px;flex:1;border-radius:100px;background:var(--br);transition:background .3s"></div>
+            <div id="fu-3" style="height:5px;flex:1;border-radius:100px;background:var(--br);transition:background .3s"></div>
+          </div>
+        </div>
+        <div id="free-usage-text" style="font-size:12px;font-weight:600;color:var(--og);white-space:nowrap">0 / 3 used</div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:0">
+        <button class="bg" style="padding:12px 22px;font-size:12px" onclick="goStep(1)">← Back</button>
+        <button class="bp" style="padding:12px 26px;font-size:12px" onclick="genWorkout()" id="gen-btn">Generate My Workout →</button>
+      </div>
+    </div>
+    <div id="bload" style="display:none;text-align:center;padding:80px 40px">
+      <div style="font-size:48px;margin-bottom:16px;animation:spin 1s linear infinite;display:inline-block">⚙️</div>
+      <p class="fd" style="font-size:28px;color:#fff;margin-bottom:8px">Building Your Plan</p>
+      <p style="color:var(--whm);font-size:14px;font-weight:300" id="load-txt">Analysing your equipment...</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ REVIEW ════════════════════════════════ -->
+<div id="page-review" class="page">
+  <div style="max-width:660px;margin:0 auto;padding:40px 20px">
+    <div style="margin-bottom:32px">
+      <span class="chip" style="margin-bottom:12px" id="rv-chip">Your Workout</span>
+      <h2 class="fd" style="font-size:clamp(44px,8vw,80px);line-height:.93;margin-bottom:10px">
+        <span class="twg" style="display:block" id="rv-title1">PUSH DAY</span>
+        <span class="tb" style="display:block" id="rv-title2">READY</span>
+      </h2>
+      <p id="rv-sub" style="color:var(--whm);font-size:13px;font-weight:300;line-height:1.6;margin-bottom:4px">Generated from: your equipment · your goal</p>
+      <p id="rv-equip" style="color:var(--og);font-size:12px;font-weight:500"></p>
+    </div>
+    <div class="auth-cta" id="rv-auth-cta">
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px">Save your progress & track PRs</div>
+        <div style="font-size:12px;color:var(--whm);font-weight:300">Create a free account to save this workout, log weights, and see your streak.</div>
+      </div>
+      <button class="bp" style="padding:10px 20px;font-size:11px;flex-shrink:0" onclick="go('login')">Sign Up Free →</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px" class="rv-stats">
+      <div style="background:var(--whh);border:1px solid var(--br);border-radius:14px;padding:14px 8px;text-align:center"><div class="fd tb" style="font-size:26px" id="rv-excount">8</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Exercises</div></div>
+      <div style="background:var(--whh);border:1px solid var(--br);border-radius:14px;padding:14px 8px;text-align:center"><div class="fd tb" style="font-size:26px" id="rv-setcount">18</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Total Sets</div></div>
+      <div style="background:var(--whh);border:1px solid var(--br);border-radius:14px;padding:14px 8px;text-align:center"><div class="fd tb" style="font-size:26px" id="rv-mins">~60</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Minutes</div></div>
+      <div style="background:var(--whh);border:1px solid var(--br);border-radius:14px;padding:14px 8px;text-align:center"><div style="font-size:18px;margin-bottom:2px">🔥</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase">22 Streak</div></div>
+    </div>
+    <div id="rv-sections"></div>
+    <button onclick="startWorkout()" style="width:100%;padding:22px;border-radius:18px;background:linear-gradient(135deg,var(--oe),var(--og2),var(--pm));border:none;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:#fff;box-shadow:0 12px 40px rgba(120,45,15,.35);transition:transform .3s,box-shadow .3s;margin-bottom:12px;animation:glow 2s ease infinite" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+      LET'S GO 🔥
+    </button>
+    <button onclick="go('builder')" class="bg" style="width:100%;justify-content:center">← Change Selections</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ TRACKER ════════════════════════════════ -->
+<div id="page-tracker" class="page" style="padding-bottom:100px">
+  <div id="tk-header" style="position:sticky;top:62px;z-index:100;background:rgba(10,10,15,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--br);padding:12px 18px">
+    <div style="max-width:660px;margin:0 auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--whm)" id="tk-seclbl">WARM UP</div>
+          <div class="fd" style="font-size:20px;color:#fff" id="tk-exlbl">—</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="text-align:center;background:rgba(224,120,48,.1);border-radius:10px;padding:8px 14px">
+            <div class="fd tb" style="font-size:20px;line-height:1" id="tk-xp">0</div>
+            <div style="font-size:8px;color:var(--whm);letter-spacing:1px;text-transform:uppercase">XP</div>
+          </div>
+          <div style="text-align:center;background:rgba(255,255,255,.04);border-radius:10px;padding:8px 14px">
+            <div class="fd tb" style="font-size:20px;line-height:1" id="tk-vol">0</div>
+            <div style="font-size:8px;color:var(--whm);letter-spacing:1px;text-transform:uppercase">lbs</div>
+          </div>
+          <button onclick="go('review')" style="background:rgba(255,255,255,.06);border:1px solid var(--br);color:var(--whm);cursor:pointer;font-size:16px;padding:8px 12px;border-radius:10px">✕</button>
+        </div>
+      </div>
+      <div style="height:4px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden">
+        <div id="tk-bar" style="height:100%;background:linear-gradient(90deg,var(--oe),var(--og2),var(--pm));border-radius:3px;width:0%;transition:width .5s ease"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:5px">
+        <span style="font-size:10px;color:var(--whm)" id="tk-prgtxt">Exercise 1 of —</span>
+        <span style="font-size:10px;color:var(--og)" id="tk-pct">0%</span>
+      </div>
+    </div>
+  </div>
+  <div style="max-width:660px;margin:0 auto;padding:20px 18px" id="tk-body"></div>
+</div>
+
+<!-- ════════════════════════════════ FEED ════════════════════════════════ -->
+<div id="page-feed" class="page">
+  <div style="max-width:560px;margin:0 auto;padding:20px 16px 60px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
+      <h2 class="fd" style="font-size:36px"><span class="twg">FIT</span><span class="tb">FEED</span></h2>
+    </div>
+    <!-- Post Composer -->
+    <div class="card" style="padding:18px;margin-bottom:20px;border-color:rgba(224,120,48,.18)" id="feed-composer">
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div id="feed-avatar" style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--oe),var(--pm));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0">ME</div>
+        <div style="flex:1">
+          <label for="feed-caption" class="sr-only">Share your workout, PR, or motivation</label><textarea id="feed-caption" maxlength="500" placeholder="Share your workout, PR, or motivation..." rows="2" style="width:100%;background:transparent;border:none;color:rgba(255,255,255,.85);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;resize:none;outline:none;line-height:1.5"></textarea>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--br)">
+            <div style="display:flex;gap:8px;align-items:center">
+              <button id="attach-btn" onclick="openAttachWorkout()" style="display:flex;align-items:center;gap:6px;background:rgba(224,120,48,.1);border:1px solid rgba(224,120,48,.2);color:var(--og);border-radius:100px;padding:6px 12px;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer">💪 Attach Workout</button>
+              <span id="attached-badge" style="display:none;font-size:11px;color:#22c55e;font-weight:500">✓ Attached</span>
+            </div>
+            <button onclick="submitPost()" style="background:linear-gradient(135deg,var(--oe),var(--pm));border:none;color:#fff;border-radius:100px;padding:8px 18px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif">Post 🔥</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Auth CTA if not signed in -->
+    <div class="auth-cta" style="margin-bottom:20px" id="feed-auth-cta">
+      <div><div style="font-size:13px;font-weight:600;margin-bottom:3px">Create an account to post</div><div style="font-size:11px;color:var(--whm);font-weight:300">Share your PRs and connect with the community.</div></div>
+      <button class="bp" style="padding:9px 16px;font-size:10px;flex-shrink:0" onclick="go('login')">Join Free →</button>
+    </div>
+    <!-- Posts rendered by JS -->
+    <div id="feed-posts-container" style="display:flex;flex-direction:column;gap:16px"></div>
+  </div>
+</div>
+
+<!-- Attach Workout Modal -->
+<div id="attach-modal" style="display:none;position:fixed;inset:0;z-index:1200;background:rgba(10,10,15,.95);backdrop-filter:blur(16px);align-items:center;justify-content:center;padding:20px">
+  <div class="card" style="max-width:420px;width:100%;padding:28px;position:relative;max-height:80vh;overflow-y:auto">
+    <button onclick="document.getElementById('attach-modal').style.display='none'" style="position:absolute;top:12px;right:12px;background:none;border:none;color:var(--whm);cursor:pointer;font-size:18px">✕</button>
+    <h3 class="fd" style="font-size:26px;color:#fff;margin-bottom:6px">Attach a Workout</h3>
+    <p style="font-size:12px;color:var(--whm);margin-bottom:16px;font-weight:300">Select a completed workout to share with your post.</p>
+    <div id="attach-workout-list" style="display:flex;flex-direction:column;gap:8px">
+      <!-- Populated by JS -->
+    </div>
+    <p id="attach-empty" style="display:none;font-size:13px;color:var(--whm);text-align:center;padding:20px 0">Complete a workout first to attach it here!</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ MARKETPLACE ════════════════════════════════ -->
+<div id="page-marketplace" class="page">
+  <div style="max-width:760px;margin:0 auto;padding:48px 24px;text-align:center">
+    <div style="font-size:52px;margin-bottom:16px">🛒</div>
+    <div style="display:inline-block;background:rgba(180,83,9,.35);border:1px solid rgba(180,83,9,.3);color:#fbbf24;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 16px;border-radius:100px;margin-bottom:20px">Coming Soon</div>
+    <h2 class="fd" style="font-size:clamp(52px,9vw,110px);line-height:.9;margin-bottom:16px">
+      <span class="twg" style="display:block">CREATOR</span><span class="tb" style="display:block">MARKETPLACE</span>
+    </h2>
+    <p style="color:rgba(255,255,255,.4);font-size:15px;font-weight:300;max-width:480px;margin:0 auto 40px;line-height:1.7">Real programs from real coaches. Upload a PDF — AI formats it into a polished plan. Set your price. Keep 80%.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:40px;text-align:left" class="mkt-grid">
+      <div class="card" style="padding:24px;opacity:.75"><div style="font-size:22px;margin-bottom:12px">💰</div><div class="fd" style="font-size:20px;color:#fff;margin-bottom:6px">Creator Plans</div><p style="font-size:12px;color:var(--whm);font-weight:300">Certified coaches. Real programs.</p></div>
+      <div class="card" style="padding:24px;opacity:.75"><div style="font-size:22px;margin-bottom:12px">🤖</div><div class="fd" style="font-size:20px;color:#fff;margin-bottom:6px">AI Formatting</div><p style="font-size:12px;color:var(--whm);font-weight:300">Upload a PDF. AI makes it beautiful.</p></div>
+      <div class="card" style="padding:24px;opacity:.75"><div style="font-size:22px;margin-bottom:12px">📊</div><div class="fd" style="font-size:20px;color:#fff;margin-bottom:6px">80/20 Split</div><p style="font-size:12px;color:var(--whm);font-weight:300">You keep 80%. No surprises.</p></div>
+    </div>
+    <div class="card" style="max-width:420px;margin:0 auto;padding:36px;text-align:center;border-color:rgba(224,120,48,.2)">
+      <h3 class="fd" style="font-size:28px;color:#fff;margin-bottom:8px">Join the Waitlist</h3>
+      <p style="font-size:13px;color:var(--whm);font-weight:300;margin-bottom:20px">1,200+ people signed up. Early access + 3 months free.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <label for="waitlist-email" class="sr-only">Email for waitlist</label><input class="inp" type="email" placeholder="your@email.com" style="flex:1;min-width:0" id="waitlist-email" maxlength="254">
+        <button class="bp" style="padding:14px 20px;font-size:11px;flex-shrink:0" onclick="alert('You\'re on the list! 🎉')">Notify Me →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ PROFILE ════════════════════════════════ -->
+<div id="page-profile" class="page">
+  <div style="max-width:640px;margin:0 auto;padding:24px 16px 60px" id="profile-inner">
+    <!-- Rendered by renderProfile() -->
+  </div>
+</div>
+
+<!-- ════════ AUTH GATE MODAL (shown before generating workout) ════════ -->
+<div id="auth-gate" style="display:none;position:fixed;inset:0;z-index:1100;background:rgba(10,10,15,.95);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:20px;flex-direction:column">
+  <div class="card" style="max-width:420px;width:100%;padding:40px;text-align:center;border-color:rgba(224,120,48,.25);position:relative;animation:pop .4s ease both">
+    <button onclick="closeAuthGate()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:var(--whm);cursor:pointer;font-size:20px;line-height:1">✕</button>
+
+    <!-- Limit warning — shown when at 3/3 -->
+    <div id="auth-gate-limit" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:14px 16px;margin-bottom:20px">
+      <div style="font-size:13px;font-weight:600;color:#f87171;margin-bottom:4px">⚠️ Free plan limit reached</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.5);font-weight:300">You've used your 3 free workouts. Sign up free to keep going — your account unlocks unlimited 1-day plans and access to multi-day programs.</div>
+    </div>
+
+    <!-- Normal heading -->
+    <div id="auth-gate-normal">
+      <div style="font-size:48px;margin-bottom:12px">🔐</div>
+      <h2 class="fd" style="font-size:42px;margin-bottom:8px;line-height:1"><span class="twg" style="display:block">ONE LAST</span><span class="tb" style="display:block">STEP</span></h2>
+      <p style="color:rgba(255,255,255,.45);font-size:13px;line-height:1.65;margin-bottom:6px;font-weight:300">Your workout is ready to build. Create a free account to unlock it — takes 20 seconds.</p>
+      <div style="display:flex;gap:16px;justify-content:center;margin:16px 0 20px">
+        <div style="text-align:center"><div style="font-size:20px">💾</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:4px">Save progress</div></div>
+        <div style="text-align:center"><div style="font-size:20px">🏆</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:4px">Track PRs</div></div>
+        <div style="text-align:center"><div style="font-size:20px">🔥</div><div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:4px">Build streaks</div></div>
+      </div>
+    </div>
+
+    <!-- Tab switcher -->
+    <div style="display:flex;background:rgba(255,255,255,.04);border-radius:100px;padding:4px;margin-bottom:22px">
+      <button id="ag-tli" onclick="agAuth('login')" style="flex:1;padding:10px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:transparent;color:var(--whm);transition:all .3s">Sign In</button>
+      <button id="ag-tsu" onclick="agAuth('signup')" style="flex:1;padding:10px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,var(--oe),var(--pm));color:#fff;transition:all .3s">Sign Up Free</button>
+    </div>
+
+    <div id="ag-suname" style="margin-bottom:12px"><label for="ag-name" class="sr-only">Full name</label><input class="inp" id="ag-name" placeholder="Full name" maxlength="100"></div>
+    <div style="position:relative;margin-bottom:12px"><span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--whm)">✉</span><label for="ag-email" class="sr-only">Email address</label><input class="inp" id="ag-email" type="email" placeholder="Email address" style="padding-left:40px" maxlength="254"></div>
+    <div style="position:relative;margin-bottom:20px"><span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--whm)">🔒</span><label for="ag-pass" class="sr-only">Password</label><input class="inp" id="ag-pass" type="password" placeholder="Password" style="padding-left:40px" maxlength="128" autocomplete="new-password" disabled><div style="font-size:10px;color:var(--whm);margin-top:4px;text-align:center">Demo mode — no real password required</div></div>
+
+    <button class="bp" id="ag-authbtn" onclick="authGateSubmit()" style="width:100%;justify-content:center;padding:15px;font-size:13px">
+      Create Free Account & Build →
+    </button>
+
+    <div style="display:flex;align-items:center;gap:12px;margin:16px 0">
+      <div style="flex:1;height:1px;background:var(--br)"></div>
+      <span style="font-size:10px;color:var(--whm);letter-spacing:2px;text-transform:uppercase">or</span>
+      <div style="flex:1;height:1px;background:var(--br)"></div>
+    </div>
+    <button onclick="authGateGoogle()" style="width:100%;padding:12px;background:rgba(255,255,255,.03);border:1px solid var(--br);border-radius:12px;color:var(--whi);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;display:flex;align-items:center;justify-content:center;gap:12px"><b>G</b> Continue with Google</button>
+
+    <p style="text-align:center;font-size:11px;color:rgba(255,255,255,.3);margin-top:14px;font-weight:300">Free forever. No credit card required.</p>
+  </div>
+</div>
+
+<!-- ════════════ WORKOUT DETAIL MODAL ════════════ -->
+<div id="workout-detail-modal" style="display:none;position:fixed;inset:0;z-index:1200;background:rgba(10,10,15,.95);backdrop-filter:blur(16px);align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto">
+  <div class="card" style="max-width:500px;width:100%;padding:28px;position:relative;margin:auto">
+    <button onclick="document.getElementById('workout-detail-modal').style.display='none'" style="position:absolute;top:14px;right:14px;background:none;border:none;color:var(--whm);cursor:pointer;font-size:20px">✕</button>
+    <div id="workout-detail-content"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ PAYWALL MODAL ════════════════════════════════ -->
+<div id="paywall" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(10,10,15,.93);backdrop-filter:blur(16px);align-items:center;justify-content:center;padding:20px">
+  <div class="card" style="max-width:400px;width:100%;padding:40px;text-align:center;border-color:rgba(224,120,48,.25);position:relative">
+    <button onclick="closePaywall()" style="position:absolute;top:12px;right:12px;background:none;border:none;color:var(--whm);cursor:pointer;font-size:20px">✕</button>
+    <div style="font-size:44px;margin-bottom:12px">👑</div>
+    <h2 class="fd" style="font-size:44px;margin-bottom:10px"><span class="twg" style="display:block">UNLOCK</span><span class="tb" style="display:block">PREMIUM</span></h2>
+    <p style="color:var(--whm);font-size:13px;line-height:1.6;margin-bottom:20px;font-weight:300">Multi-day plans, progress tracking, unlimited history.</p>
+    <div style="background:rgba(255,255,255,.03);border-radius:12px;padding:16px;margin-bottom:20px">
+      <div class="fd tb" style="font-size:52px;line-height:1">$20<span style="font-size:22px">/mo</span></div>
+      <div style="font-size:11px;color:var(--whm);margin-top:4px">Cancel anytime.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;text-align:left;margin-bottom:22px">
+      <div style="font-size:13px;color:var(--whm)"><span style="color:var(--og)">✓</span> 3, 5 & 7-day AI programs</div>
+      <div style="font-size:13px;color:var(--whm)"><span style="color:var(--og)">✓</span> Weight logging & PR tracking</div>
+      <div style="font-size:13px;color:var(--whm)"><span style="color:var(--og)">✓</span> Streaks & achievements</div>
+      <div style="font-size:13px;color:var(--whm)"><span style="color:var(--og)">✓</span> Unlimited plan history</div>
+    </div>
+    <button class="bp" style="width:100%;justify-content:center;padding:15px" onclick="alert('Stripe coming soon! 🔥');closePaywall()">Unlock Premium →</button>
+    <button class="bg" style="width:100%;justify-content:center;margin-top:10px;padding:13px" onclick="closePaywall();startBuildFor1Day()">Continue Free (1 Day)</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ CELEBRATION MODAL ════════════════════════════════ -->
+<div id="celeb" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(10,10,15,.96);align-items:center;justify-content:center;padding:20px;flex-direction:column">
+  <div id="cfcnt" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"></div>
+  <div style="text-align:center;position:relative;z-index:1;animation:pop .6s ease both;max-width:440px;width:100%">
+    <div style="font-size:68px;margin-bottom:10px;animation:pulse 1.5s ease infinite">🏆</div>
+    <h2 class="fd" style="font-size:clamp(52px,10vw,84px);line-height:.9;margin-bottom:10px">
+      <span class="twg" style="display:block">WORKOUT</span><span class="tb" style="display:block">COMPLETE!</span>
+    </h2>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0">
+      <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:14px 18px;text-align:center"><div class="fd tb" style="font-size:28px" id="cv">0 kg</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Volume</div></div>
+      <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:14px 18px;text-align:center"><div class="fd tb" style="font-size:28px" id="cs">0</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Sets</div></div>
+      <div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:12px;padding:14px 18px;text-align:center"><div class="fd" style="font-size:28px;color:#22c55e" id="cx">+0</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">XP</div></div>
+    </div>
+    <!-- Post section (populated by JS) -->
+    <div id="celeb-quick-post"></div>
+    <button class="bg" style="width:100%;justify-content:center;margin-top:4px" onclick="closeCeleb()">Skip & Close</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ SCRIPT ════════════════════════════════ -->
+<script>
+// ── SECURITY: HTML ESCAPE UTILITY ────────────────────────────
+function escHtml(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function escAttr(s){return escHtml(s).replace(/\\/g,'\\\\');}
+
+// ── PERSISTENT USER STATE (localStorage) ─────────────────────
+const LS = {
+  get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } },
+  set: (k,v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} },
+  del: k => { try { localStorage.removeItem(k); } catch(e) {} }
+};
+
+// Load or init user
+let user = LS.get('ff_user') || null;
+// user = { name, email, isAuthed, isPremium, isCreator, totalXP, totalWorkouts, streak, lastWorkoutDate, prs:{}, achievements:[] }
+
+let userIsAuthed = !!(user && user.isAuthed);
+let currentUserName = user ? user.name : '';
+let userEq = new Set(['bodyweight']);
+let userGoal = 'muscle';
+let userDays = 1;
+let userPrem = false;
+let userLevel = 'beginner'; // beginner | intermediate | advanced
+const FREE_PLAN_LIMIT = 3;
+const STORAGE_KEY = 'ff_free_count';
+let generatedWorkout = [];
+let completedWorkouts = LS.get('ff_workouts') || []; // array of completed sessions
+let pendingAttachWorkout = null;
+
+function getFreeCount(){ return parseInt(localStorage.getItem(STORAGE_KEY)||'0'); }
+function incFreeCount(){ localStorage.setItem(STORAGE_KEY, getFreeCount()+1); }
+
+function saveUser(){ if(user) LS.set('ff_user', user); }
+
+// ── ROUTING ──────────────────────────────────────────────────
+const PAGES=['home','login','builder','review','tracker','feed','marketplace','profile'];
+function go(p){
+  PAGES.forEach(x=>{ const el=document.getElementById('page-'+x); if(el) el.classList.toggle('active',x===p); });
+  window.scrollTo(0,0);
+  document.querySelectorAll('.nl').forEach((l,i)=>l.classList.toggle('active',['builder','feed','marketplace','profile'][i]===p));
+  if(p==='feed'){ setTimeout(renderFeed,50); updateFeedComposerVisibility(); }
+  if(p==='profile') renderProfile();
+  if(p==='builder'){
+    // Always land on step 1 so equipment options are visible
+    const st1=document.getElementById('bst1');
+    const st2=document.getElementById('bst2');
+    const bload=document.getElementById('bload');
+    if(st1) st1.style.display='block';
+    if(st2) st2.style.display='none';
+    if(bload) bload.style.display='none';
+    restoreBuilderVisuals();
+  }
+}
+
+// ── MARQUEE ──────────────────────────────────────────────────
+const M1=['Workouts Built Around YOU','Equipment-First Training','Social Fitness Feed','Track Every Set','Creator Marketplace'];
+const M2=['Your Equipment. Your Goals. Your Program.','Structure Beats Vibes','No Generic Plans'];
+function bMQ(id,items){ const el=document.getElementById(id); if(!el) return; const all=[...items,...items]; el.innerHTML=all.map(i=>`<span class="mqi">${i}<span class="mqd"></span></span>`).join(''); }
+bMQ('mq1',M1); bMQ('mq2',M2);
+
+// ── AUTH ──────────────────────────────────────────────────────
+function sAuth(m){
+  const s=m==='signup';
+  document.getElementById('tli').style.cssText=`flex:1;padding:10px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:all .3s;background:${s?'transparent':'linear-gradient(135deg,var(--oe),var(--pm))'};color:${s?'var(--whm)':'#fff'}`;
+  document.getElementById('tsu').style.cssText=`flex:1;padding:10px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:all .3s;background:${s?'linear-gradient(135deg,var(--oe),var(--pm))':'transparent'};color:${s?'#fff':'var(--whm)'}`;
+  document.getElementById('suname').style.display=s?'block':'none';
+  document.getElementById('lsub').textContent=s?'Join 500+ athletes already on FitForge.':'Welcome back. Keep forging.';
+  document.getElementById('authbtn').textContent=s?'Create Free Account →':'Sign In →';
+}
+document.getElementById('tsu').style.background='linear-gradient(135deg,var(--oe),var(--pm))';
+document.getElementById('tsu').style.color='#fff';
+document.getElementById('tli').style.color='var(--whm)';
+document.getElementById('tli').style.background='transparent';
+
+// Call on page load to restore session
+function restoreSession(){
+  if(userIsAuthed){
+    updateNavForAuth();
+    updateFeedComposerVisibility();
+    // Hide "Create Free Account" CTA on homepage
+    const homeCta=document.getElementById('home-cta-btns');
+    if(homeCta) homeCta.style.display='none';
+  }
+}
+
+function updateNavForAuth(){
+  const bsi=document.querySelector('.bsi');
+  if(!bsi) return;
+  const initials=(currentUserName||'ME').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+  bsi.innerHTML=`<span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--oe),var(--pm));display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-right:6px;flex-shrink:0">${escHtml(initials)}</span>${escHtml((currentUserName||'Me').split(' ')[0])}`;
+  bsi.onclick=()=>go('profile');
+  bsi.style.gap='0';
+  // Update feed avatar
+  const av=document.getElementById('feed-avatar');
+  if(av){ av.textContent=initials; }
+  // Hide homepage sign-up CTA
+  const homeCta=document.getElementById('home-cta-btns');
+  if(homeCta) homeCta.style.display='none';
+}
+
+function updateFeedComposerVisibility(){
+  const cta=document.getElementById('feed-auth-cta');
+  if(cta) cta.style.display=userIsAuthed?'none':'flex';
+}
+
+// Sign in from standalone login page
+function signInFromLoginPage(){
+  const emailEl=document.querySelector('#page-login input[type="email"]');
+  const nameEl=document.querySelector('#page-login #suname input');
+  const email=emailEl?emailEl.value.trim():'';
+  if(!email){ if(emailEl){emailEl.style.borderColor='rgba(239,68,68,.5)';setTimeout(()=>emailEl.style.borderColor='',2000);} return; }
+  const name=(nameEl?nameEl.value.trim():'')||email.split('@')[0];
+  signIn(name, email);
+  const btn=document.getElementById('authbtn');
+  if(btn){ btn.textContent='Welcome, '+name.split(' ')[0]+'! Redirecting...'; btn.style.background='linear-gradient(135deg,#16a34a,#22c55e)'; }
+  setTimeout(()=>go('builder'), 900);
+}
+
+function signIn(name, email){
+  // Load existing user or create new
+  const existing = LS.get('ff_user');
+  if(existing && existing.email === email){
+    user = existing;
+  } else {
+    user = { name, email, isAuthed:true, isPremium:false, isCreator:false, totalXP:0, totalWorkouts:0, streak:0, lastWorkoutDate:null, prs:{}, achievements:[] };
+  }
+  user.isAuthed = true;
+  user.name = name;
+  saveUser();
+  userIsAuthed = true;
+  currentUserName = name;
+  completedWorkouts = LS.get('ff_workouts') || [];
+  updateNavForAuth();
+  updateFeedComposerVisibility();
+  checkAchievements();
+}
+
+function signOut(){
+  if(user) { user.isAuthed = false; saveUser(); }
+  userIsAuthed = false;
+  currentUserName = '';
+  user = null;
+  const bsi=document.querySelector('.bsi');
+  if(bsi){ bsi.textContent='Sign In'; bsi.onclick=()=>go('login'); bsi.style.gap=''; }
+  go('home');
+}
+
+// ── EXERCISE DATABASE ─────────────────────────────────────────
+// yt = YouTube search query — opens a search so users always find a current good video
+const DB={
+  // CHEST
+  bench_press:    {n:'Bench Press',           e:'🏋️',eq:['barbell','bench'],  cat:'chest',     yt:'bench press proper form tutorial',                    tip:'Wrists straight, feet flat. Slow on the way down.',sets:{muscle:[4,8],strength:[5,5],tone:[3,12],fat_loss:[3,12],athletic:[4,6],endurance:[3,15]}},
+  db_bench:       {n:'DB Bench Press',         e:'💪',eq:['dumbbells','bench'],cat:'chest',     yt:'dumbbell bench press form tutorial',                  tip:'Controlled descent, pause at bottom. Full stretch.',sets:{muscle:[4,10],strength:[4,8],tone:[3,12],fat_loss:[3,12],athletic:[3,10],endurance:[3,15]}},
+  incline_bb:     {n:'Incline Barbell Press',  e:'📐',eq:['barbell','bench'],  cat:'chest',     yt:'incline barbell bench press tutorial form',           tip:'45 degree incline targets upper chest. Control the descent.',sets:{muscle:[3,8],strength:[4,6],tone:[3,10],fat_loss:[3,12],athletic:[3,8],endurance:[3,12]}},
+  incline_db:     {n:'Incline DB Press',       e:'📐',eq:['dumbbells','bench'],cat:'chest',     yt:'incline dumbbell press form tutorial',                tip:'Squeeze at top, full stretch at bottom.',sets:{muscle:[3,10],strength:[3,8],tone:[3,12],fat_loss:[3,15],athletic:[3,10],endurance:[3,15]}},
+  cable_fly:      {n:'Cable Fly',              e:'🦋',eq:['cables'],           cat:'chest',     yt:'cable fly chest exercise tutorial',                   tip:'Slight bend in elbow. Feel the chest stretch at the bottom.',sets:{muscle:[3,12],strength:[3,10],tone:[3,15],fat_loss:[3,15],athletic:[3,12],endurance:[3,20]}},
+  pushup:         {n:'Push-Ups',               e:'🤸',eq:['bodyweight'],       cat:'chest',     yt:'perfect push up form tutorial',                      tip:'Hands shoulder-width, core tight, chest to floor.',sets:{muscle:[4,12],strength:[4,15],tone:[3,15],fat_loss:[4,20],athletic:[4,15],endurance:[4,25]}},
+  decline_push:   {n:'Decline Push-Ups',       e:'👇',eq:['bodyweight'],       cat:'chest',     yt:'decline push up tutorial form',                      tip:'Feet on a chair, couch or step. Hits upper chest more. No equipment needed beyond something to elevate feet.',sets:{muscle:[3,12],strength:[3,12],tone:[3,15],fat_loss:[3,20],athletic:[3,12],endurance:[3,20]}},
+  band_chest:     {n:'Band Chest Press',       e:'🎗️',eq:['bands'],            cat:'chest',     yt:'resistance band chest press tutorial',                tip:'Loop band around a door anchor or pole behind you at chest height. Press forward. Control the return.',sets:{muscle:[3,12],strength:[3,10],tone:[3,15],fat_loss:[3,15],athletic:[3,12],endurance:[3,20]}},
+  // SHOULDERS
+  ohp:            {n:'Barbell OHP',            e:'⬆️',eq:['barbell'],          cat:'shoulders', yt:'barbell overhead press form tutorial',                tip:"Press from collar bones. Don't arch your back.",sets:{muscle:[4,8],strength:[5,5],tone:[3,10],fat_loss:[3,12],athletic:[4,6],endurance:[3,12]}},
+  db_ohp:         {n:'DB Shoulder Press',      e:'💪',eq:['dumbbells'],        cat:'shoulders', yt:'dumbbell shoulder press form tutorial',               tip:'Press directly overhead. Dumbbells naturally rotate.',sets:{muscle:[4,10],strength:[4,8],tone:[3,12],fat_loss:[3,12],athletic:[3,10],endurance:[3,15]}},
+  lat_raise:      {n:'Lateral Raises',         e:'↔️',eq:['dumbbells'],        cat:'shoulders', yt:'lateral raises proper form tutorial',                 tip:'Lead with elbows. Stop at shoulder height. Light weight.',sets:{muscle:[4,15],strength:[3,12],tone:[4,15],fat_loss:[4,20],athletic:[3,15],endurance:[4,20]}},
+  cable_lat:      {n:'Cable Lateral Raises',   e:'↔️',eq:['cables'],           cat:'shoulders', yt:'cable lateral raise tutorial form',                   tip:'Single arm. Cross body. Constant tension throughout.',sets:{muscle:[3,15],strength:[3,12],tone:[3,15],fat_loss:[3,20],athletic:[3,15],endurance:[3,20]}},
+  band_raise:     {n:'Band Lateral Raises',    e:'🎗️',eq:['bands'],            cat:'shoulders', yt:'resistance band lateral raise tutorial',              tip:'Stand on band, raise arms to shoulder height.',sets:{muscle:[3,15],strength:[3,12],tone:[3,20],fat_loss:[4,20],athletic:[3,15],endurance:[4,25]}},
+  pike_push:      {n:'Pike Push-Ups',          e:'⬆️',eq:['bodyweight'],       cat:'shoulders', yt:'pike push up tutorial shoulders',                     tip:'Hips high, head toward floor. Targets shoulders like OHP.',sets:{muscle:[3,10],strength:[3,10],tone:[3,12],fat_loss:[3,15],athletic:[3,10],endurance:[3,15]}},
+  // BACK
+  deadlift:       {n:'Deadlift',               e:'🏋️',eq:['barbell'],          cat:'back',      yt:'deadlift proper form tutorial beginners',             tip:'Hinge at hips, bar stays close. Drive through heels.',sets:{muscle:[4,6],strength:[5,3],tone:[3,8],fat_loss:[3,8],athletic:[4,5],endurance:[3,10]}},
+  bent_row:       {n:'Bent-Over Row',          e:'⬇️',eq:['barbell'],          cat:'back',      yt:'barbell bent over row form tutorial',                 tip:'Hinge 45 degrees, pull to lower chest. Squeeze shoulder blades.',sets:{muscle:[4,8],strength:[4,6],tone:[3,10],fat_loss:[3,12],athletic:[4,8],endurance:[3,12]}},
+  db_row:         {n:'Single-Arm DB Row',      e:'💪',eq:['dumbbells'],         cat:'back',      yt:'single arm dumbbell row form tutorial',               tip:'Brace free hand on your knee or a surface. Elbow drives back and up. Feel the lat stretch.',sets:{muscle:[4,10],strength:[4,8],tone:[3,12],fat_loss:[3,12],athletic:[4,10],endurance:[3,15]}},
+  pullup:         {n:'Pull-Ups',               e:'🔝',eq:['pullup'],           cat:'back',      yt:'pull up perfect form tutorial',                      tip:'Dead hang start. Drive elbows to hips. Full range.',sets:{muscle:[4,6],strength:[5,5],tone:[3,8],fat_loss:[4,8],athletic:[5,6],endurance:[4,10]}},
+  chinup:         {n:'Chin-Ups',               e:'🔝',eq:['pullup'],           cat:'back',      yt:'chin up vs pull up form tutorial',                   tip:'Supinated grip. Bicep involvement. Great for lats.',sets:{muscle:[3,8],strength:[4,6],tone:[3,8],fat_loss:[3,10],athletic:[4,8],endurance:[3,12]}},
+  lat_pull:       {n:'Lat Pulldown',           e:'🔗',eq:['cables'],           cat:'back',      yt:'lat pulldown proper form tutorial',                  tip:'Pull to chest, lean back slightly. Feel your lats.',sets:{muscle:[4,10],strength:[4,8],tone:[3,12],fat_loss:[3,12],athletic:[3,10],endurance:[3,15]}},
+  cable_row:      {n:'Seated Cable Row',       e:'🔗',eq:['cables'],           cat:'back',      yt:'seated cable row form tutorial',                     tip:'Sit tall, pull to stomach. Elbows close to body.',sets:{muscle:[4,10],strength:[4,8],tone:[3,12],fat_loss:[3,12],athletic:[3,10],endurance:[3,15]}},
+  band_row:       {n:'Band Rows',              e:'🎗️',eq:['bands'],            cat:'back',      yt:'resistance band row exercise tutorial',               tip:'Loop band around a door anchor or pole at chest height. Sit or stand, pull band to torso. Squeeze shoulder blades.',sets:{muscle:[3,12],strength:[3,12],tone:[3,15],fat_loss:[3,20],athletic:[3,12],endurance:[4,20]}},
+  inverted_row:   {n:'Inverted Rows',          e:'🤸',eq:['pullup'],           cat:'back',      yt:'inverted row tutorial bodyweight',                   tip:'Hang under your pull-up bar. Body straight, pull chest to bar. Rings or a low bar work too.',sets:{muscle:[3,10],strength:[3,8],tone:[3,12],fat_loss:[3,15],athletic:[3,10],endurance:[3,15]}},
+  // BICEPS
+  barbell_curl:   {n:'Barbell Curl',           e:'💪',eq:['barbell'],          cat:'biceps',    yt:'barbell curl proper form tutorial',                   tip:"Elbows pinned to sides. Don't swing.",sets:{muscle:[3,10],strength:[3,8],tone:[3,12],fat_loss:[3,15],athletic:[3,10],endurance:[3,15]}},
+  db_curl:        {n:'Dumbbell Curl',          e:'💪',eq:['dumbbells'],        cat:'biceps',    yt:'dumbbell curl proper form tutorial',                  tip:'Supinate at top. Full extension at bottom.',sets:{muscle:[3,12],strength:[3,10],tone:[3,12],fat_loss:[3,15],athletic:[3,10],endurance:[3,15]}},
+  hammer_curl:    {n:'Hammer Curl',            e:'🔨',eq:['dumbbells'],        cat:'biceps',    yt:'hammer curl proper form tutorial',                    tip:'Neutral grip. Works brachialis too.',sets:{muscle:[3,12],strength:[3,10],tone:[3,12],fat_loss:[3,15],athletic:[3,10],endurance:[3,15]}},
+  cable_curl:     {n:'Cable Curl',             e:'🔗',eq:['cables'],           cat:'biceps',    yt:'cable bicep curl tutorial form',                      tip:'Constant tension. No momentum. Squeeze at the top.',sets:{muscle:[3,12],strength:[3,10],tone:[3,15],fat_loss:[3,15],athletic:[3,12],endurance:[3,20]}},
+  band_curl:      {n:'Band Curl',              e:'🎗️',eq:['bands'],            cat:'biceps',    yt:'resistance band bicep curl tutorial',                 tip:'Stand on band. Keep elbows fixed.',sets:{muscle:[3,15],strength:[3,12],tone:[3,15],fat_loss:[3,20],athletic:[3,15],endurance:[4,20]}},
+  // TRICEPS
+  skull_crusher:  {n:'Skull Crushers',         e:'💀',eq:['barbell','bench'],  cat:'triceps',   yt:'skull crushers proper form tutorial',                 tip:'Elbows pointed up. Bar to forehead. Control up.',sets:{muscle:[3,10],strength:[3,8],tone:[3,12],fat_loss:[3,12],athletic:[3,10],endurance:[3,15]}},
+  db_tricep:      {n:'DB Tricep Extension',    e:'🔽',eq:['dumbbells'],        cat:'triceps',   yt:'dumbbell tricep overhead extension tutorial',         tip:'One or two hands overhead. Elbows stay pointing forward.',sets:{muscle:[3,12],strength:[3,10],tone:[3,12],fat_loss:[3,15],athletic:[3,10],endurance:[3,15]}},
+  pushdown:       {n:'Tricep Pushdown',        e:'🔗',eq:['cables'],           cat:'triceps',   yt:'cable tricep pushdown form tutorial',                 tip:'Elbows locked. Full extension. Control up.',sets:{muscle:[3,12],strength:[3,10],tone:[3,15],fat_loss:[3,15],athletic:[3,12],endurance:[3,20]}},
+  band_pushdown:  {n:'Band Pushdown',          e:'🎗️',eq:['bands'],            cat:'triceps',   yt:'resistance band tricep pushdown tutorial',            tip:'Loop band over a door at the top. Grip ends, elbows fixed at sides. Push straight down. Full extension.',sets:{muscle:[3,15],strength:[3,12],tone:[3,15],fat_loss:[3,20],athletic:[3,12],endurance:[4,20]}},
+  tricep_dip:     {n:'Tricep Dips',            e:'👇',eq:['bench'],            cat:'triceps',   yt:'tricep dips bench proper form tutorial',              tip:'Hands on bench edge, feet forward. Elbows point back. Lower until forearms are parallel.',sets:{muscle:[4,10],strength:[4,8],tone:[3,12],fat_loss:[4,15],athletic:[4,10],endurance:[4,15]}},
+  diamond_push:   {n:'Diamond Push-Ups',       e:'💎',eq:['bodyweight'],       cat:'triceps',   yt:'diamond push up form tutorial triceps',               tip:'Hands form a diamond shape directly under chest. Keep elbows close to body. Best bodyweight tricep move.',sets:{muscle:[4,10],strength:[4,12],tone:[3,15],fat_loss:[4,15],athletic:[4,12],endurance:[4,20]}},
+  // QUADS
+  bw_split_squat: {n:'Split Squat',            e:'🦵',eq:['bodyweight'],       cat:'quads',     yt:'split squat tutorial form bodyweight',                tip:'Front foot forward, back foot elevated on a chair or couch. Lower rear knee toward floor. Keep chest up.',sets:{muscle:[3,12],strength:[3,10],tone:[4,12],fat_loss:[4,15],athletic:[4,10],endurance:[3,15]}},
+  squat:          {n:'Barbell Back Squat',     e:'🏋️',eq:['barbell'],          cat:'quads',     yt:'barbell back squat proper form tutorial',             tip:'Chest up, knees track toes. Hit depth, thighs parallel.',sets:{muscle:[4,8],strength:[5,5],tone:[3,10],fat_loss:[4,10],athletic:[4,6],endurance:[3,12]}},
+  goblet:         {n:'Goblet Squat',           e:'🏋️',eq:['dumbbells'],        cat:'quads',     yt:'goblet squat form tutorial dumbbell',                 tip:'Hold dumbbell at chest. Great for learning squat pattern.',sets:{muscle:[4,10],strength:[4,8],tone:[3,12],fat_loss:[4,15],athletic:[4,10],endurance:[3,15]}},
+  split_squat:    {n:'Bulgarian Split Squat',  e:'🦵',eq:['dumbbells'],        cat:'quads',     yt:'bulgarian split squat dumbbell tutorial form',        tip:'Rear foot elevated. Front knee tracks toes.',sets:{muscle:[3,10],strength:[3,8],tone:[3,12],fat_loss:[3,12],athletic:[4,8],endurance:[3,15]}},
+  leg_press:      {n:'Leg Press',              e:'🦵',eq:['full_gym'],         cat:'quads',     yt:'leg press machine proper form tutorial',              tip:"Don't lock knees at top. Full depth. Control down.",sets:{muscle:[4,12],strength:[4,8],tone:[3,15],fat_loss:[4,15],athletic:[3,10],endurance:[3,20]}},
+  lunges:         {n:'Walking Lunges',         e:'🚶',eq:['bodyweight'],       cat:'quads',     yt:'walking lunge form tutorial',                        tip:'Long step, front knee behind toes. Tall posture.',sets:{muscle:[3,12],strength:[3,10],tone:[4,12],fat_loss:[4,15],athletic:[4,12],endurance:[4,20]}},
+  db_lunge:       {n:'Dumbbell Lunges',        e:'🦵',eq:['dumbbells'],        cat:'quads',     yt:'dumbbell lunge form tutorial',                        tip:'Hold dumbbells at sides. Keep torso upright.',sets:{muscle:[4,10],strength:[3,8],tone:[3,12],fat_loss:[4,15],athletic:[4,10],endurance:[3,20]}},
+  // HAMSTRINGS
+  rdl:            {n:'Romanian Deadlift',      e:'🏋️',eq:['barbell'],          cat:'hamstrings',yt:'romanian deadlift barbell form tutorial',             tip:'Hinge at hips. Bar slides down thighs. Feel the stretch.',sets:{muscle:[3,10],strength:[4,6],tone:[3,12],fat_loss:[3,12],athletic:[4,8],endurance:[3,12]}},
+  db_rdl:         {n:'DB Romanian Deadlift',   e:'💪',eq:['dumbbells'],        cat:'hamstrings',yt:'dumbbell romanian deadlift form tutorial',             tip:'Keep back flat. Soft knee bend. Hinge until stretch.',sets:{muscle:[3,12],strength:[3,10],tone:[3,12],fat_loss:[3,15],athletic:[3,10],endurance:[3,15]}},
+  // GLUTES
+  hip_thrust:     {n:'Hip Thrust',             e:'🍑',eq:['barbell','bench'],  cat:'glutes',    yt:'barbell hip thrust form tutorial',                    tip:'Shoulders on bench, bar on hips. Drive hips up. Squeeze.',sets:{muscle:[4,10],strength:[4,8],tone:[4,12],fat_loss:[3,15],athletic:[4,10],endurance:[3,15]}},
+  glute_bridge:   {n:'Glute Bridge',           e:'🍑',eq:['bodyweight'],       cat:'glutes',    yt:'glute bridge tutorial bodyweight form',               tip:'Feet flat, drive hips up. Squeeze glutes hard at top.',sets:{muscle:[4,15],strength:[3,12],tone:[4,15],fat_loss:[4,20],athletic:[3,15],endurance:[4,25]}},
+  band_glute:     {n:'Band Glute Kickback',    e:'🎗️',eq:['bands'],            cat:'glutes',    yt:'resistance band glute kickback tutorial',              tip:'On all fours. Drive foot back and up. Squeeze.',sets:{muscle:[3,15],strength:[3,12],tone:[3,20],fat_loss:[4,20],athletic:[3,15],endurance:[4,25]}},
+  // CALVES
+  calf_raise:     {n:'Calf Raises',            e:'🦶',eq:['bodyweight'],       cat:'calves',    yt:'calf raise proper form tutorial',                     tip:'Pause at top. Full range, all the way down.',sets:{muscle:[4,15],strength:[3,12],tone:[4,20],fat_loss:[4,20],athletic:[4,15],endurance:[4,25]}},
+  // CORE
+  plank:          {n:'Plank',                  e:'🧘',eq:['bodyweight'],       cat:'core',      yt:'plank exercise proper form tutorial',                 tip:"Squeeze glutes and abs. Don't let hips sag.",sets:{muscle:[3,'45s'],strength:[3,'60s'],tone:[4,'45s'],fat_loss:[4,'45s'],athletic:[4,'60s'],endurance:[4,'60s']}},
+  hanging_knee:   {n:'Hanging Knee Raise',     e:'🔝',eq:['pullup'],           cat:'core',      yt:'hanging knee raise tutorial ab exercise',             tip:'Hang from bar. Drive knees to chest. Control the descent.',sets:{muscle:[3,12],strength:[3,10],tone:[3,15],fat_loss:[4,15],athletic:[3,12],endurance:[4,15]}},
+  ab_wheel:       {n:'Ab Wheel Rollout',       e:'⚙️',eq:['full_gym'],         cat:'core',      yt:'ab wheel rollout tutorial proper form',               tip:'From knees. Roll out until back flat, pull back with core.',sets:{muscle:[3,10],strength:[3,8],tone:[3,10],fat_loss:[3,12],athletic:[3,8],endurance:[3,12]}},
+  cable_crunch:   {n:'Cable Crunch',           e:'🔗',eq:['cables'],           cat:'core',      yt:'cable crunch ab exercise tutorial',                   tip:'Kneel, rope behind head. Crunch with abs, not neck.',sets:{muscle:[3,15],strength:[3,12],tone:[3,15],fat_loss:[4,15],athletic:[3,12],endurance:[4,20]}},
+};
+
+const WARMUP_POOL=[
+  {name:'Light Cardio',         emoji:'🚴',sets:1,reps:'5 min',   tip:'Walk, bike or row to elevate heart rate gently.',yt:'light cardio warm up exercise',section:'warmup',isMain:false},
+  {name:'Jump Rope',            emoji:'🪢',sets:3,reps:'45 sec',  tip:'Keep elbows in. Light on your feet.',section:'warmup',isMain:false,eq:['full_gym']},
+  {name:'Jumping Jacks',        emoji:'⭐',sets:2,reps:'30 reps', tip:'Full arm and leg extension. Controlled rhythm.',yt:'jumping jacks how to exercise',section:'warmup',isMain:false},
+  {name:'High Knees',           emoji:'🏃',sets:2,reps:'30 sec',  tip:'Drive knees up to waist height. Pump arms.',yt:'high knees exercise tutorial',section:'warmup',isMain:false},
+  {name:'Butt Kicks',           emoji:'🦵',sets:2,reps:'30 sec',  tip:'Heels to glutes. Keep torso upright.',yt:'butt kicks exercise tutorial',section:'warmup',isMain:false},
+  {name:'Arm Circles',          emoji:'🔄',sets:2,reps:'20 reps', tip:'Forward then backward. Loosen the shoulder capsule.',yt:'arm circles warm up exercise',section:'warmup',isMain:false},
+  {name:'Hip Circles',          emoji:'🌀',sets:1,reps:'10 each', tip:'Hands on hips, big slow circles. Open up the hips.',yt:'hip circles warm up mobility',section:'warmup',isMain:false},
+  {name:'Leg Swings',           emoji:'🦵',sets:1,reps:'10 each', tip:'Hold a wall for balance. Forward and back and side to side.',yt:'leg swings dynamic warm up',section:'warmup',isMain:false},
+  {name:'Cat-Cow Stretch',      emoji:'🧘',sets:1,reps:'30 sec',  tip:'Slow controlled movement. Breathe through each rep.',yt:'cat cow stretch tutorial',section:'warmup',isMain:false},
+  {name:'Worlds Greatest Stretch',emoji:'🌍',sets:1,reps:'5 each',tip:'Lunge plus reach plus thoracic rotation. Best warmup move there is.',yt:'worlds greatest stretch tutorial',section:'warmup',isMain:false},
+  {name:'Inchworm Walkout',     emoji:'🐛',sets:1,reps:'8 reps',  tip:'Hinge, walk hands out to plank, walk back. Wakes everything up.',yt:'inchworm exercise tutorial warmup',section:'warmup',isMain:false},
+  {name:'Shoulder Rolls',       emoji:'🔃',sets:2,reps:'10 each', tip:'Full range. Forward and backward. Release the traps.',yt:'shoulder rolls neck warm up',section:'warmup',isMain:false},
+  {name:'Torso Twists',         emoji:'↩️',sets:2,reps:'15 each', tip:'Arms out wide. Rotate from the hips. Keep feet planted.',yt:'standing torso twists warm up',section:'warmup',isMain:false},
+  {name:'Dynamic Quad Stretch', emoji:'🧍',sets:1,reps:'10 each', tip:'Standing, pull heel to glutes. Add a balance challenge.',yt:'dynamic quad stretch warm up',section:'warmup',isMain:false},
+];
+
+const COOLDOWN_POOL=[
+  {name:'Chest Doorway Stretch',  emoji:'🚪',sets:1,reps:'45s/side',tip:'Elbow at 90 degrees, lean through doorway. Feel the pec open up.',yt:'chest doorway stretch how to',section:'cooldown',isMain:false},
+  {name:'Lat Hang',               emoji:'🙌',sets:1,reps:'30 sec',  tip:'Hang from bar or door frame. Decompress the spine.',yt:'dead hang lat stretch tutorial',section:'cooldown',isMain:false},
+  {name:'Hip Flexor Stretch',     emoji:'🦵',sets:1,reps:'45s/side',tip:'Half-kneeling lunge. Drive hip forward and hold.',yt:'hip flexor stretch kneeling tutorial',section:'cooldown',isMain:false},
+  {name:'Deep Breathing',         emoji:'🌬️',sets:1,reps:'1 min',   tip:'Box breathing: 4 in, 4 hold, 4 out. Brings heart rate down.',yt:'box breathing technique tutorial',section:'cooldown',isMain:false},
+  {name:'Seated Forward Fold',    emoji:'🧘',sets:1,reps:'45 sec',  tip:'Legs straight, reach for your toes. Breathe into the stretch.',yt:'seated forward fold hamstring stretch',section:'cooldown',isMain:false},
+  {name:'Pigeon Pose',            emoji:'🕊️',sets:1,reps:'45s/side',tip:'Front knee forward, back leg extended. Deep hip opener.',yt:'pigeon pose hip stretch tutorial',section:'cooldown',isMain:false},
+  {name:'Childs Pose',            emoji:'🙇',sets:1,reps:'45 sec',  tip:'Knees wide, arms extended. Melt your chest toward the floor.',yt:'childs pose yoga stretch tutorial',section:'cooldown',isMain:false},
+  {name:'Seated Spinal Twist',    emoji:'🔀',sets:1,reps:'30s/side',tip:'Cross foot over, twist toward bent knee. Breathe.',yt:'seated spinal twist stretch tutorial',section:'cooldown',isMain:false},
+  {name:'Standing Quad Stretch',  emoji:'🦵',sets:1,reps:'30s/side',tip:'Balance on one foot, pull heel to glutes. Hold it.',yt:'standing quad stretch tutorial',section:'cooldown',isMain:false},
+  {name:'Cross-Body Shoulder',    emoji:'↔️',sets:1,reps:'30s/side',tip:'Pull arm across chest. Keep shoulder blade down.',yt:'cross body shoulder stretch tutorial',section:'cooldown',isMain:false},
+  {name:'Tricep Overhead Stretch',emoji:'🔽',sets:1,reps:'30s/side',tip:'Hand down your spine, push elbow up with other hand.',yt:'tricep overhead stretch tutorial',section:'cooldown',isMain:false},
+  {name:'Calf Stretch',           emoji:'🦶',sets:1,reps:'30s/side',tip:'Straight leg against wall or step edge. Full stretch.',yt:'calf stretch wall tutorial',section:'cooldown',isMain:false},
+  {name:'Neck Rolls',             emoji:'🔁',sets:2,reps:'5 each',  tip:'Slow and deliberate. Gentle circles only.',yt:'neck rolls mobility stretch',section:'cooldown',isMain:false},
+  {name:'90/90 Hip Stretch',      emoji:'🧘',sets:1,reps:'45s/side',tip:'Both knees at 90 degrees. Sit tall, breathe into the hip.',yt:'90 90 hip stretch tutorial',section:'cooldown',isMain:false},
+];
+
+function pickWarmup(){
+  // Filter out equipment-gated warmups (e.g. jump rope needs full_gym)
+  const available=WARMUP_POOL.filter(e=>!e.eq||e.eq.every(eq=>userEq.has(eq)));
+  return [...available].sort(()=>Math.random()-.5).slice(0,4);
+}
+function pickCooldown(){
+  return [...COOLDOWN_POOL].sort(()=>Math.random()-.5).slice(0,4);
+}
+
+// ── EQUIPMENT / GOAL STATE ────────────────────────────────────
+document.getElementById('eq-bodyweight-btn').dataset.selected='1';
+
+function toggleEq(btn){
+  const eq=btn.dataset.eq;
+  if(eq==='bodyweight') return;
+  if(userEq.has(eq)){ userEq.delete(eq); btn.style.background='var(--whh)'; btn.style.border='1px solid var(--br)'; btn.style.color='var(--whm)'; }
+  else { userEq.add(eq); if(eq==='full_gym') ['dumbbells','barbell','cables','bench','pullup','bands'].forEach(x=>userEq.add(x)); btn.style.background='linear-gradient(135deg,rgba(120,45,15,.3),rgba(90,45,130,.3))'; btn.style.border='1px solid rgba(224,120,48,.4)'; btn.style.color='#fff'; }
+}
+
+function selGoal(btn){
+  userGoal=btn.dataset.goal;
+  document.querySelectorAll('.glb').forEach(b=>{b.style.background='var(--whh)';b.style.border='1px solid var(--br)';b.style.color='var(--whm)';});
+  btn.style.background='linear-gradient(135deg,rgba(120,45,15,.3),rgba(90,45,130,.3))'; btn.style.border='1px solid rgba(224,120,48,.4)'; btn.style.color='#fff';
+}
+
+function selPlan(btn){
+  userDays=parseInt(btn.dataset.days); userPrem=btn.dataset.prem==='true';
+  document.querySelectorAll('.plb').forEach(b=>{ if(b.dataset.prem==='false'){b.style.background='rgba(255,255,255,.06)';b.style.border='1px solid var(--br)';b.style.color='var(--whm)';}else{b.style.background='rgba(255,255,255,.04)';b.style.border='1px solid var(--br)';b.style.color='var(--whm)';} });
+  if(userPrem){btn.style.background='rgba(245,158,11,.12)';btn.style.border='2px solid rgba(245,158,11,.4)';btn.style.color='#fff';}
+  else{btn.style.background='#fff';btn.style.border='2px solid #fff';btn.style.color='#07070d';}
+}
+
+function selLevel(btn){
+  userLevel=btn.dataset.level;
+  document.querySelectorAll('.xlb').forEach(b=>{ b.style.background='var(--whh)'; b.style.border='1px solid var(--br)'; b.style.color='var(--whm)'; });
+  btn.style.background='linear-gradient(135deg,rgba(120,45,15,.3),rgba(90,45,130,.3))'; btn.style.border='1px solid rgba(224,120,48,.4)'; btn.style.color='#fff';
+}
+
+function goStep(n){
+  document.getElementById('bst1').style.display=n===1?'block':'none';
+  document.getElementById('bst2').style.display=n===2?'block':'none';
+  document.getElementById('bload').style.display='none';
+  const d=document.getElementById('sd2'),l=document.getElementById('sl2');
+  if(n>=2){ d.style.background='linear-gradient(135deg,var(--oe),var(--pm))'; d.style.border='none'; d.style.color='#fff'; l.style.color='#fff'; updateUsageBar(); }
+  else { d.style.background='var(--whh)'; d.style.border='1px solid var(--br)'; d.style.color='var(--whm)'; l.style.color='var(--whm)'; }
+  // Restore visual state of selections when going back to step 1
+  if(n===1) restoreBuilderVisuals();
+}
+
+function restoreBuilderVisuals(){
+  // Restore equipment button highlights
+  document.querySelectorAll('.eqb').forEach(btn=>{
+    const eq=btn.dataset.eq;
+    if(userEq.has(eq)){
+      if(eq==='bodyweight'){
+        btn.style.background='linear-gradient(135deg,rgba(120,45,15,.25),rgba(90,45,130,.25))';
+        btn.style.border='1px solid rgba(224,120,48,.35)'; btn.style.color='#fff';
+      } else {
+        btn.style.background='linear-gradient(135deg,rgba(120,45,15,.3),rgba(90,45,130,.3))';
+        btn.style.border='1px solid rgba(224,120,48,.4)'; btn.style.color='#fff';
+      }
+    } else {
+      btn.style.background='var(--whh)'; btn.style.border='1px solid var(--br)'; btn.style.color='var(--whm)';
+    }
+  });
+  // Restore goal selection
+  document.querySelectorAll('.glb').forEach(btn=>{
+    if(btn.dataset.goal===userGoal){
+      btn.style.background='linear-gradient(135deg,rgba(120,45,15,.3),rgba(90,45,130,.3))';
+      btn.style.border='1px solid rgba(224,120,48,.4)'; btn.style.color='#fff';
+    } else {
+      btn.style.background='var(--whh)'; btn.style.border='1px solid var(--br)'; btn.style.color='var(--whm)';
+    }
+  });
+  // Restore level selection
+  document.querySelectorAll('.xlb').forEach(btn=>{
+    if(btn.dataset.level===userLevel){
+      btn.style.background='linear-gradient(135deg,rgba(120,45,15,.3),rgba(90,45,130,.3))';
+      btn.style.border='1px solid rgba(224,120,48,.4)'; btn.style.color='#fff';
+    } else {
+      btn.style.background='var(--whh)'; btn.style.border='1px solid var(--br)'; btn.style.color='var(--whm)';
+    }
+  });
+}
+
+function updateUsageBar(){
+  const count=getFreeCount();
+  const bars=['fu-1','fu-2','fu-3'].map(id=>document.getElementById(id));
+  const txt=document.getElementById('free-usage-text');
+  if(!bars[0]) return;
+  bars.forEach((b,i)=>{ if(b) b.style.background=i<count?'var(--og)':'var(--br)'; });
+  const remaining=Math.max(0,FREE_PLAN_LIMIT-count);
+  if(txt){ txt.textContent=count+' / '+FREE_PLAN_LIMIT+' used'; txt.style.color=remaining===0?'#f87171':remaining===1?'#fbbf24':'var(--og)'; }
+  // Hide auth note and usage bar if already signed in
+  const authNote=document.getElementById('builder-auth-note');
+  const usageBar=document.getElementById('free-usage-bar');
+  if(authNote) authNote.style.display=userIsAuthed?'none':'flex';
+  if(usageBar) usageBar.style.display=userIsAuthed?'none':'flex';
+  const genBtn=document.getElementById('gen-btn');
+  if(genBtn&&count>=FREE_PLAN_LIMIT&&!userIsAuthed){
+    genBtn.style.opacity='.5'; genBtn.textContent='Limit Reached — Sign Up to Continue';
+  } else if(genBtn){ genBtn.style.opacity='1'; genBtn.textContent='Generate My Workout →'; }
+}
+
+// ── WORKOUT ENGINE ────────────────────────────────────────────
+function canDo(ex){
+  if(ex.eq.length===1&&ex.eq[0]==='bodyweight') return true;
+  if(ex.eq.includes('bodyweight')&&userEq.has('bodyweight')) return true;
+  const needed=ex.eq.filter(e=>e!=='bodyweight');
+  return needed.every(e=>userEq.has(e));
+}
+
+function pick(cats,count){
+  const pool=Object.entries(DB).filter(([k,ex])=>cats.includes(ex.cat)&&canDo(ex)).sort(()=>Math.random()-.5);
+  return pool.slice(0,count).map(([k,ex])=>({...ex,_key:k}));
+}
+
+// Experience level modifiers applied on top of goal-based defaults
+// Logic: beginner → lower sets & higher reps (learn movement, build work capacity)
+//        intermediate → base values (the defaults in the DB)
+//        advanced → higher sets, lower reps for compounds (more intensity)
+function applyLevelModifier(sets, reps, goal, level){
+  // Never modify timed exercises (planks, holds, etc.)
+  const repStr = String(reps);
+  const isTime = /[a-zA-Z]/.test(repStr); // "45s", "60s", "1 min", "45s/side"
+  if(isTime) return {sets, reps:repStr};
+
+  let s=sets, r=parseInt(repStr)||10;
+
+  if(level==='beginner'){
+    s = Math.max(2, sets-1);           // one fewer set
+    r = Math.min(r, 12);               // never more than 12 reps
+    if(goal==='strength') r = Math.min(r, 8); // strength: cap at 8 for form focus
+  } else if(level==='advanced'){
+    s = Math.min(sets+1, 6);           // one extra set, max 6
+    if(goal==='strength') r = Math.max(r-2, 3);  // heavier work, lower reps
+    else if(goal==='muscle') r = Math.max(r-1, 6); // hypertrophy range
+    // endurance/tone/athletic/fat_loss: keep DB defaults, just add the set
+  }
+  // intermediate: no change, DB defaults are already well-calibrated
+  return {sets:s, reps:String(r)};
+}
+
+function buildDay(structure,goal){
+  let exList=structure.map(ex=>{
+    const sr=ex.sets[goal]||[3,10];
+    const modified=applyLevelModifier(sr[0], sr[1], goal, userLevel);
+    return {name:ex.n,emoji:ex.e,sets:modified.sets,reps:modified.reps,cat:ex.cat,tip:ex.tip||'',yt:ex.yt||'',section:'main',isMain:true,_eq:ex.eq||[]};
+  });
+  // Equipment guarantee: if user selected non-bodyweight gear but all picked exercises
+  // are bodyweight-only, force at least one to use their equipment
+  const nonBW=[...userEq].filter(e=>e!=='bodyweight'&&e!=='full_gym');
+  if(nonBW.length>0){
+    const hasEquipEx=exList.some(e=>e._eq&&e._eq.some(eq=>nonBW.includes(eq)));
+    if(!hasEquipEx){
+      // Find a replacement for the first exercise that uses their equipment
+      const cats=exList.map(e=>e.cat);
+      for(let i=0;i<exList.length;i++){
+        const cat=exList[i].cat;
+        const equipEx=Object.values(DB).filter(ex=>
+          ex.cat===cat && canDo(ex) && ex.eq.some(eq=>nonBW.includes(eq))
+        );
+        if(equipEx.length>0){
+          const ex=equipEx[Math.floor(Math.random()*equipEx.length)];
+          const sr=ex.sets[goal]||[3,10];
+          const modified=applyLevelModifier(sr[0],sr[1],goal,userLevel);
+          exList[i]={name:ex.n,emoji:ex.e,sets:modified.sets,reps:modified.reps,cat:ex.cat,tip:ex.tip||'',yt:ex.yt||'',section:'main',isMain:true,_eq:ex.eq};
+          break;
+        }
+      }
+    }
+  }
+  return [
+    {label:'🔥 WARM UP',     color:'rgba(34,197,94,.12)', bcolor:'rgba(34,197,94,.25)',  titleColor:'#4ade80',  exercises:pickWarmup()},
+    {label:'💪 MAIN WORKOUT',color:'rgba(120,45,15,.08)', bcolor:'rgba(224,120,48,.2)', titleColor:'var(--og)', exercises:exList},
+    {label:'🧊 COOL DOWN',   color:'rgba(90,45,130,.08)', bcolor:'rgba(155,94,203,.18)',titleColor:'var(--pl)', exercises:pickCooldown()},
+  ];
+}
+
+const DAY_TEMPLATES={
+  push:   ()=>[...pick(['chest'],2),...pick(['shoulders'],1),...pick(['triceps'],1)],
+  pull:   ()=>[...pick(['back'],2),...pick(['biceps'],1),...pick(['core'],1)],
+  legs:   ()=>[...pick(['quads'],2),...pick(['hamstrings'],1),...pick(['glutes'],1),...pick(['calves'],1)],
+  fullA:  ()=>[...pick(['chest','back'],1),...pick(['quads','hamstrings'],1),...pick(['shoulders'],1),...pick(['core'],1)],
+  fullB:  ()=>[...pick(['back','chest'],1),...pick(['hamstrings','quads'],1),...pick(['shoulders'],1),...pick(['biceps','triceps'],1)],
+  upper:  ()=>[...pick(['chest'],1),...pick(['back'],1),...pick(['shoulders'],1),...pick(['biceps','triceps'],1)],
+  lower:  ()=>[...pick(['quads'],2),...pick(['hamstrings'],1),...pick(['glutes'],1),...pick(['core'],1)],
+  power:  ()=>[...pick(['quads','hamstrings'],1),...pick(['back'],1),...pick(['chest','shoulders'],1),...pick(['core'],1)],
+  cardio: ()=>[...pick(['quads','hamstrings'],2),...pick(['core'],2),...pick(['glutes'],1)],
+};
+
+const SPLITS={
+  1:{muscle:['push'],strength:['push'],fat_loss:['fullA'],tone:['fullA'],athletic:['power'],endurance:['fullA']},
+  3:{muscle:['push','pull','legs'],strength:['push','pull','legs'],fat_loss:['fullA','fullB','fullA'],tone:['upper','lower','upper'],athletic:['power','pull','legs'],endurance:['fullA','fullB','cardio']},
+  5:{muscle:['push','pull','legs','push','pull'],strength:['push','pull','legs','push','pull'],fat_loss:['fullA','fullB','fullA','fullB','cardio'],tone:['upper','lower','upper','lower','fullA'],athletic:['power','pull','legs','push','cardio'],endurance:['fullA','fullB','cardio','fullA','fullB']},
+  7:{muscle:['push','pull','legs','push','pull','legs','upper'],strength:['push','pull','legs','push','pull','legs','fullA'],fat_loss:['fullA','fullB','cardio','fullA','fullB','cardio','fullA'],tone:['upper','lower','upper','lower','upper','lower','fullA'],athletic:['power','pull','legs','push','cardio','fullA','lower'],endurance:['fullA','fullB','cardio','fullA','fullB','cardio','upper']},
+};
+
+function genWorkout(){
+  if(userPrem){ document.getElementById('paywall').style.display='flex'; return; }
+  if(!userIsAuthed){
+    const count=getFreeCount();
+    const limitReached=count>=FREE_PLAN_LIMIT;
+    document.getElementById('auth-gate-limit').style.display=limitReached?'block':'none';
+    document.getElementById('auth-gate-normal').style.display=limitReached?'none':'block';
+    document.getElementById('auth-gate').style.display='flex';
+    return;
+  }
+  if(userDays===1){
+    const count=getFreeCount();
+    if(count>=FREE_PLAN_LIMIT){ document.getElementById('paywall').style.display='flex'; return; }
+  }
+  doGenerate();
+}
+
+function closePaywall(){ document.getElementById('paywall').style.display='none'; }
+function startBuildFor1Day(){ userDays=1; userPrem=false; doGenerate(); }
+
+function doGenerate(){
+  document.getElementById('bst2').style.display='none';
+  document.getElementById('bload').style.display='block';
+  const expMsg={beginner:'Calibrating for your experience level...',intermediate:'Calibrating sets and reps for your goal...',advanced:'Setting advanced programming...'};
+  const msgs=['Checking your equipment...','Selecting exercises you can do...','Building your split...',expMsg[userLevel]||'Setting sets and reps...','Finalising your plan...'];
+  let m=0; const lt=document.getElementById('load-txt');
+  const itv=setInterval(()=>{ m++; if(m<msgs.length&&lt) lt.textContent=msgs[m]; },420);
+  setTimeout(()=>{
+    clearInterval(itv);
+    buildWorkout();
+    document.getElementById('bload').style.display='none';
+    renderReview();
+    go('review');
+  },2200);
+}
+
+function buildWorkout(){
+  const goal=userGoal; const days=userDays;
+  const splitDays=(SPLITS[days]||SPLITS[1])[goal]||['fullA'];
+  generatedWorkout=[];
+  splitDays.forEach((dayType,i)=>{
+    const fn=DAY_TEMPLATES[dayType]||DAY_TEMPLATES.fullA;
+    const structure=fn();
+    const daySession=buildDay(structure,goal);
+    if(days===1){ generatedWorkout=daySession; }
+    else { generatedWorkout.push({dayNum:i+1,dayLabel:dayTypeLabel(dayType),sessions:daySession}); }
+  });
+  currentDay=0;
+}
+
+function dayTypeLabel(t){ return {push:'Push Day',pull:'Pull Day',legs:'Leg Day',fullA:'Full Body A',fullB:'Full Body B',upper:'Upper Body',lower:'Lower Body',power:'Power Day',cardio:'Cardio & Core'}[t]||'Workout'; }
+
+// ── AUTH GATE ─────────────────────────────────────────────────
+function closeAuthGate(){ document.getElementById('auth-gate').style.display='none'; }
+
+function agAuth(mode){
+  const s=mode==='signup';
+  document.getElementById('ag-tli').style.cssText=`flex:1;padding:10px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:all .3s;background:${s?'transparent':'linear-gradient(135deg,var(--oe),var(--pm))'};color:${s?'var(--whm)':'#fff'}`;
+  document.getElementById('ag-tsu').style.cssText=`flex:1;padding:10px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:all .3s;background:${s?'linear-gradient(135deg,var(--oe),var(--pm))':'transparent'};color:${s?'#fff':'var(--whm)'}`;
+  document.getElementById('ag-suname').style.display=s?'block':'none';
+  document.getElementById('ag-authbtn').textContent=s?'Create Free Account & Build →':'Sign In & Build →';
+}
+
+function authGateGoogle(){ completeAuthAndGenerate('Google User','google@user.com'); }
+
+function authGateSubmit(){
+  const email=document.getElementById('ag-email').value.trim();
+  if(!email){ document.getElementById('ag-email').style.borderColor='rgba(239,68,68,.5)'; setTimeout(()=>document.getElementById('ag-email').style.borderColor='',2000); return; }
+  const name=document.getElementById('ag-name').value.trim()||email.split('@')[0];
+  completeAuthAndGenerate(name, email);
+}
+
+function completeAuthAndGenerate(name, email){
+  signIn(name, email||name+'@fitforge.co');
+  document.getElementById('auth-gate').style.display='none';
+  // Flash button green
+  const btn=document.getElementById('ag-authbtn');
+  if(btn){ btn.textContent='Welcome, '+name.split(' ')[0]+'!'; btn.style.background='linear-gradient(135deg,#16a34a,#22c55e)'; }
+  if(userDays===1){
+    const count=getFreeCount();
+    if(count>=FREE_PLAN_LIMIT){ document.getElementById('paywall').style.display='flex'; return; }
+    incFreeCount();
+  }
+  doGenerate();
+}
+
+// ── REVIEW ────────────────────────────────────────────────────
+function renderReview(){
+  const goalLabels={muscle:'Build Muscle',strength:'Strength',fat_loss:'Fat Loss',tone:'Tone & Define',athletic:'Athletic',endurance:'Endurance'};
+  const expLabels={beginner:'Beginner',intermediate:'Intermediate',advanced:'Advanced'};
+  document.getElementById('rv-chip').textContent=goalLabels[userGoal]+' · '+(expLabels[userLevel]||'Intermediate')+' · '+userDays+'-Day Plan';
+  const days=userDays;
+  if(days===1){ const n={muscle:'PUSH DAY',strength:'STRENGTH',fat_loss:'FULL BODY',tone:'SCULPT',athletic:'POWER',endurance:'CARDIO BUILD'}; document.getElementById('rv-title1').textContent=n[userGoal]||'YOUR'; document.getElementById('rv-title2').textContent='READY'; }
+  else { document.getElementById('rv-title1').textContent=days+'-DAY'; document.getElementById('rv-title2').textContent='PLAN'; }
+  const eqNames={bodyweight:'Bodyweight',dumbbells:'Dumbbells',barbell:'Barbell',cables:'Cables',bands:'Bands',bench:'Bench',pullup:'Pull-up Bar',full_gym:'Full Gym'};
+  document.getElementById('rv-equip').textContent='Using: '+[...userEq].filter(e=>e!=='full_gym').map(e=>eqNames[e]||e).join(' · ');
+  document.getElementById('rv-sub').textContent='Generated from: your equipment · your goal · '+(userLevel||'intermediate')+' level';
+  // Hide sign-up CTA if already signed in
+  const authCta=document.getElementById('rv-auth-cta');
+  if(authCta) authCta.style.display=userIsAuthed?'none':'flex';
+  const rvSec=document.getElementById('rv-sections'); rvSec.innerHTML='';
+  if(days===1){
+    const totalSets=generatedWorkout[1].exercises.reduce((a,e)=>a+e.sets,0);
+    document.getElementById('rv-excount').textContent=generatedWorkout[1].exercises.length+generatedWorkout[0].exercises.length+generatedWorkout[2].exercises.length;
+    document.getElementById('rv-setcount').textContent=totalSets;
+    document.getElementById('rv-mins').textContent='~'+(30+generatedWorkout[1].exercises.length*8);
+    generatedWorkout.forEach(sec=>{
+      const div=document.createElement('div'); div.className='card';
+      div.style.cssText=`padding:18px;margin-bottom:12px;border-color:${sec.bcolor};background:${sec.color}`;
+      div.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="width:32px;height:32px;border-radius:10px;background:${sec.color};border:1px solid ${sec.bcolor};display:flex;align-items:center;justify-content:center;font-size:14px">${sec.label.split(' ')[0]}</div><div><div style="font-size:13px;font-weight:600;color:${sec.titleColor}">${sec.label.slice(3)}</div><div style="font-size:11px;color:var(--whm)">${sec.exercises.length} exercises</div></div></div><div style="display:flex;flex-direction:column;gap:6px">${sec.exercises.map(ex=>`<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:8px 10px;background:rgba(255,255,255,.03);border-radius:9px"><span>${ex.emoji||'💪'} ${ex.name}</span><span style="color:${sec.titleColor};font-weight:${ex.isMain?700:400}">${ex.isMain?ex.sets+' × '+ex.reps:ex.reps}</span></div>`).join('')}</div>`;
+      rvSec.appendChild(div);
+    });
+  } else {
+    let totalEx=0, totalSets=0;
+    generatedWorkout.forEach(day=>{
+      const mx=day.sessions[1].exercises; totalEx+=mx.length+4+4; totalSets+=mx.reduce((a,e)=>a+e.sets,0);
+      const div=document.createElement('div'); div.className='card'; div.style.cssText='padding:18px;margin-bottom:12px';
+      div.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div><div style="font-size:11px;color:var(--whm);letter-spacing:1px;text-transform:uppercase">Day ${day.dayNum}</div><div style="font-size:16px;font-weight:600;color:#fff">${day.dayLabel}</div></div><div style="font-size:11px;color:var(--og)">${mx.length+8} exercises</div></div><div style="display:flex;flex-direction:column;gap:5px">${mx.map(ex=>`<div style="display:flex;justify-content:space-between;font-size:12px;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:8px"><span>${ex.emoji||'💪'} ${ex.name}</span><span style="color:var(--og);font-weight:600">${ex.sets} × ${ex.reps}</span></div>`).join('')}</div>`;
+      rvSec.appendChild(div);
+    });
+    document.getElementById('rv-excount').textContent=totalEx;
+    document.getElementById('rv-setcount').textContent=totalSets;
+    document.getElementById('rv-mins').textContent='~'+(30+totalSets*2)+'×'+days;
+  }
+}
+
+// ── TRACKER ───────────────────────────────────────────────────
+let flatEx=[]; let curIdx=0; let exState={}; let totalXP=0; let totalVol=0; let currentDay=0; let workoutStartTime=null;
+
+function startWorkout(){
+  const sessions=userDays===1?generatedWorkout:generatedWorkout[currentDay]?.sessions;
+  if(!sessions) return;
+  flatEx=[];
+  sessions.forEach(sec=>sec.exercises.forEach(ex=>{
+    flatEx.push({name:ex.name||ex.n,emoji:ex.emoji||ex.e||'💪',sets:typeof ex.sets==='number'?ex.sets:1,reps:ex.reps!=null?String(ex.reps):'1',tip:ex.tip||'',yt:ex.yt||'',isMain:!!ex.isMain,section:ex.section||'warmup',sectionLabel:sec.label});
+  }));
+  exState={}; flatEx.forEach((ex,i)=>{exState[i]={done:new Array(ex.sets).fill(false),weight:'',completed:false};});
+  curIdx=0; totalXP=0; totalVol=0; workoutStartTime=new Date();
+  go('tracker'); renderTracker();
+}
+
+function renderTracker(){
+  const cur=flatEx[curIdx]; const st=exState[curIdx];
+  const isWC=!cur.isMain;
+  document.getElementById('tk-seclbl').textContent=cur.sectionLabel;
+  document.getElementById('tk-exlbl').textContent=cur.emoji+' '+cur.name;
+  const pct=Math.round((curIdx/flatEx.length)*100);
+  document.getElementById('tk-bar').style.width=pct+'%';
+  document.getElementById('tk-pct').textContent=pct+'%';
+  document.getElementById('tk-prgtxt').textContent='Exercise '+(curIdx+1)+' of '+flatEx.length;
+  document.getElementById('tk-xp').textContent=totalXP;
+  document.getElementById('tk-vol').textContent=totalVol;
+  const body=document.getElementById('tk-body'); body.innerHTML='';
+  // Pill strip
+  const strip=document.createElement('div'); strip.style.cssText='display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:20px;scrollbar-width:none;-webkit-overflow-scrolling:touch';
+  flatEx.forEach((ex,i)=>{ const p=document.createElement('button'); const done=exState[i].completed,isc=i===curIdx; p.style.cssText=`flex-shrink:0;padding:6px 14px;border-radius:100px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;border:1px solid ${done?'rgba(34,197,94,.35)':isc?'rgba(224,120,48,.45)':'var(--br)'};background:${done?'rgba(34,197,94,.12)':isc?'rgba(224,120,48,.1)':'var(--whh)'};color:${done?'#4ade80':isc?'var(--og)':'var(--whm)'}`; p.textContent=(done?'✓ ':'')+ex.emoji+' '+ex.name; p.onclick=()=>{curIdx=i;renderTracker();}; strip.appendChild(p); });
+  body.appendChild(strip);
+  setTimeout(()=>{ const ap=strip.children[curIdx]; if(ap) ap.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}); },80);
+  const th=isWC&&cur.section==='cooldown'?{border:'rgba(155,94,203,.25)',bg:'rgba(90,45,130,.08)',accent:'var(--pl)'}:isWC?{border:'rgba(34,197,94,.25)',bg:'rgba(34,197,94,.06)',accent:'#4ade80'}:{border:'rgba(224,120,48,.2)',bg:'rgba(120,45,15,.06)',accent:'var(--og)'};
+  const card=document.createElement('div'); card.style.cssText=`border-radius:22px;padding:26px;background:${th.bg};border:1px solid ${th.border};margin-bottom:14px;animation:slideUp .35s ease`;
+  const dc=st.done.filter(Boolean).length; const allDone=st.done.every(Boolean);
+  const ytUrl=cur.yt?'https://www.youtube.com/results?search_query='+encodeURIComponent(cur.yt):'';
+  let h=`<div style="margin-bottom:18px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:4px">
+      <div>
+        <div style="font-size:42px;margin-bottom:7px">${cur.emoji}</div>
+        <h2 class="fd" style="font-size:34px;color:#fff;line-height:1;margin-bottom:4px">${cur.name}</h2>
+        <div style="font-size:13px;color:var(--whm);font-weight:300">${cur.sets} set${cur.sets>1?'s':''} · ${cur.reps}</div>
+      </div>
+      ${ytUrl?`<a href="${ytUrl}" target="_blank" rel="noopener" style="flex-shrink:0;display:flex;align-items:center;gap:6px;background:rgba(255,0,0,.12);border:1px solid rgba(255,0,0,.25);border-radius:10px;padding:8px 12px;text-decoration:none;transition:background .2s;margin-top:6px" onmouseover="this.style.background='rgba(255,0,0,.22)'" onmouseout="this.style.background='rgba(255,0,0,.12)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#ff4444"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+        <span style="font-size:11px;font-weight:600;color:#ff6666;letter-spacing:.5px">How-to</span>
+      </a>`:''}
+    </div>
+    ${cur.tip?`<div style="margin-top:10px;padding:10px 14px;background:rgba(90,45,130,.1);border:1px solid rgba(155,94,203,.18);border-radius:10px;font-size:12px;color:var(--pl);line-height:1.5">💡 ${cur.tip}</div>`:''}
+  </div>`;
+  if(isWC){
+    // Single-set exercises: one big tap-to-complete button, no redundant second button
+    if(cur.sets===1){
+      const d=st.done[0];
+      if(st.completed){
+        h+=`<div style="width:100%;padding:20px;border-radius:14px;background:rgba(34,197,94,.1);border:2px solid var(--gr);color:var(--gr);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;text-align:center">✅ DONE</div>`;
+      } else if(d){
+        // Marked done — show complete & continue
+        h+=`<button onclick="completeEx(${curIdx})" style="width:100%;padding:22px;border-radius:14px;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 24px rgba(34,197,94,.25);animation:pulse 2s ease infinite">✅ Complete & Continue</button>`;
+      } else {
+        h+=`<button onclick="tapSet(${curIdx},0);setTimeout(()=>completeEx(${curIdx}),300)" class="sb" style="width:100%;padding:22px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid ${th.border};color:var(--whm);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .25s;text-align:center">Mark as Done</button>`;
+      }
+    } else {
+      // Multiple sets: show individual set buttons + separate complete button
+      h+=`<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--whm);margin-bottom:10px;display:flex;justify-content:space-between"><span>PROGRESS</span><span style="color:${th.accent}">${dc}/${cur.sets}</span></div><div style="display:flex;gap:10px;margin-bottom:16px">`;
+      for(let s=0;s<cur.sets;s++){ const d=st.done[s]; h+=`<button onclick="tapSet(${curIdx},${s})" class="sb ${d?'done':''}" style="background:${d?'var(--gr)':'rgba(255,255,255,.04)'};border-color:${d?'var(--gr)':th.border};color:${d?'#fff':'var(--whm)'};min-height:72px;font-size:${d?11:13}px">${d?'✓ Done':'Set '+(s+1)+' Done'}</button>`; }
+      h+=`</div>${st.completed?`<div style="width:100%;padding:18px;border-radius:14px;background:rgba(34,197,94,.1);border:2px solid var(--gr);color:var(--gr);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-align:center">✅ DONE</div>`:`<button onclick="completeEx(${curIdx})" style="width:100%;padding:20px;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .25s;border:none;${allDone?`background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;box-shadow:0 8px 24px rgba(34,197,94,.25);animation:pulse 2s ease infinite`:`background:rgba(255,255,255,.04);color:var(--whm);border:1px solid var(--br)`}">${allDone?'✅ Complete & Continue':'Mark all sets complete'}</button>`}`;
+    }
+  } else {
+    h+=`<div style="display:flex;align-items:center;justify-content:space-between;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--whm);margin-bottom:10px"><span>SET PROGRESS</span><span style="color:var(--og);font-size:12px">${dc}/${cur.sets}</span></div><div style="display:flex;gap:10px;margin-bottom:18px">`;
+    for(let s=0;s<cur.sets;s++){ const d=st.done[s]; h+=`<button onclick="tapSet(${curIdx},${s})" class="sb ${d?'done':''}" style="background:${d?'var(--gr)':'rgba(255,255,255,.04)'};border-color:${d?'var(--gr)':'rgba(224,120,48,.2)'};color:${d?'#fff':'var(--whm)'};min-height:72px;font-size:${d?11:13}px">${d?'✓ Done':'Set '+(s+1)+' Done'}</button>`; }
+    h+=`</div><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--whm);margin-bottom:8px;margin-top:4px">WEIGHT (OPTIONAL — LBS)</div><input type="number" inputmode="decimal" id="winp" placeholder="e.g. 135" value="${st.weight}" oninput="exState[${curIdx}].weight=this.value;recalcVol()" class="inp" style="font-size:20px;padding:16px 18px;margin-bottom:0;text-align:center">${st.completed?`<div style="width:100%;padding:20px;border-radius:14px;background:rgba(34,197,94,.1);border:2px solid var(--gr);color:var(--gr);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;text-align:center;margin-top:14px">✅ EXERCISE COMPLETE</div>`:`<button onclick="completeEx(${curIdx})" style="width:100%;padding:20px;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-top:14px;cursor:pointer;transition:all .25s;${allDone?'background:linear-gradient(135deg,var(--oe),var(--og2),var(--pm));color:#fff;border:none;box-shadow:0 8px 28px rgba(120,45,15,.35);animation:pulse 2s ease infinite':'background:rgba(255,255,255,.04);color:var(--whm);border:1px solid var(--br)'}">${allDone?'🚀 COMPLETE EXERCISE':'Mark all sets done above'}</button>`}`;
+  }
+  card.innerHTML=h; body.appendChild(card);
+  const nav=document.createElement('div'); nav.style.cssText='display:flex;gap:10px';
+  nav.innerHTML=`<button onclick="prevEx()" style="flex:1;padding:16px;border-radius:14px;background:var(--whh);border:1px solid var(--br);color:var(--whm);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;${curIdx===0?'opacity:.3;pointer-events:none':''}">← Prev</button><button onclick="nextEx()" style="flex:2;padding:16px;border-radius:14px;background:${st.completed?'rgba(34,197,94,.12)':'var(--whh)'};border:1px solid ${st.completed?'rgba(34,197,94,.25)':'var(--br)'};color:${st.completed?'#4ade80':'var(--whm)'};cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700">${curIdx===flatEx.length-1?'Finish Workout 🏆':'Next Exercise →'}</button>`;
+  body.appendChild(nav);
+}
+
+function tapSet(exIdx,sIdx){ const st=exState[exIdx]; st.done[sIdx]=!st.done[sIdx]; totalXP=st.done[sIdx]?totalXP+10:Math.max(0,totalXP-10); document.getElementById('tk-xp').textContent=totalXP; recalcVol(); renderTracker(); }
+function completeEx(i){ exState[i].done=exState[i].done.map(()=>true); exState[i].completed=true; totalXP+=25; recalcVol(); setTimeout(()=>{ if(curIdx<flatEx.length-1){curIdx++;renderTracker();}else{triggerCeleb();} },500); }
+function nextEx(){ if(curIdx<flatEx.length-1){curIdx++;renderTracker();}else triggerCeleb(); }
+function prevEx(){ if(curIdx>0){curIdx--;renderTracker();} }
+function recalcVol(){ let v=0; flatEx.forEach((ex,i)=>{ const w=parseFloat(exState[i]?.weight)||0; const ds=exState[i]?.done.filter(Boolean).length||0; const r=parseInt(ex.reps)||0; if(w&&ds&&r)v+=Math.round(w*r*ds); }); totalVol=v; document.getElementById('tk-vol').textContent=v; }
+
+// ── CELEBRATION + SAVE WORKOUT ────────────────────────────────
+let _celebWorkout = null; // workout saved at end, used for post
+
+function triggerCeleb(){
+  const sets=Object.values(exState).reduce((a,s)=>a+s.done.filter(Boolean).length,0);
+  const mins=workoutStartTime?Math.max(1,Math.round((new Date()-workoutStartTime)/60000)):null;
+  const goalLabels={muscle:'Muscle',strength:'Strength',fat_loss:'Fat Loss',tone:'Tone',athletic:'Athletic',endurance:'Endurance'};
+  const eqDisp=[...userEq].filter(e=>e!=='bodyweight'&&e!=='full_gym').map(e=>({dumbbells:'Dumbbells',barbell:'Barbell',cables:'Cables',bands:'Bands',bench:'Bench',pullup:'Pull-up Bar'}[e]||e));
+  const eqStr=eqDisp.length?eqDisp.join(' + '):'Bodyweight';
+
+  // Save completed workout — only show volume if user actually entered weights
+  const workout={
+    id:'w'+Date.now(),
+    goal:goalLabels[userGoal]||userGoal,
+    level:userLevel,
+    equipment:eqStr,
+    xp:totalXP,
+    volume:totalVol||0, // 0 = no weights entered, not random
+    sets,
+    mins:mins||0,
+    date:new Date().toISOString(),
+    exercises:flatEx.filter(e=>e.isMain).map(e=>e.name),
+  };
+  _celebWorkout=workout;
+  completedWorkouts.unshift(workout);
+  if(completedWorkouts.length>50) completedWorkouts=completedWorkouts.slice(0,50);
+  LS.set('ff_workouts',completedWorkouts);
+  pendingAttachWorkout=workout;
+
+  // Update user stats
+  if(user){
+    user.totalXP=(user.totalXP||0)+totalXP;
+    user.totalWorkouts=(user.totalWorkouts||0)+1;
+    const today=new Date().toDateString();
+    const yesterday=new Date(Date.now()-86400000).toDateString();
+    if(user.lastWorkoutDate===today){}
+    else if(user.lastWorkoutDate===yesterday){user.streak=(user.streak||0)+1;}
+    else{user.streak=1;}
+    user.lastWorkoutDate=today;
+    saveUser();
+    checkAchievements();
+  }
+
+  // Build a suggested caption with equipment context
+  const exerciseNames=flatEx.filter(e=>e.isMain).map(e=>e.name);
+  const exercisePreview=flatEx.filter(e=>e.isMain).slice(0,3).map(e=>e.name).join(', ');
+  const captions=[
+    `${workout.goal} day done 💪 ${sets} sets with ${eqStr}. ${exercisePreview} and more. +${totalXP} XP earned 🔥`,
+    `${sets} sets, ${mins} minutes, ${eqStr}. ${workout.goal} session in the books. ${exercisePreview}. Keep pushing 🏋️`,
+    `Checked off a ${workout.goal.toLowerCase()} session today — ${eqStr}, ${sets} sets. ${exercisePreview}. Streak stays alive 🔥`,
+    `${workout.goal} complete. ${exercisePreview}. ${sets} sets done with ${eqStr}, +${totalXP} XP. Back at it 💪`,
+  ];
+  const suggestedCaption=captions[Math.floor(Math.random()*captions.length)];
+
+  // Update stat display — only show volume if > 0
+  document.getElementById('cs').textContent=sets;
+  document.getElementById('cx').textContent='+'+totalXP;
+  const cvEl=document.getElementById('cv');
+  if(totalVol>0){
+    cvEl.textContent=totalVol.toLocaleString()+' lbs';
+    cvEl.parentElement.style.display='';
+  }else{
+    cvEl.parentElement.style.display='none'; // hide volume tile if no weights entered
+  }
+
+  // Populate the single post section with editable caption
+  const qp=document.getElementById('celeb-quick-post');
+  if(qp){
+    qp.innerHTML=`
+      <div style="background:linear-gradient(135deg,rgba(120,45,15,.18),rgba(90,45,130,.18));border:1px solid rgba(224,120,48,.2);border-radius:16px;padding:18px;margin-bottom:12px;text-align:left">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--og);margin-bottom:10px">📤 Share to the Feed</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+          <span style="background:rgba(255,255,255,.06);border-radius:100px;padding:4px 10px;font-size:11px;color:var(--og)">+${totalXP} XP</span>
+          <span style="background:rgba(255,255,255,.06);border-radius:100px;padding:4px 10px;font-size:11px;color:rgba(255,255,255,.5)">${sets} sets</span>
+          ${mins?`<span style="background:rgba(255,255,255,.06);border-radius:100px;padding:4px 10px;font-size:11px;color:rgba(255,255,255,.5)">${mins} min</span>`:''}
+          <span style="background:rgba(255,255,255,.06);border-radius:100px;padding:4px 10px;font-size:11px;color:rgba(255,255,255,.5)">${eqStr}</span>
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px;letter-spacing:.5px">Your caption — edit it:</div>
+        <textarea id="celeb-caption" rows="3" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;resize:none;outline:none;line-height:1.5;margin-bottom:10px">${suggestedCaption}</textarea>
+        <button onclick="postToFeedFromCeleb()" style="width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,var(--oe),var(--pm));border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.5px">Post to Feed 🔥</button>
+      </div>`;
+  }
+
+  document.getElementById('celeb').style.display='flex';
+  spawnConfetti();
+}
+
+function postToFeedFromCeleb(){
+  const captionEl=document.getElementById('celeb-caption');
+  const caption=captionEl?captionEl.value.trim():'';
+  const w=_celebWorkout;
+  if(!w) return;
+  const initials=(currentUserName||'Me').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)||'ME';
+  feedPosts.unshift({
+    id:'auto'+Date.now(),
+    user:currentUserName||'You',initials,
+    color:'linear-gradient(135deg,var(--oe),var(--pm))',
+    verified:false,location:'',timeAgo:'Just now',
+    equipment:w.equipment,
+    caption:caption||'Just finished a workout on FitForge 💪',
+    workout:{goal:w.goal,volume:w.volume>0?w.volume:null,sets:w.sets,time:w.mins?w.mins+' min':'—'},
+    likes:0,comments:[],liked:false,isNew:true,
+    highlight:{emoji:'🏋️',stat:'+'+w.xp,label:'XP EARNED',sub:w.goal+' · '+w.equipment,bg:'linear-gradient(135deg,rgba(120,45,15,.7),rgba(90,45,130,.5))'}
+  });
+  closeCeleb();
+  go('feed');
+}
+
+function spawnConfetti(){ const c=document.getElementById('cfcnt'); c.innerHTML=''; const cols=['#e07830','#c85a8a','#9b5ecb','#4ade80','#60a5fa','#fff']; for(let i=0;i<90;i++){const el=document.createElement('div');const col=cols[i%cols.length];const sz=Math.random()*11+5;el.style.cssText=`position:absolute;left:${Math.random()*100}%;top:-20px;width:${sz}px;height:${sz}px;background:${col};border-radius:${Math.random()>.5?'50%':'3px'};animation:fall ${Math.random()*3+2}s ease ${Math.random()*2}s both`;c.appendChild(el);} }
+function postFeed(){ document.getElementById('celeb').style.display='none'; go('feed'); }
+function closeCeleb(){ document.getElementById('celeb').style.display='none'; go('home'); }
+
+// ── ACHIEVEMENTS ──────────────────────────────────────────────
+const ACHIEVEMENT_DEFS=[
+  {id:'first_workout',  label:'First Rep',        emoji:'🏅',desc:'Completed your first workout',     check:u=>u.totalWorkouts>=1},
+  {id:'workouts_5',     label:'Getting Started',  emoji:'🔥',desc:'Completed 5 workouts',              check:u=>u.totalWorkouts>=5},
+  {id:'workouts_10',    label:'Ten Strong',        emoji:'💪',desc:'Completed 10 workouts',             check:u=>u.totalWorkouts>=10},
+  {id:'workouts_25',    label:'Committed',         emoji:'⚡',desc:'Completed 25 workouts',             check:u=>u.totalWorkouts>=25},
+  {id:'workouts_50',    label:'Unstoppable',       emoji:'🏆',desc:'Completed 50 workouts',             check:u=>u.totalWorkouts>=50},
+  {id:'streak_3',       label:'On a Roll',         emoji:'📅',desc:'3-day streak',                      check:u=>u.streak>=3},
+  {id:'streak_7',       label:'Week Warrior',      emoji:'🗓️',desc:'7-day streak',                      check:u=>u.streak>=7},
+  {id:'streak_30',      label:'Monthly Grinder',   emoji:'📆',desc:'30-day streak',                     check:u=>u.streak>=30},
+  {id:'xp_1000',        label:'XP Hunter',         emoji:'⭐',desc:'Earned 1,000 XP',                   check:u=>(u.totalXP||0)>=1000},
+  {id:'xp_5000',        label:'XP Legend',         emoji:'🌟',desc:'Earned 5,000 XP',                   check:u=>(u.totalXP||0)>=5000},
+];
+
+function checkAchievements(){
+  if(!user) return;
+  if(!user.achievements) user.achievements=[];
+  let changed=false;
+  ACHIEVEMENT_DEFS.forEach(def=>{
+    if(!user.achievements.includes(def.id)&&def.check(user)){
+      user.achievements.push(def.id);
+      changed=true;
+      // Toast notification
+      showAchievementToast(def);
+    }
+  });
+  if(changed) saveUser();
+}
+
+function showAchievementToast(def){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:3000;background:linear-gradient(135deg,rgba(120,45,15,.95),rgba(90,45,130,.95));border:1px solid rgba(224,120,48,.4);border-radius:100px;padding:12px 20px;display:flex;align-items:center;gap:10px;animation:slideUp .4s ease;box-shadow:0 8px 30px rgba(0,0,0,.4);white-space:nowrap';
+  t.innerHTML=`<span style="font-size:20px">${def.emoji}</span><div><div style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase">Achievement Unlocked</div><div style="font-size:13px;font-weight:600;color:#fff">${def.label}</div></div>`;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),4000);
+}
+
+// ── PROFILE ───────────────────────────────────────────────────
+function renderProfile(){
+  const el=document.getElementById('profile-inner');
+  if(!el) return;
+  if(!userIsAuthed||!user){
+    el.innerHTML=`<div style="text-align:center;padding:60px 20px"><div style="font-size:48px;margin-bottom:16px">🔒</div><h2 class="fd" style="font-size:48px;line-height:1;margin-bottom:12px"><span class="twg" style="display:block">YOUR</span><span class="tb" style="display:block">PROFILE</span></h2><p style="color:rgba(255,255,255,.4);font-size:14px;font-weight:300;max-width:340px;margin:0 auto 28px;line-height:1.7">Track your PRs, log workout history, build your streak, and share your progress.</p><button class="bp" style="padding:14px 32px;font-size:12px" onclick="go('login')">Create Free Account →</button></div>`;
+    return;
+  }
+  const initials=(user.name||'Me').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+  const prs=user.prs||{};
+  const prKeys=Object.keys(prs);
+  const achievements=user.achievements||[];
+  const unlockedAch=ACHIEVEMENT_DEFS.filter(d=>achievements.includes(d.id));
+  const lockedAch=ACHIEVEMENT_DEFS.filter(d=>!achievements.includes(d.id));
+  const recentWorkouts=completedWorkouts.slice(0,5);
+
+  el.innerHTML=`
+  <!-- Header card -->
+  <div class="card" style="padding:24px;margin-bottom:14px">
+    <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px">
+      <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--oe),var(--pm));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:22px;flex-shrink:0">${initials}</div>
+      <div style="flex:1">
+        <div style="font-size:17px;font-weight:600;margin-bottom:2px">${escHtml(user.name||'Athlete')}</div>
+        <div style="font-size:11px;color:var(--whm);margin-bottom:6px">Member · FitForge</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${user.isPremium?'<span style="background:rgba(180,83,9,.15);border:1px solid rgba(245,158,11,.3);color:#d97706;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:100px">👑 Premium</span>':''}
+          ${user.isCreator?'<span style="background:rgba(90,45,130,.2);border:1px solid rgba(155,94,203,.3);color:#b06ee0;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:100px">🎨 Creator</span>':''}
+        </div>
+      </div>
+      <button onclick="signOut()" style="background:rgba(255,255,255,.05);border:1px solid var(--br);color:var(--whm);font-size:11px;padding:7px 12px;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Sign Out</button>
+    </div>
+    <div style="display:flex;gap:16px;text-align:center;padding-top:16px;border-top:1px solid var(--br)">
+      <div style="flex:1"><div class="fd tb" style="font-size:28px">${user.totalWorkouts||0}</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Workouts</div></div>
+      <div style="flex:1"><div class="fd tb" style="font-size:28px">${user.streak||0}🔥</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Streak</div></div>
+      <div style="flex:1"><div class="fd tb" style="font-size:28px">${(user.totalXP||0).toLocaleString()}</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">XP</div></div>
+      <div style="flex:1"><div class="fd tb" style="font-size:28px">${prKeys.length}</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">PRs</div></div>
+    </div>
+  </div>
+
+  <!-- Social stats -->
+  <div class="card" style="padding:18px;margin-bottom:14px;display:flex;gap:0">
+    <div style="flex:1;text-align:center;padding:8px"><div style="font-size:18px;font-weight:700;color:#fff">0</div><div style="font-size:10px;color:var(--whm)">Following</div></div>
+    <div style="width:1px;background:var(--br)"></div>
+    <div style="flex:1;text-align:center;padding:8px"><div style="font-size:18px;font-weight:700;color:#fff">0</div><div style="font-size:10px;color:var(--whm)">Followers</div></div>
+    <div style="width:1px;background:var(--br)"></div>
+    <div style="flex:1;text-align:center;padding:8px"><div style="font-size:18px;font-weight:700;color:#fff">${completedWorkouts.length}</div><div style="font-size:10px;color:var(--whm)">Posts</div></div>
+  </div>
+
+  <!-- Achievements -->
+  <div class="card" style="padding:20px;margin-bottom:14px">
+    <div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--whm);margin-bottom:14px">🏆 Achievements (${unlockedAch.length}/${ACHIEVEMENT_DEFS.length})</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+      ${ACHIEVEMENT_DEFS.map(def=>{
+        const unlocked=achievements.includes(def.id);
+        return `<div style="background:${unlocked?'rgba(224,120,48,.1)':'var(--whh)'};border:1px solid ${unlocked?'rgba(224,120,48,.25)':'var(--br)'};border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;${unlocked?'':'opacity:.45'}"><span style="font-size:22px">${def.emoji}</span><div><div style="font-size:12px;font-weight:600;color:${unlocked?'#fff':'var(--whm)'}">${def.label}</div><div style="font-size:10px;color:var(--whm);font-weight:300">${def.desc}</div></div></div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <!-- Personal Records -->
+  <div class="card" style="padding:20px;margin-bottom:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--whm)">💪 Personal Records</div>
+      <button onclick="addPR()" style="background:rgba(224,120,48,.12);border:1px solid rgba(224,120,48,.2);color:var(--og);font-size:10px;font-weight:600;padding:5px 10px;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Add PR</button>
+    </div>
+    <div id="pr-list" style="display:flex;flex-direction:column;gap:8px">
+      ${prKeys.length===0?`<p style="font-size:13px;color:var(--whm);font-weight:300;text-align:center;padding:10px 0">No PRs yet. Add your first one!</p>`:''}
+      ${prKeys.map(ex=>`<div style="display:flex;justify-content:space-between;align-items:center;background:var(--whh);border-radius:10px;padding:10px 14px"><span style="font-size:13px">💪 ${escHtml(ex)}</span><div style="display:flex;align-items:center;gap:8px"><span class="fd tb" style="font-size:20px">${escHtml(prs[ex])} kg</span><button data-pr="${escAttr(ex)}" onclick="deletePR(this.dataset.pr)" style="background:none;border:none;color:rgba(255,255,255,.2);cursor:pointer;font-size:14px;padding:2px">✕</button></div></div>`).join('')}
+    </div>
+  </div>
+
+  <!-- Recent Workouts -->
+  <div class="card" style="padding:20px;margin-bottom:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--whm)">📋 Recent Workouts</div>
+      ${completedWorkouts.length>5?`<button onclick="showAllWorkouts()" style="font-size:11px;color:var(--og);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif">See all →</button>`:''}
+    </div>
+    ${recentWorkouts.length===0?`<p style="font-size:13px;color:var(--whm);font-weight:300;text-align:center;padding:10px 0">No completed workouts yet. Finish a workout to see it here!</p>`:''}
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${recentWorkouts.map((w,i)=>{
+        const d=new Date(w.date); const ago=Math.floor((Date.now()-d)/86400000); const dstr=ago===0?'Today':ago===1?'Yesterday':ago+' days ago';
+        return `<div onclick="showWorkoutDetail(${i})" style="background:var(--whh);border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.background='var(--whh)'">
+          <div>
+            <div style="font-size:13px;font-weight:500">${escHtml(w.goal)} · ${escHtml(w.equipment)}</div>
+            <div style="font-size:11px;color:var(--whm)">${dstr}${w.mins?' · '+w.mins+' min':''} · ${w.sets} sets</div>
+            ${w.exercises&&w.exercises.length?`<div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:3px">${w.exercises.slice(0,3).join(' · ')}${w.exercises.length>3?' +more':''}</div>`:''}
+          </div>
+          <div style="text-align:right;flex-shrink:0;margin-left:12px">
+            <div style="font-size:13px;font-weight:600;color:var(--og)">+${w.xp} XP</div>
+            ${w.volume?`<div style="font-size:11px;color:var(--whm)">${w.volume}kg</div>`:''}
+            <div style="font-size:10px;color:rgba(255,255,255,.25);margin-top:2px">tap to view ›</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <!-- My Posts -->
+  ${(()=>{
+    const myPosts=feedPosts.filter(p=>p.user===currentUserName||p.user==='You');
+    if(!myPosts.length) return '';
+    return `<div class="card" style="padding:20px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--whm)">📤 My Posts</div>
+        <button onclick="go('feed')" style="font-size:11px;color:var(--og);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif">View Feed →</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${myPosts.slice(0,3).map(p=>`<div onclick="go('feed')" style="background:var(--whh);border-radius:10px;padding:12px 14px;cursor:pointer;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.07)'" onmouseout="this.style.background='var(--whh)'">
+          <div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.5;margin-bottom:6px">${p.caption?escHtml(p.caption.slice(0,80))+(p.caption.length>80?'...':''):''}</div>
+          <div style="display:flex;gap:12px;font-size:11px;color:var(--whm)">
+            <span>${p.timeAgo}</span>
+            <span>❤️ ${p.likes}</span>
+            <span>💬 ${p.comments}</span>
+            ${p.workout?`<span style="color:var(--og)">${p.workout.goal}</span>`:''}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  })()}
+
+  <!-- Creator Mode -->
+  <div class="card" style="padding:20px;margin-bottom:14px;border-color:rgba(155,94,203,.2);background:rgba(90,45,130,.05)">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:16px">🎨</span><div style="font-size:14px;font-weight:600">Creator Mode</div><div style="background:rgba(180,83,9,.15);border:1px solid rgba(245,158,11,.3);color:#d97706;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:2px 8px;border-radius:100px">Coming Soon</div></div>
+        <div style="font-size:12px;color:var(--whm);font-weight:300">Enable to sell your programs on the FitForge marketplace. Keep 80%.</div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;cursor:not-allowed;opacity:.5">
+        <div style="width:40px;height:22px;background:${user.isCreator?'var(--og)':'rgba(255,255,255,.15)'};border-radius:100px;position:relative;transition:background .3s"><div style="width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:2px;left:${user.isCreator?'20px':'2px'};transition:left .3s"></div></div>
+        <span style="font-size:12px;color:var(--whm)">${user.isCreator?'Enabled':'Disabled'}</span>
+      </label>
+    </div>
+  </div>`;
+}
+
+// ── WORKOUT DETAIL ───────────────────────────────────────────
+function showWorkoutDetail(idx){
+  const w=completedWorkouts[idx];
+  if(!w) return;
+  const d=new Date(w.date);
+  const dateStr=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const timeStr=d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  const content=document.getElementById('workout-detail-content');
+  if(!content) return;
+  content.innerHTML=`
+    <div style="margin-bottom:20px">
+      <div style="font-size:10px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">${dateStr} · ${timeStr}</div>
+      <h2 class="fd" style="font-size:32px;color:#fff;line-height:1;margin-bottom:4px">${escHtml(w.goal.toUpperCase())}</h2>
+      <div style="font-size:13px;color:var(--og)">${escHtml(w.equipment||'Bodyweight')}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px">
+      <div style="background:var(--whh);border-radius:10px;padding:12px;text-align:center"><div class="fd tb" style="font-size:22px">${w.xp}</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">XP</div></div>
+      <div style="background:var(--whh);border-radius:10px;padding:12px;text-align:center"><div class="fd tb" style="font-size:22px">${w.sets||0}</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Sets</div></div>
+      <div style="background:var(--whh);border-radius:10px;padding:12px;text-align:center"><div class="fd tb" style="font-size:22px">${w.mins||'—'}</div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Min</div></div>
+    </div>
+    ${w.volume?`<div style="background:rgba(224,120,48,.06);border:1px solid rgba(224,120,48,.1);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--og);font-weight:600">🏋️ ${w.volume.toLocaleString()} kg total volume lifted</div>`:''}
+    ${w.exercises&&w.exercises.length?`
+      <div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--whm);margin-bottom:10px">Exercises</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${w.exercises.map(ex=>`<div style="background:var(--whh);border-radius:8px;padding:9px 12px;font-size:13px">💪 ${escHtml(ex)}</div>`).join('')}
+      </div>`:''}
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button onclick="document.getElementById('workout-detail-modal').style.display='none'" class="bg" style="flex:1;justify-content:center;padding:12px">Close</button>
+      <button onclick="shareWorkoutFromDetail(${idx})" class="bp" style="flex:1;justify-content:center;padding:12px">Share to Feed 🔥</button>
+    </div>`;
+  document.getElementById('workout-detail-modal').style.display='flex';
+}
+
+function shareWorkoutFromDetail(idx){
+  const w=completedWorkouts[idx];
+  if(!w) return;
+  pendingAttachWorkout=w;
+  document.getElementById('workout-detail-modal').style.display='none';
+  go('feed');
+  setTimeout(()=>{
+    const b=document.getElementById('attached-badge'); if(b) b.style.display='inline';
+    const ab=document.getElementById('attach-btn'); if(ab) ab.style.opacity='.5';
+  },100);
+}
+
+function showAllWorkouts(){
+  // Show all workouts — expand the recent section
+  renderProfile(); // For now re-renders — could be expanded to full list modal
+}
+
+// PR management
+function addPR(){
+  const exercise=prompt('Exercise name (e.g. Bench Press):');
+  if(!exercise) return;
+  const cleaned=exercise.trim().slice(0,60);
+  if(!cleaned) return;
+  const weight=parseFloat(prompt('Weight in kg:'));
+  if(!weight||isNaN(weight)||weight<0||weight>2000) return;
+  if(!user.prs) user.prs={};
+  user.prs[cleaned]=Math.round(weight*10)/10;
+  saveUser();
+  renderProfile();
+}
+
+function deletePR(exercise){
+  if(!user||!user.prs) return;
+  delete user.prs[exercise];
+  saveUser();
+  renderProfile();
+}
+
+// ── LIVE FEED ─────────────────────────────────────────────────
+let feedPosts=[
+  {id:'p1',user:'Marcus R.',initials:'MR',color:'linear-gradient(135deg,#7a2e0e,#5a2d82)',verified:true,location:'Equinox HY',timeAgo:'2h ago',equipment:'Barbell + Bench',caption:"Topped my bench PR today. FitForge plan built exactly around my equipment. Numbers don't lie 💪",workout:{goal:'Strength',volume:14200,sets:18,time:'72 min',pr:'120kg Bench'},likes:247,liked:false,comments:[{user:'Sofia Chen',initials:'SC',text:'Absolute monster lift! What program were you on?',time:'1h ago'},{user:'James O.',initials:'JO',text:'That bench is insane bro 🔥 I am gunning for 130 next month',time:'45m ago'},{user:'Tyler M.',initials:'TM',text:'FitForge really delivers. I hit my DB press PR this week too 💪',time:'20m ago'}],highlight:{emoji:'🏆',stat:'120',label:'KG BENCH PR',sub:'New personal record',bg:'linear-gradient(135deg,rgba(61,26,122,.75),rgba(120,45,15,.55))'}},
+  {id:'p2',user:'Sofia Chen',initials:'SC',color:'linear-gradient(135deg,#4a1a6a,#8a3ab0)',verified:true,location:'Home Gym',timeAgo:'4h ago',equipment:'Dumbbells + Bands',caption:'14 days straight. Dumbbells and bands only. FitForge gave me a real program around what I actually have 💪🔥',workout:{goal:'Fat Loss',volume:8400,sets:16,time:'48 min',streak:14},likes:183,liked:false,comments:[{user:'Priya S.',initials:'PS',text:'This is so inspiring! I am doing the same program at home 🙌',time:'3h ago'},{user:'Marcus R.',initials:'MR',text:'14 days is serious commitment. Keep going!',time:'2h ago'}],highlight:{emoji:'🏅',stat:'14',label:'DAY STREAK',sub:'Home gym program',bg:'linear-gradient(135deg,rgba(26,106,74,.55),rgba(58,176,128,.2))'}},
+  {id:'p3',user:'James O.',initials:'JO',color:'linear-gradient(135deg,#1a6a4a,#3ab080)',verified:false,location:"Gold's Gym",timeAgo:'6h ago',equipment:'Full Gym',caption:'First time hitting 5 plates on deadlift. The strength program is no joke.',workout:{goal:'Strength',volume:18600,sets:20,time:'85 min',pr:'225kg Deadlift'},likes:312,liked:false,comments:[{user:'Marcus R.',initials:'MR',text:'5 PLATES! What are you eating bro 😂 congrats!',time:'5h ago'},{user:'Alex K.',initials:'AK',text:'That is serious pulling strength. What is your training age?',time:'4h ago'},{user:'Sofia Chen',initials:'SC',text:'Incredible! This is what the strength program is designed for 💪',time:'3h ago'}],highlight:{emoji:'🔥',stat:'225',label:'KG DEADLIFT',sub:'New personal record',bg:'linear-gradient(135deg,rgba(120,45,15,.7),rgba(200,90,50,.4))'}},
+  {id:'p4',user:'Priya S.',initials:'PS',color:'linear-gradient(135deg,#6a1a1a,#b03a3a)',verified:false,location:'Home Gym',timeAgo:'8h ago',equipment:'Bodyweight',caption:'30 days bodyweight only while traveling. No excuses 🌍',workout:{goal:'Endurance',volume:0,sets:22,time:'38 min',streak:30},likes:421,liked:false,comments:[{user:'Sofia Chen',initials:'SC',text:'30 days!! You are an absolute machine 🔥',time:'7h ago'},{user:'Tyler M.',initials:'TM',text:'The bodyweight plan is genuinely good. Same here when I travel',time:'6h ago'},{user:'James O.',initials:'JO',text:'No excuses is right. Respect 🙏',time:'5h ago'}],highlight:{emoji:'✈️',stat:'30',label:'DAY CHALLENGE',sub:'Bodyweight only',bg:'linear-gradient(135deg,rgba(106,26,26,.6),rgba(176,58,58,.3))'}},
+  {id:'p5',user:'Tyler M.',initials:'TM',color:'linear-gradient(135deg,#1a3a6a,#3a60b0)',verified:false,location:'Planet Fitness',timeAgo:'11h ago',equipment:'Dumbbells + Bench',caption:'Finally cracked 100kg on DB press after 8 weeks on the muscle program.',workout:{goal:'Muscle',volume:11200,sets:14,time:'60 min',pr:'100kg DB Press'},likes:156,liked:false,comments:[{user:'Marcus R.',initials:'MR',text:'100kg DBs is elite. What weight were you at week 1?',time:'10h ago'},{user:'Priya S.',initials:'PS',text:'8 weeks of consistency pays off! Great work 💪',time:'9h ago'}],highlight:{emoji:'💪',stat:'100',label:'KG DB PRESS',sub:'8-week progress',bg:'linear-gradient(135deg,rgba(26,58,106,.7),rgba(58,96,176,.4))'}},
+];
+
+function openAttachWorkout(){
+  const list=document.getElementById('attach-workout-list');
+  const empty=document.getElementById('attach-empty');
+  if(!list) return;
+  list.innerHTML='';
+  if(completedWorkouts.length===0){ if(empty) empty.style.display='block'; }
+  else {
+    if(empty) empty.style.display='none';
+    completedWorkouts.slice(0,10).forEach((w,i)=>{
+      const d=new Date(w.date); const ago=Math.floor((Date.now()-d)/86400000); const dstr=ago===0?'Today':ago===1?'Yesterday':ago+'d ago';
+      const btn=document.createElement('button');
+      btn.style.cssText='width:100%;background:var(--whh);border:1px solid var(--br);border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:"DM Sans",sans-serif;transition:border-color .2s;text-align:left';
+      btn.innerHTML=`<div><div style="font-size:13px;font-weight:500;color:#fff">${escHtml(w.goal)} · ${escHtml(w.equipment)}</div><div style="font-size:11px;color:var(--whm)">${dstr} · ${w.sets} sets${w.mins?' · '+w.mins+' min':''}</div></div><div style="font-size:12px;font-weight:600;color:var(--og)">+${w.xp} XP</div>`;
+      btn.onmouseover=()=>btn.style.borderColor='rgba(224,120,48,.4)';
+      btn.onmouseout=()=>btn.style.borderColor='var(--br)';
+      btn.onclick=()=>{ pendingAttachWorkout=w; document.getElementById('attach-modal').style.display='none'; document.getElementById('attached-badge').style.display='inline'; document.getElementById('attach-btn').style.opacity='.5'; };
+      list.appendChild(btn);
+    });
+  }
+  document.getElementById('attach-modal').style.display='flex';
+}
+
+function submitPost(){
+  const caption=document.getElementById('feed-caption').value.trim();
+  if(!caption&&!pendingAttachWorkout){ alert('Write something or attach a workout!'); return; }
+  const cap=caption||(pendingAttachWorkout?'Just crushed a '+pendingAttachWorkout.goal+' workout on FitForge! 💪':'');
+  const initials=userIsAuthed?(currentUserName||'Me').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2):'ME';
+  feedPosts.unshift({
+    id:'u'+Date.now(),
+    user:userIsAuthed?currentUserName:'You',initials,
+    color:'linear-gradient(135deg,var(--oe),var(--pm))',
+    verified:false,location:'',timeAgo:'Just now',
+    equipment:pendingAttachWorkout?pendingAttachWorkout.equipment:'',
+    caption:cap,
+    workout:pendingAttachWorkout?{goal:pendingAttachWorkout.goal,volume:pendingAttachWorkout.volume>0?pendingAttachWorkout.volume:null,sets:pendingAttachWorkout.sets,time:pendingAttachWorkout.mins?pendingAttachWorkout.mins+' min':'—'}:null,
+    likes:0,comments:[],liked:false,isNew:true,
+    highlight:pendingAttachWorkout?{emoji:'🏋️',stat:'+'+pendingAttachWorkout.xp,label:'XP EARNED',sub:pendingAttachWorkout.goal+' Workout',bg:'linear-gradient(135deg,rgba(120,45,15,.7),rgba(90,45,130,.5))'}:null
+  });
+  document.getElementById('feed-caption').value='';
+  pendingAttachWorkout=null;
+  const b=document.getElementById('attached-badge'); if(b) b.style.display='none';
+  const ab=document.getElementById('attach-btn'); if(ab) ab.style.opacity='1';
+  renderFeed();
+}
+
+function toggleLike(postId){ const post=feedPosts.find(p=>p.id===postId); if(!post) return; post.liked=!post.liked; post.likes+=post.liked?1:-1; renderFeed(); }
+
+function toggleComments(postId){
+  const panel=document.getElementById('comments-'+postId);
+  if(!panel) return;
+  const isOpen=panel.style.display!=='none';
+  panel.style.display=isOpen?'none':'block';
+  if(!isOpen){
+    const inp=document.getElementById('comment-input-'+postId);
+    if(inp) setTimeout(()=>inp.focus(),100);
+  }
+}
+
+function addComment(postId){
+  const inp=document.getElementById('comment-input-'+postId);
+  if(!inp||!inp.value.trim()) return;
+  const post=feedPosts.find(p=>p.id===postId);
+  if(!post) return;
+  const initials=(currentUserName||'Me').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2)||'ME';
+  if(!Array.isArray(post.comments)) post.comments=[];
+  post.comments.push({
+    user:currentUserName||'You',
+    initials,
+    text:inp.value.trim(),
+    time:'Just now'
+  });
+  renderFeed();
+  // Re-open comment panel after re-render
+  setTimeout(()=>{
+    const panel=document.getElementById('comments-'+postId);
+    if(panel) panel.style.display='block';
+  },50);
+}
+
+function renderFeed(){
+  const container=document.getElementById('feed-posts-container');
+  if(!container) return;
+  container.innerHTML='';
+  feedPosts.forEach((post,idx)=>{
+    const el=document.createElement('div');
+    el.style.cssText=`border-radius:20px;overflow:hidden;border:1px solid ${post.isNew?'rgba(224,120,48,.3)':'var(--br)'};background:rgba(255,255,255,.02);${post.isNew?'box-shadow:0 0 24px rgba(224,120,48,.08)':''}${idx===0&&post.isNew?';animation:slideUp .4s ease':''}`;
+    let topHTML='';
+    if(post.highlight){ topHTML=`<div style="height:220px;display:flex;align-items:center;justify-content:center;background:${post.highlight.bg}"><div style="text-align:center"><div style="font-size:38px;margin-bottom:6px">${post.highlight.emoji}</div><div class="fd" style="font-size:60px;line-height:1;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.4)">${post.highlight.stat}</div><div class="fd" style="font-size:19px;color:var(--og);letter-spacing:2px">${post.highlight.label}</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">${post.highlight.sub}</div></div></div>`; }
+    let statsHTML='';
+    if(post.workout&&(post.workout.volume||post.workout.sets||post.workout.time)){
+      const stats=[];
+      if(post.workout.volume&&post.workout.volume>0)stats.push({l:'Volume',v:post.workout.volume.toLocaleString()+'kg'});
+      if(post.workout.sets)stats.push({l:'Sets',v:post.workout.sets});
+      if(post.workout.time)stats.push({l:'Time',v:post.workout.time});
+      if(post.workout.streak)stats.push({l:'Streak',v:post.workout.streak+'🔥'});
+      if(post.workout.pr)stats.push({l:'New PR',v:post.workout.pr});
+      if(stats.length) statsHTML=`<div style="background:rgba(224,120,48,.06);border:1px solid rgba(224,120,48,.1);border-radius:10px;padding:9px 12px;margin-bottom:10px;display:flex;gap:14px;flex-wrap:wrap">${stats.map(s=>`<div><div style="font-size:9px;color:var(--whm);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px">${s.l}</div><div style="font-size:12px;font-weight:600;color:var(--og)">${s.v}</div></div>`).join('')}</div>`;
+    }
+    const loc=post.location?`📍 ${escHtml(post.location)} · `:''; const eq=post.equipment?` · ${escHtml(post.equipment)}`:'';
+    el.innerHTML=`${topHTML}<div style="padding:15px 17px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><div style="width:36px;height:36px;border-radius:50%;background:${post.color};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0">${post.initials}</div><div style="flex:1"><div style="font-weight:600;font-size:13px">${escHtml(post.user)}${post.verified?' <span style="color:var(--og);font-size:10px">✓</span>':''}</div><div style="font-size:10px;color:var(--whm)">${loc}${post.timeAgo}${eq}</div></div>${post.user!==currentUserName&&post.user!=='You'?`<button style="padding:5px 11px;border-radius:100px;background:linear-gradient(135deg,var(--oe),var(--pm));border:none;color:#fff;font-size:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Follow</button>`:''}</div>${statsHTML}${post.caption?`<p style="font-size:13px;color:rgba(255,255,255,.65);line-height:1.6;font-weight:300;margin-bottom:12px">${escHtml(post.caption)}</p>`:''}<div style="display:flex;align-items:center;gap:16px;padding-top:10px;border-top:1px solid var(--br)"><button onclick="toggleLike('${post.id}')" style="display:flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;color:${post.liked?'#e07830':'var(--whm)'};font-size:13px;font-family:'DM Sans',sans-serif;padding:0">${post.liked?'❤️':'🤍'} ${post.likes}</button><button onclick="toggleComments('${post.id}')" style="display:flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;color:var(--whm);font-size:13px;font-family:'DM Sans',sans-serif;padding:0">💬 ${Array.isArray(post.comments)?post.comments.length:post.comments||0}</button><button style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--whm);font-size:13px;padding:0">↗️</button></div>
+        <div id="comments-${post.id}" style="display:none;border-top:1px solid var(--br);padding-top:12px;margin-top:10px">
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px">
+            ${Array.isArray(post.comments)&&post.comments.length?post.comments.map(cm=>`
+              <div style="display:flex;gap:8px;align-items:flex-start">
+                <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#4a1a6a,#8a3ab0);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:9px;flex-shrink:0">${cm.initials||cm.user.slice(0,2).toUpperCase()}</div>
+                <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:7px 10px;flex:1">
+                  <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,.7);margin-bottom:2px">${escHtml(cm.user)} <span style="color:rgba(255,255,255,.3);font-weight:300">${escHtml(cm.time)}</span></div>
+                  <div style="font-size:12px;color:rgba(255,255,255,.6);line-height:1.4">${escHtml(cm.text)}</div>
+                </div>
+              </div>`).join(''):'<div style="font-size:12px;color:var(--whm);text-align:center;padding:4px 0">No comments yet. Be the first!</div>'}
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="comment-input-${post.id}" type="text" maxlength="300" placeholder="Add a comment..." style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:8px 14px;color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;outline:none" onkeydown="if(event.key==='Enter')addComment('${post.id}')">
+            <button onclick="addComment('${post.id}')" style="background:linear-gradient(135deg,var(--oe),var(--pm));border:none;color:#fff;border-radius:100px;padding:8px 14px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">Send</button>
+          </div>
+        </div>
+      </div>`;
+    container.appendChild(el);
+  });
+}
+
+setTimeout(renderFeed,100);
+
+// ── MOBILE MENU ───────────────────────────────────────────────
+function toggleMobMenu(){ document.getElementById('mob-drawer').classList.toggle('open'); }
+function closeMobMenu(){ document.getElementById('mob-drawer').classList.remove('open'); }
+function showProfile(){ renderProfile(); }
+
+// ── INIT ─────────────────────────────────────────────────────
+restoreSession();
+
+</script>
+</main>
+</body>
+</html>
