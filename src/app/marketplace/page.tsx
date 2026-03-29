@@ -5,68 +5,69 @@ const bebasNeue = { fontFamily: "'Bebas Neue', sans-serif" };
 
 const features = [
   {
-    icon: "\uD83C\uDFCB\uFE0F",
+    icon: "\uD83D\uDCB0",
     title: "Creator Plans",
-    description:
-      "Top coaches and athletes publish structured training plans. Subscribe monthly or buy one-off programs tailored to your goals.",
+    description: "Certified coaches. Real programs.",
   },
   {
     icon: "\uD83E\uDD16",
     title: "AI Formatting",
-    description:
-      "Upload any workout in plain text and our AI engine reformats it into a clean, trackable FitForge plan automatically.",
+    description: "Upload a PDF. AI makes it beautiful.",
   },
   {
-    icon: "\uD83D\uDCB0",
-    title: "80 / 20 Split",
-    description:
-      "Creators keep 80% of every sale. We handle payments, delivery, and analytics so you can focus on coaching.",
+    icon: "\uD83D\uDCCA",
+    title: "80/20 Split",
+    description: "You keep 80%. No surprises.",
   },
 ];
 
 export default function MarketplacePage() {
   return (
     <>
-      <main style={{ maxWidth: "52rem", margin: "0 auto", padding: "3rem 1rem" }}>
+      <main style={{ maxWidth: "760px", margin: "0 auto", padding: "48px 24px" }}>
         {/* Heading */}
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <h1 style={{ ...bebasNeue, fontSize: "3rem", letterSpacing: "0.05em", lineHeight: 1.1, marginBottom: "1rem" }}>
-            <span className="text-gradient-white">CREATOR</span>{" "}
-            <span className="text-gradient-brand">MARKETPLACE</span>
-          </h1>
+          <div style={{ fontSize: "52px", marginBottom: "16px" }}>🛒</div>
 
-          <span className="chip" style={{ marginBottom: "1rem" }}>
+          <div style={{ display: "inline-block", marginBottom: "20px", background: "rgba(180,83,9,.15)", border: "1px solid rgba(180,83,9,.3)", color: "#f59e0b", fontSize: "10px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase" as const, padding: "5px 16px", borderRadius: "100px" }}>
             Coming Soon
-          </span>
+          </div>
+
+          <h1 style={{ ...bebasNeue, fontSize: "clamp(52px,9vw,110px)", lineHeight: .9, marginBottom: "16px" }}>
+            <span className="text-gradient-white" style={{ display: "block" }}>CREATOR</span>
+            <span className="text-gradient-brand" style={{ display: "block" }}>MARKETPLACE</span>
+          </h1>
 
           <p
             style={{
-              color: "rgba(255,255,255,0.55)",
-              fontSize: "1.05rem",
+              color: "rgba(255,255,255,.4)",
+              fontSize: "15px",
+              fontWeight: 300,
               lineHeight: 1.7,
-              maxWidth: "36rem",
-              margin: "1rem auto 0",
+              maxWidth: "480px",
+              margin: "0 auto 40px",
             }}
           >
-            A marketplace where elite coaches sell training plans and athletes discover proven programs
-            &mdash; all powered by AI formatting and seamless tracking inside FitForge.
+            Real programs from real coaches. Upload a PDF &mdash; AI formats it into a polished plan. Set your price. Keep 80%.
           </p>
         </div>
 
         {/* Feature Cards */}
         <div
+          className="mkt-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(15rem, 1fr))",
-            gap: "1.25rem",
-            marginBottom: "3rem",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "12px",
+            marginBottom: "40px",
+            textAlign: "left" as const,
           }}
         >
           {features.map((f) => (
-            <div key={f.title} className="card" style={{ textAlign: "center", padding: "2rem 1.5rem" }}>
-              <div style={{ fontSize: "2.25rem", marginBottom: "0.75rem" }}>{f.icon}</div>
-              <h3 style={{ fontWeight: 700, fontSize: "1.05rem", marginBottom: "0.5rem" }}>{f.title}</h3>
-              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.875rem", lineHeight: 1.6, margin: 0 }}>
+            <div key={f.title} className="card" style={{ padding: "24px", opacity: 0.75 }}>
+              <div style={{ fontSize: "22px", marginBottom: "0.75rem" }}>{f.icon}</div>
+              <h3 style={{ ...bebasNeue, fontSize: "20px", color: "#fff", marginBottom: "6px" }}>{f.title}</h3>
+              <p style={{ color: "var(--whm)", fontSize: "12px", fontWeight: 300, lineHeight: 1.6, margin: 0 }}>
                 {f.description}
               </p>
             </div>
@@ -77,29 +78,29 @@ export default function MarketplacePage() {
         <div
           className="card"
           style={{
-            maxWidth: "28rem",
+            maxWidth: "420px",
             margin: "0 auto",
             textAlign: "center",
-            padding: "2rem",
-            background: "linear-gradient(135deg, rgba(90,45,130,0.1), rgba(224,120,48,0.06))",
+            padding: "36px",
+            borderColor: "rgba(224,120,48,.2)",
           }}
         >
-          <h2 style={{ fontWeight: 700, fontSize: "1.15rem", marginBottom: "0.5rem" }}>
-            Get notified at launch
+          <h2 style={{ ...bebasNeue, fontSize: "28px", marginBottom: "0.5rem", color: "#fff" }}>
+            Join the Waitlist
           </h2>
-          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.85rem", marginBottom: "1.25rem" }}>
-            Be among the first creators on FitForge Marketplace.
+          <p style={{ color: "var(--whm)", fontSize: "13px", fontWeight: 300, marginBottom: "20px" }}>
+            1,200+ people signed up. Early access + 3 months free.
           </p>
           <form
             onSubmit={(e) => {
               e.preventDefault();
               alert("Thanks! We\u2019ll notify you when the Marketplace launches.");
             }}
-            style={{ display: "flex", gap: "0.5rem" }}
+            style={{ display: "flex", gap: "10px", flexWrap: "wrap" as const }}
           >
-            <input className="input-field" type="email" placeholder="you@email.com" required style={{ flex: 1 }} />
-            <button className="btn-primary" type="submit" style={{ whiteSpace: "nowrap" }}>
-              Notify Me
+            <input className="input-field" type="email" placeholder="your@email.com" required style={{ flex: 1, minWidth: 0 }} />
+            <button className="btn-primary" type="submit" style={{ whiteSpace: "nowrap", padding: "14px 20px", flexShrink: 0 }}>
+              Notify Me &rarr;
             </button>
           </form>
         </div>

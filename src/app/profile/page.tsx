@@ -174,7 +174,7 @@ export default function ProfilePage() {
 
         {/* Achievements */}
         {achievements.length > 0 && (
-          <div className="card" style={{ marginBottom: "1.25rem" }}>
+          <div className="card" style={{ padding: "20px", marginBottom: "1.25rem" }}>
             <h3 style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "0.75rem" }}>Achievements</h3>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
               {achievements.map((a) => (
@@ -192,7 +192,7 @@ export default function ProfilePage() {
         )}
 
         {/* Recent Workouts */}
-        <div className="card" style={{ marginBottom: "1.25rem" }}>
+        <div className="card" style={{ padding: "20px", marginBottom: "1.25rem" }}>
           <h3 style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "0.75rem" }}>Recent Workouts</h3>
           {recentWorkouts.length === 0 ? (
             <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.875rem" }}>
@@ -229,7 +229,7 @@ export default function ProfilePage() {
 
         {/* Personal Records */}
         {prs.length > 0 && (
-          <div className="card" style={{ marginBottom: "1.25rem" }}>
+          <div className="card" style={{ padding: "20px", marginBottom: "1.25rem" }}>
             <h3 style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "0.75rem" }}>Personal Records</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               {prs.map((pr) => (

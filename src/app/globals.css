@@ -1,6 +1,5 @@
-@import "tailwindcss";
-
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import "tailwindcss";
 
 @theme inline {
   --color-background: #0a0a0f;
@@ -82,7 +81,6 @@ body::before {
 .btn-primary {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
   background: linear-gradient(135deg, var(--og), var(--og2), var(--pm));
   color: #fff;
@@ -108,7 +106,6 @@ body::before {
 .btn-ghost {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
   background: rgba(255,255,255,0.06);
   color: rgba(255,255,255,0.6);
@@ -134,7 +131,6 @@ body::before {
   background: rgba(255,255,255,0.03);
   border: 1px solid var(--br);
   border-radius: 20px;
-  padding: 16px 18px;
   overflow: hidden;
   word-break: break-word;
 }
@@ -230,6 +226,30 @@ body::before {
 
 @media (max-width: 768px) {
   .hide-mobile { display: none !important; }
+  .rv-stats { grid-template-columns: repeat(2, 1fr) !important; }
+  .mkt-grid { grid-template-columns: 1fr !important; }
+  .auth-cta { flex-direction: column; align-items: flex-start; }
+  .auth-cta .btn-primary { width: 100%; justify-content: center; }
+}
+
+.auth-cta {
+  background: linear-gradient(135deg, rgba(120,45,15,.2), rgba(90,45,130,.2));
+  border: 1px solid rgba(224,120,48,.2);
+  border-radius: 16px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.rv-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
 }
 
 /* ── Glow animation for LET'S GO button ─────────────────────────────────── */

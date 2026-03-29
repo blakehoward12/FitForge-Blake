@@ -3,11 +3,11 @@ import { Marquee } from "@/components/marquee";
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };
 
-const features = [
-  { emoji: "🏋️", chip: "Equipment-First", title: "Workouts Built\nAround Your Gym", desc: "Select your equipment and goal — we build a program using only what you actually have. No generic plans.", cta: "Build My Workout →", href: "/builder", large: true },
-  { emoji: "📱", chip: "Community", title: "Social Fitness\nFeed", desc: "Share PRs, post workout wins, follow athletes who push you.", cta: "Open Feed →", href: "/feed", large: false },
-  { emoji: "🎮", chip: "Gamified", title: "Gamified Gym\nTracking", desc: "Earn XP, unlock achievements, build streaks.", cta: "Start Tracking →", href: "/builder", green: true },
-  { emoji: "🎨", chip: "Creator Economy", title: "Creator\nMarketplace", desc: "Buy programs from real coaches. Or become one — upload your plan, set your price, keep 80%.", cta: "Join Waitlist →", href: "/marketplace", soon: true },
+const features: { emoji: string; chip: string; title: string; desc: string; cta: string; href: string; large?: boolean; green?: boolean; soon?: boolean; small?: boolean; emojiSize: number; descMb: number; tags?: string[] }[] = [
+  { emoji: "🏋️", chip: "Equipment-First", title: "Workouts Built\nAround Your Gym", desc: "Select your equipment and goal — we build a program using only what you actually have. No generic plans.", cta: "Build My Workout →", href: "/builder", large: true, emojiSize: 28, descMb: 22 },
+  { emoji: "📱", chip: "Community", title: "Social Fitness\nFeed", desc: "Share PRs, post workout wins, follow athletes who push you.", cta: "Open Feed →", href: "/feed", emojiSize: 26, descMb: 20 },
+  { emoji: "🎮", chip: "Gamified", title: "Gamified Gym\nTracking", desc: "Earn XP, unlock achievements, build streaks.", cta: "Start Tracking →", href: "/builder", green: true, small: true, emojiSize: 24, descMb: 16 },
+  { emoji: "🎨", chip: "Creator Economy", title: "Creator\nMarketplace", desc: "Buy programs from real coaches. Or become one — upload your plan, set your price, keep 80%.", cta: "Join Waitlist →", href: "/marketplace", soon: true, small: true, emojiSize: 24, descMb: 14, tags: ["📖 Buy plans", "💰 Sell plans", "🤖 AI formatting"] },
 ];
 
 export default function HomePage() {
@@ -34,7 +34,7 @@ export default function HomePage() {
           {[["1,000+", "Workouts Created"], ["500+", "Active Users"], ["100+", "Creator Plans"]].map(([num, label]) => (
             <div key={label} className="text-center">
               <div className="text-gradient-white text-[44px] leading-none" style={bebas}>{num}</div>
-              <div className="text-[10px] tracking-[2px] uppercase mt-1.5" style={{ color: "rgba(255,255,255,.35)" }}>{label}</div>
+              <div className="text-[10px] tracking-[2px] uppercase" style={{ color: "rgba(255,255,255,.35)", marginTop: 5 }}>{label}</div>
             </div>
           ))}
         </div>
@@ -54,17 +54,29 @@ export default function HomePage() {
             <Link
               key={f.title}
               href={f.href}
-              className={`card p-8 md:p-10 no-underline flex flex-col min-h-[280px] transition-transform hover:-translate-y-[3px] ${f.large ? "md:col-span-1" : ""}`}
-              style={f.green ? { borderColor: "rgba(34,197,94,.14)", background: "radial-gradient(ellipse at 20% 80%,rgba(34,197,94,.07) 0%,transparent 60%),rgba(255,255,255,.02)" } : undefined}
+              className={`card no-underline flex flex-col min-h-[280px] transition-transform hover:-translate-y-[3px] ${f.large ? "p-8 md:p-10 md:col-span-1" : ""}`}
+              style={{
+                padding: f.large ? undefined : (f.small ? "32px" : "36px"),
+                ...(f.green ? { borderColor: "rgba(34,197,94,.14)", background: "radial-gradient(ellipse at 20% 80%,rgba(34,197,94,.07) 0%,transparent 60%),rgba(255,255,255,.02)" } : {}),
+                ...(f.large ? { background: "radial-gradient(ellipse at 75% 0%,rgba(90,45,130,.14) 0%,transparent 55%),rgba(255,255,255,.025)" } : {}),
+                ...(f.soon ? { position: "relative" as const, background: "radial-gradient(ellipse at 10% 90%,rgba(120,45,15,.16) 0%,transparent 60%),rgba(255,255,255,.02)" } : {}),
+              }}
             >
               {f.soon && (
-                <div className="absolute top-3.5 right-3.5 text-white text-[9px] font-bold tracking-[1.2px] uppercase px-2.5 py-1 rounded-full" style={{ background: "linear-gradient(135deg,#b45309,#92400e)" }}>Soon</div>
+                <div className="absolute top-3.5 right-3.5 text-white text-[9px] font-bold tracking-[1.2px] uppercase py-1 rounded-full" style={{ paddingLeft: 9, paddingRight: 9, background: "linear-gradient(135deg,#b45309,#92400e)" }}>Soon</div>
               )}
-              <div className="text-[28px] mb-3.5">{f.emoji}</div>
-              <span className={`chip mb-3 self-start ${f.green ? "!text-[#22c55e] !border-[rgba(34,197,94,.2)] !bg-[rgba(34,197,94,.15)]" : ""}`}>{f.chip}</span>
-              <h3 className="text-white mb-2.5 leading-none flex-1 whitespace-pre-line" style={{ ...bebas, fontSize: f.large ? "clamp(28px,3.5vw,40px)" : "clamp(20px,2.2vw,26px)" }}>{f.title}</h3>
-              <p className="text-[13px] leading-[1.7] font-light mb-5" style={{ color: "rgba(255,255,255,.4)" }}>{f.desc}</p>
-              <span className="text-[12px] font-bold tracking-[1.5px] uppercase" style={{ color: f.green ? "#22c55e" : "var(--og)" }}>{f.cta}</span>
+              <div style={{ fontSize: f.emojiSize, marginBottom: f.small ? 12 : 14 }}>{f.emoji}</div>
+              <span className={`chip self-start ${f.green ? "!text-[#4ade80] !border-[rgba(34,197,94,.2)] !bg-[rgba(34,197,94,.05)]" : ""}`} style={{ marginBottom: f.small ? 10 : 12 }}>{f.chip}</span>
+              <h3 className="text-white leading-none flex-1 whitespace-pre-line" style={{ ...bebas, fontSize: f.large ? "clamp(28px,3.5vw,40px)" : (f.small ? "clamp(20px,2.2vw,26px)" : "clamp(24px,2.8vw,32px)"), marginBottom: f.small ? 8 : 10 }}>{f.title}</h3>
+              <p className="font-light" style={{ color: f.large ? "rgba(255,255,255,.45)" : "rgba(255,255,255,.4)", fontSize: f.large ? "14px" : (f.title.includes("Social") ? "13px" : "12px"), lineHeight: f.small ? 1.65 : 1.7, marginBottom: f.large ? 22 : f.descMb }}>{f.desc}</p>
+              {f.tags && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "16px" }}>
+                  {f.tags.map((tag) => (
+                    <span key={tag} style={{ background: "rgba(255,255,255,.05)", borderRadius: "100px", padding: "3px 10px", fontSize: "10px", color: "rgba(255,255,255,.4)" }}>{tag}</span>
+                  ))}
+                </div>
+              )}
+              <span className="font-bold tracking-[1.5px] uppercase" style={{ fontSize: f.small ? 11 : 12, color: f.green ? "#4ade80" : "var(--og)" }}>{f.cta}</span>
             </Link>
           ))}
         </div>

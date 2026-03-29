@@ -29,6 +29,12 @@ const goalLabels: Record<string, string> = {
   fat_loss: 'Burn Fat', athletic: 'Athletic Power', endurance: 'Endurance',
 };
 
+const equipLabels: Record<string, string> = {
+  bodyweight: 'Bodyweight', dumbbells: 'Dumbbells', barbell: 'Barbell',
+  cables: 'Cables', bands: 'Bands', bench: 'Bench', pullup: 'Pull-Up Bar',
+  full_gym: 'Full Gym',
+};
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -60,42 +66,69 @@ export default function ReviewPage() {
   }
 
   const day = workout.days[activeDay];
+  const firstDayName = workout.days[0]?.name?.toUpperCase() || 'WORKOUT';
+  const equipList = workout.equipment.map((e) => equipLabels[e] || e).join(', ');
 
   return (
     <main className="min-h-screen pb-24">
       {/* Header */}
-      <div className="max-w-2xl mx-auto px-4 pt-10 pb-4 text-center">
-        <h1 className="font-[family-name:var(--font-heading)] text-4xl md:text-5xl tracking-wide text-gradient-white">
-          YOUR WORKOUT PLAN
+      <div style={{ maxWidth: 660, padding: '40px 20px 16px', marginBottom: 32 }} className="mx-auto">
+        <span className="chip" style={{ marginBottom: 12, display: 'inline-block' }}>Your Workout</span>
+        <h1
+          className="font-[family-name:var(--font-heading)]"
+          style={{ fontSize: 'clamp(44px,8vw,80px)', lineHeight: 0.93, marginBottom: 10, marginTop: 0 }}
+        >
+          <span className="text-gradient-white" style={{ display: 'block' }}>{firstDayName}</span>
+          <span className="text-gradient-brand" style={{ display: 'block' }}>READY</span>
         </h1>
-        <p className="text-gray-400 mt-1 text-sm">
-          {goalLabels[workout.goal]} &middot; {workout.level} &middot; {workout.days.length} day{workout.days.length > 1 ? 's' : ''}
+        <p style={{ color: 'var(--whm)', fontSize: 13, fontWeight: 300, marginTop: 10, lineHeight: 1.6, marginBottom: 4 }}>
+          {goalLabels[workout.goal]} &middot; {equipList}
+        </p>
+        <p style={{ color: 'var(--og)', fontSize: 12, fontWeight: 500, marginTop: 4 }}>
+          {equipList}
         </p>
       </div>
 
-      {/* Stats bar */}
-      <div className="max-w-2xl mx-auto px-4 mb-6">
-        <div className="card flex items-center justify-around py-4">
-          <div className="text-center">
-            <div className="text-xl font-bold text-gradient-brand">{totalExercises(workout.days)}</div>
-            <div className="text-[11px] text-gray-500 uppercase tracking-wider">Exercises</div>
+      {/* Auth CTA banner */}
+      <div style={{ maxWidth: 660, padding: '0 20px' }} className="mx-auto">
+        <div className="auth-cta">
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>Save your progress &amp; track PRs</div>
+            <div style={{ fontSize: 12, color: 'var(--whm)', fontWeight: 300, marginTop: 4 }}>
+              Create a free account to save this workout, log weights, and see your streak.
+            </div>
           </div>
-          <div className="w-px h-8 bg-white/10" />
-          <div className="text-center">
-            <div className="text-xl font-bold text-gradient-brand">{totalSets(workout.days)}</div>
-            <div className="text-[11px] text-gray-500 uppercase tracking-wider">Total Sets</div>
+          <button className="btn-primary" style={{ whiteSpace: 'nowrap', padding: '10px 20px', fontSize: 11, flexShrink: 0 }}>
+            Sign Up Free &rarr;
+          </button>
+        </div>
+      </div>
+
+      {/* Stats grid */}
+      <div style={{ maxWidth: 660, padding: '0 20px' }} className="mx-auto">
+        <div className="rv-stats">
+          <div style={{ background: 'var(--whh)', border: '1px solid var(--br)', borderRadius: 14, padding: '14px 8px', textAlign: 'center' }}>
+            <div className="font-[family-name:var(--font-heading)] text-gradient-brand" style={{ fontSize: 26 }}>{totalExercises(workout.days)}</div>
+            <div style={{ fontSize: 9, color: 'var(--whm)', letterSpacing: 1, textTransform: 'uppercase', marginTop: 2 }}>Exercises</div>
           </div>
-          <div className="w-px h-8 bg-white/10" />
-          <div className="text-center">
-            <div className="text-xl font-bold text-gradient-brand">~{estimatedMinutes(workout.days)}</div>
-            <div className="text-[11px] text-gray-500 uppercase tracking-wider">Minutes</div>
+          <div style={{ background: 'var(--whh)', border: '1px solid var(--br)', borderRadius: 14, padding: '14px 8px', textAlign: 'center' }}>
+            <div className="font-[family-name:var(--font-heading)] text-gradient-brand" style={{ fontSize: 26 }}>{totalSets(workout.days)}</div>
+            <div style={{ fontSize: 9, color: 'var(--whm)', letterSpacing: 1, textTransform: 'uppercase', marginTop: 2 }}>Total Sets</div>
+          </div>
+          <div style={{ background: 'var(--whh)', border: '1px solid var(--br)', borderRadius: 14, padding: '14px 8px', textAlign: 'center' }}>
+            <div className="font-[family-name:var(--font-heading)] text-gradient-brand" style={{ fontSize: 26 }}>~{estimatedMinutes(workout.days)}</div>
+            <div style={{ fontSize: 9, color: 'var(--whm)', letterSpacing: 1, textTransform: 'uppercase', marginTop: 2 }}>Minutes</div>
+          </div>
+          <div style={{ background: 'var(--whh)', border: '1px solid var(--br)', borderRadius: 14, padding: '14px 8px', textAlign: 'center' }}>
+            <div style={{ fontSize: 18, marginBottom: 2 }}>🔥</div>
+            <div style={{ fontSize: 9, color: 'var(--whm)', letterSpacing: 1, textTransform: 'uppercase', marginTop: 2 }}>22 Streak</div>
           </div>
         </div>
       </div>
 
       {/* Day tabs */}
       {workout.days.length > 1 && (
-        <div className="max-w-2xl mx-auto px-4 mb-6">
+        <div style={{ maxWidth: 660, padding: '0 20px', marginBottom: 24 }} className="mx-auto">
           <div className="flex gap-2 overflow-x-auto pb-1">
             {workout.days.map((d, i) => (
               <button
@@ -114,13 +147,13 @@ export default function ReviewPage() {
         </div>
       )}
 
-      <div className="max-w-2xl mx-auto px-4 space-y-6">
+      <div style={{ maxWidth: 660, padding: '0 20px' }} className="mx-auto space-y-6">
         {/* Warm Up */}
         <section>
           <h2 className="font-[family-name:var(--font-heading)] text-lg tracking-wide text-gradient-brand mb-3 flex items-center gap-2">
             <span>🔥</span> WARM UP
           </h2>
-          <div className="card space-y-2">
+          <div className="card space-y-2" style={{ padding: "20px" }}>
             {day.warmup.map((w, i) => (
               <div key={i} className="flex items-center gap-3 text-sm text-gray-300 min-w-0">
                 <span className="text-[var(--og)] font-bold text-xs w-5 shrink-0">{i + 1}</span>
@@ -137,7 +170,7 @@ export default function ReviewPage() {
           </h2>
           <div className="space-y-3">
             {day.exercises.map((ex) => (
-              <div key={ex.id} className="card flex items-center gap-3">
+              <div key={ex.id} className="card flex items-center gap-3" style={{ padding: "20px" }}>
                 {/* Emoji circle */}
                 <div className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xl shrink-0">
                   {ex.emoji}
@@ -175,7 +208,7 @@ export default function ReviewPage() {
           <h2 className="font-[family-name:var(--font-heading)] text-lg tracking-wide text-gradient-brand mb-3 flex items-center gap-2">
             <span>🧊</span> COOL DOWN
           </h2>
-          <div className="card space-y-2">
+          <div className="card space-y-2" style={{ padding: "20px" }}>
             {day.cooldown.map((c, i) => (
               <div key={i} className="flex items-center gap-3 text-sm text-gray-300 min-w-0">
                 <span className="text-[var(--pl)] font-bold text-xs w-5 shrink-0">{i + 1}</span>
@@ -188,13 +221,29 @@ export default function ReviewPage() {
         {/* Action buttons */}
         <div className="flex flex-col gap-3 pt-4">
           <button
-            className="btn-primary w-full !text-xl !py-5 btn-glow font-[family-name:var(--font-heading)] tracking-wider justify-center"
+            className="animate-glow font-[family-name:var(--font-heading)]"
+            style={{
+              width: '100%',
+              padding: 22,
+              borderRadius: 18,
+              background: 'linear-gradient(135deg,var(--oe),var(--og2),var(--pm))',
+              boxShadow: '0 12px 40px rgba(120,45,15,.35)',
+              color: '#fff',
+              fontSize: 26,
+              letterSpacing: 3,
+              border: 'none',
+              cursor: 'pointer',
+              textTransform: 'uppercase',
+              transition: 'transform .3s, box-shadow .3s',
+            }}
+            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
             onClick={() => router.push('/tracker')}
           >
-            LET&apos;S GO &rarr;
+            LET&apos;S GO 🔥
           </button>
           <button
-            className="btn-ghost w-full"
+            className="btn-ghost w-full justify-center"
             onClick={() => router.push('/builder')}
           >
             &larr; Change Selections

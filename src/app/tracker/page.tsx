@@ -291,7 +291,7 @@ export default function TrackerPage() {
           <h3 className="font-[family-name:var(--font-heading)] text-sm tracking-wider text-gray-500 mb-2">
             WARM UP
           </h3>
-          <div className="card space-y-2">
+          <div className="card space-y-2" style={{ padding: "20px" }}>
             {day.warmup.map((w, i) => {
               const key = `warmup_${i}`;
               const done = exerciseStates[key]?.sets[0]?.done ?? false;
@@ -330,6 +330,7 @@ export default function TrackerPage() {
                 <div
                   key={ex.id}
                   className={`card transition-all ${allDone ? 'border-[var(--gr)]/30 bg-[var(--gr)]/5' : ''}`}
+                  style={{ padding: "20px" }}
                 >
                   {/* Exercise header */}
                   <div className="flex items-center gap-3 mb-3">
@@ -389,7 +390,7 @@ export default function TrackerPage() {
           <h3 className="font-[family-name:var(--font-heading)] text-sm tracking-wider text-gray-500 mb-2">
             COOL DOWN
           </h3>
-          <div className="card space-y-2">
+          <div className="card space-y-2" style={{ padding: "20px" }}>
             {day.cooldown.map((c, i) => {
               const key = `cooldown_${i}`;
               const done = exerciseStates[key]?.sets[0]?.done ?? false;

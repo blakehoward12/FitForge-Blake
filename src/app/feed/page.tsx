@@ -101,54 +101,52 @@ export default function FeedPage() {
 
   return (
     <>
-      <main style={{ maxWidth: "40rem", margin: "0 auto", padding: "2rem 1rem" }}>
+      <main style={{ maxWidth: "560px", margin: "0 auto", padding: "20px 16px 60px" }}>
         {/* Header */}
-        <h1 style={{ ...bebasNeue, fontSize: "2.5rem", letterSpacing: "0.04em", marginBottom: "1.5rem" }}>
+        <h1 style={{ ...bebasNeue, fontSize: "36px", marginBottom: "22px" }}>
           <span className="text-gradient-white">FIT</span>
           <span className="text-gradient-brand">FEED</span>
         </h1>
 
         {/* Post Composer or Auth CTA */}
         {isAuth ? (
-          <div className="card" style={{ marginBottom: "1.5rem" }}>
+          <div className="card" style={{ padding: "18px", marginBottom: "20px", borderColor: "rgba(224,120,48,.18)" }}>
             <div style={{ display: "flex", gap: "0.75rem" }}>
               <div
                 style={{
-                  width: "2.5rem",
-                  height: "2.5rem",
+                  width: "38px",
+                  height: "38px",
                   borderRadius: "50%",
-                  background: "linear-gradient(135deg, var(--pm), var(--og2))",
+                  background: "linear-gradient(135deg, var(--oe), var(--pm))",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "0.8rem",
+                  fontSize: "12px",
                   fontWeight: 700,
                   color: "#fff",
                   flexShrink: 0,
                 }}
               >
-                {session?.user?.name ? getInitials(session.user.name) : "??"}
+                {session?.user?.name ? getInitials(session.user.name) : "ME"}
               </div>
               <div style={{ flex: 1 }}>
                 <textarea
-                  className="input-field"
                   placeholder="Share your workout, PR, or progress..."
                   value={postText}
                   onChange={(e) => setPostText(e.target.value)}
-                  rows={3}
-                  style={{ resize: "vertical", marginBottom: "0.75rem" }}
+                  rows={2}
+                  style={{ background: "transparent", border: "none", color: "rgba(255,255,255,.75)", fontSize: "14px", fontWeight: 300, resize: "none", outline: "none", lineHeight: 1.5, width: "100%", fontFamily: "'DM Sans', sans-serif" }}
                 />
-                <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-                  <button className="btn-ghost" style={{ fontSize: "0.8rem", padding: "0.5rem 1rem" }}>
-                    Attach Workout
+                <div style={{ display: "flex", gap: "0.5rem", justifyContent: "space-between", borderTop: "1px solid var(--br)", marginTop: 10, paddingTop: 10 }}>
+                  <button style={{ background: "rgba(224,120,48,.1)", border: "1px solid rgba(224,120,48,.2)", color: "var(--og)", borderRadius: "100px", padding: "6px 12px", fontSize: "11px", fontWeight: 600, cursor: "pointer" }}>
+                    💪 Attach Workout
                   </button>
                   <button
-                    className="btn-primary"
                     onClick={handlePost}
                     disabled={posting || !postText.trim()}
-                    style={{ fontSize: "0.8rem", padding: "0.5rem 1.25rem" }}
+                    style={{ background: "linear-gradient(135deg,var(--oe),var(--pm))", border: "none", color: "#fff", borderRadius: "100px", padding: "8px 18px", fontSize: "11px", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase" as const, cursor: "pointer", fontFamily: "'DM Sans',sans-serif" }}
                   >
-                    {posting ? "Posting..." : "Post"}
+                    {posting ? "Posting..." : "Post 🔥"}
                   </button>
                 </div>
               </div>
@@ -156,22 +154,29 @@ export default function FeedPage() {
           </div>
         ) : (
           <div
-            className="card"
             style={{
-              marginBottom: "1.5rem",
-              textAlign: "center",
-              padding: "2rem",
-              background: "linear-gradient(135deg, rgba(90,45,130,0.12), rgba(200,90,138,0.08))",
+              background: "linear-gradient(135deg,rgba(120,45,15,.2),rgba(90,45,130,.2))",
+              border: "1px solid rgba(224,120,48,.2)",
+              borderRadius: "16px",
+              padding: "18px 22px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "16px",
+              flexWrap: "wrap" as const,
+              marginBottom: "20px",
             }}
           >
-            <p style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: "0.5rem" }}>
-              Join the FitForge community
-            </p>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.9rem", marginBottom: "1rem" }}>
-              Sign in to post workouts, share progress, and cheer on fellow athletes.
-            </p>
-            <a href="/login?returnUrl=/feed" className="btn-primary" style={{ textDecoration: "none" }}>
-              Sign In to Post
+            <div>
+              <p style={{ fontSize: "13px", fontWeight: 600, margin: 0 }}>
+                Create an account to post
+              </p>
+              <p style={{ fontSize: "11px", color: "var(--whm)", fontWeight: 300, margin: "4px 0 0" }}>
+                Share your PRs and connect with the community.
+              </p>
+            </div>
+            <a href="/login?returnUrl=/feed" className="btn-primary" style={{ textDecoration: "none", padding: "9px 16px", fontSize: "10px" }}>
+              Join Free →
             </a>
           </div>
         )}
@@ -186,7 +191,7 @@ export default function FeedPage() {
           )}
 
           {posts.map((post) => (
-            <div key={post.id} className="card">
+            <div key={post.id} className="card" style={{ padding: "18px" }}>
               {/* Post Header */}
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
                 <div
