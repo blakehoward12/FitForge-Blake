@@ -228,6 +228,9 @@ body::before {
   .hide-mobile { display: none !important; }
   .rv-stats { grid-template-columns: repeat(2, 1fr) !important; }
   .mkt-grid { grid-template-columns: 1fr !important; }
+  .plan-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .goal-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .eq-grid { grid-template-columns: repeat(2, 1fr) !important; }
   .auth-cta { flex-direction: column; align-items: flex-start; }
   .auth-cta .btn-primary { width: 100%; justify-content: center; }
 }

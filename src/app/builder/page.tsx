@@ -186,7 +186,7 @@ export default function BuilderPage() {
                 <span style={{ fontSize: 11, color: 'var(--whm)', fontWeight: 400 }}>Select all that apply</span>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: 10, marginBottom: 8 }}>
+              <div className="eq-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 8 }}>
                 {EQUIPMENT_OPTIONS.map((eq) => {
                   const selected = equipment.has(eq.id);
                   const isBodyweight = eq.id === 'bodyweight';
@@ -242,7 +242,7 @@ export default function BuilderPage() {
               <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 12 }}>
                 What&apos;s your primary goal?
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="goal-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
                 {GOAL_OPTIONS.map((g) => {
                   const selected = goal === g.id;
                   return (
@@ -332,7 +332,7 @@ export default function BuilderPage() {
               <p style={{ fontSize: 13, color: 'var(--whm)', fontWeight: 300, margin: 0, marginBottom: 20 }}>
                 1-day is free. Multi-day plans unlock with Premium ($20/mo).
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+              <div className="plan-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
                 {DAY_OPTIONS.map((d) => {
                   const selected = planDays === d.days;
                   const isFree = !d.premium;
@@ -363,10 +363,10 @@ export default function BuilderPage() {
                           {d.badge}
                         </span>
                       )}
-                      <div style={{ fontSize: 13, fontWeight: 600, color: isFree && selected ? '#07070d' : isFree ? '#fff' : 'rgba(255,255,255,.5)', lineHeight: 1, marginBottom: 3 }}>
+                      <div style={{ ...bebas, fontSize: 26, color: isFree && selected ? '#07070d' : isFree ? '#fff' : 'rgba(255,255,255,.5)', lineHeight: 1, marginBottom: 3 }}>
                         {d.label}
                       </div>
-                      <div style={{ fontSize: 11, color: isFree && selected ? 'rgba(0,0,0,.5)' : 'rgba(255,255,255,.3)', marginBottom: 6 }}>
+                      <div style={{ fontSize: 11, color: isFree && selected ? 'rgba(0,0,0,.5)' : 'var(--whm)', marginBottom: 6 }}>
                         {d.sub}
                       </div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: isFree ? 'var(--gr)' : 'var(--og)' }}>
@@ -396,23 +396,28 @@ export default function BuilderPage() {
             </div>
 
             {/* Free usage counter */}
-            <div className="card" style={{ padding: 28, marginBottom: 14 }}>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', letterSpacing: 0.5, textTransform: 'uppercase' as const, marginBottom: 6 }}>
-                Free workouts used
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ display: 'flex', gap: 5, flex: 1 }}>
+            <div style={{
+              background: 'rgba(255,255,255,.03)', border: '1px solid var(--br)', borderRadius: 12,
+              padding: '12px 16px', marginBottom: 14,
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10
+            }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 6, letterSpacing: 0.5 }}>
+                  Free workouts used
+                </div>
+                <div style={{ display: 'flex', gap: 5 }}>
                   {[0, 1, 2].map((i) => (
                     <div key={i} style={{
-                      flex: 1, height: 5, borderRadius: 100,
+                      height: 5, flex: 1, borderRadius: 100,
                       background: i < freeUsed
                         ? 'linear-gradient(135deg, var(--og), var(--og2))'
                         : 'var(--br)',
+                      transition: 'background 0.3s',
                     }} />
                   ))}
                 </div>
-                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--og)' }}>{freeUsed} / 3</span>
               </div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--og)', whiteSpace: 'nowrap' }}>{freeUsed} / 3 used</div>
             </div>
 
             {/* Bottom buttons: Back + Generate side by side */}
