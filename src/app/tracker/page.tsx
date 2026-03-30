@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import type { GeneratedWorkout, WorkoutDay, WorkoutExercise } from '@/lib/exercises';
+import type { GeneratedWorkout, WorkoutDay } from '@/lib/exercises';
 
 const STORAGE_WORKOUT_KEY = 'ff_generated_workout';
 
@@ -10,13 +10,17 @@ const STORAGE_WORKOUT_KEY = 'ff_generated_workout';
 // Types
 // ---------------------------------------------------------------------------
 
-interface SetState {
-  done: boolean;
-}
-
-interface ExerciseState {
-  sets: SetState[];
-  weight: string;
+interface FlatExercise {
+  id: string;
+  name: string;
+  emoji: string;
+  section: 'warmup' | 'main' | 'cooldown';
+  sectionLabel: string;
+  sets: number;
+  reps: number;
+  tip: string;
+  youtubeQuery: string;
+  category: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -47,388 +51,410 @@ export default function TrackerPage() {
   const router = useRouter();
   const [workout, setWorkout] = useState<GeneratedWorkout | null>(null);
   const [activeDay, setActiveDay] = useState(0);
-  const [exerciseStates, setExerciseStates] = useState<Record<string, ExerciseState>>({});
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
+  const [weights, setWeights] = useState<Record<string, string>>({});
   const [showCelebration, setShowCelebration] = useState(false);
   const [xpEarned, setXpEarned] = useState(0);
 
   // Load workout
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_WORKOUT_KEY);
-    if (!raw) {
-      router.replace('/builder');
-      return;
-    }
-    try {
-      const w: GeneratedWorkout = JSON.parse(raw);
-      setWorkout(w);
-
-      // Initialize exercise states for first day
-      const states: Record<string, ExerciseState> = {};
-      for (const day of w.days) {
-        for (const ex of day.exercises) {
-          states[ex.id] = {
-            sets: Array.from({ length: ex.sets }, () => ({ done: false })),
-            weight: '',
-          };
-        }
-        // Warmup & cooldown get simple toggle states
-        day.warmup.forEach((_, i) => {
-          states[`warmup_${i}`] = { sets: [{ done: false }], weight: '' };
-        });
-        day.cooldown.forEach((_, i) => {
-          states[`cooldown_${i}`] = { sets: [{ done: false }], weight: '' };
-        });
-      }
-      setExerciseStates(states);
-    } catch {
-      router.replace('/builder');
-    }
+    if (!raw) { router.replace('/builder'); return; }
+    try { setWorkout(JSON.parse(raw)); } catch { router.replace('/builder'); }
   }, [router]);
 
-  // Current day
   const day: WorkoutDay | null = workout?.days[activeDay] ?? null;
 
-  // ── Derived stats ──────────────────────────────────────────────────────
-  const completedSets = useMemo(() => {
-    if (!day) return 0;
-    return day.exercises.reduce((sum, ex) => {
-      const state = exerciseStates[ex.id];
-      if (!state) return sum;
-      return sum + state.sets.filter((s) => s.done).length;
-    }, 0);
-  }, [day, exerciseStates]);
+  // Flatten all exercises into a single ordered list
+  const flatExercises: FlatExercise[] = useMemo(() => {
+    if (!day) return [];
+    const list: FlatExercise[] = [];
 
-  const totalSets = useMemo(() => {
-    if (!day) return 0;
-    return day.exercises.reduce((sum, ex) => sum + ex.sets, 0);
+    day.warmup.forEach((w, i) => {
+      const parts = w.match(/^(.+?)(\d+\s*.*)$/);
+      const name = parts ? parts[1].trim() : w;
+      const repsStr = parts ? parts[2].trim() : `${8 + i * 2} reps`;
+      list.push({
+        id: `warmup_${i}`,
+        name,
+        emoji: ['🐛', '🔵', '🔃', '🔄'][i % 4],
+        section: 'warmup',
+        sectionLabel: 'WARM UP',
+        sets: 1,
+        reps: parseInt(repsStr) || 10,
+        tip: '',
+        youtubeQuery: `${name} exercise form`,
+        category: 'warmup',
+      });
+    });
+
+    day.exercises.forEach((ex) => {
+      list.push({
+        id: ex.id,
+        name: ex.name,
+        emoji: ex.emoji,
+        section: 'main',
+        sectionLabel: 'MAIN WORKOUT',
+        sets: ex.sets,
+        reps: ex.reps,
+        tip: ex.tip,
+        youtubeQuery: ex.youtubeQuery,
+        category: ex.category,
+      });
+    });
+
+    day.cooldown.forEach((c, i) => {
+      const parts = c.match(/^(.+?)(\d+\s*.*)$/);
+      const name = parts ? parts[1].trim() : c;
+      list.push({
+        id: `cooldown_${i}`,
+        name,
+        emoji: '🧊',
+        section: 'cooldown',
+        sectionLabel: 'COOL DOWN',
+        sets: 1,
+        reps: 1,
+        tip: '',
+        youtubeQuery: `${name} stretch`,
+        category: 'cooldown',
+      });
+    });
+
+    return list;
   }, [day]);
 
+  const totalExercises = flatExercises.length;
+  const currentExercise = flatExercises[currentIndex] ?? null;
+  const completedCount = completedIds.size;
+  const progressPct = totalExercises > 0 ? Math.round((completedCount / totalExercises) * 100) : 0;
+
+  // Calculate volume
   const volume = useMemo(() => {
     if (!day) return 0;
-    return day.exercises.reduce((sum, ex) => {
-      const state = exerciseStates[ex.id];
-      if (!state) return sum;
-      const w = parseFloat(state.weight) || 0;
-      const doneSets = state.sets.filter((s) => s.done).length;
-      return sum + w * doneSets * ex.reps;
-    }, 0);
-  }, [day, exerciseStates]);
+    let total = 0;
+    for (const ex of day.exercises) {
+      if (completedIds.has(ex.id)) {
+        const w = parseFloat(weights[ex.id] || '0') || 0;
+        total += w * ex.sets * ex.reps;
+      }
+    }
+    return total;
+  }, [day, completedIds, weights]);
 
-  const progressPct = totalSets > 0 ? Math.round((completedSets / totalSets) * 100) : 0;
-
-  // XP: 10 per set completed
+  // XP calculation
   useEffect(() => {
-    setXpEarned(completedSets * 10);
-  }, [completedSets]);
+    setXpEarned(completedCount * 10);
+  }, [completedCount]);
 
-  // ── Check completion ───────────────────────────────────────────────────
+  // Check completion
   useEffect(() => {
-    if (!day || totalSets === 0) return;
-    if (completedSets === totalSets && !showCelebration) {
+    if (totalExercises > 0 && completedCount === totalExercises && !showCelebration) {
       setShowCelebration(true);
       spawnConfetti();
     }
-  }, [completedSets, totalSets, day, showCelebration]);
+  }, [completedCount, totalExercises, showCelebration]);
 
-  // ── Toggle set ─────────────────────────────────────────────────────────
-  const toggleSet = useCallback((exerciseId: string, setIndex: number) => {
-    setExerciseStates((prev) => {
-      const state = prev[exerciseId];
-      if (!state) return prev;
-      const newSets = [...state.sets];
-      newSets[setIndex] = { ...newSets[setIndex], done: !newSets[setIndex].done };
-      return { ...prev, [exerciseId]: { ...state, sets: newSets } };
+  const markDone = useCallback(() => {
+    if (!currentExercise) return;
+    setCompletedIds((prev) => {
+      const next = new Set(prev);
+      next.add(currentExercise.id);
+      return next;
     });
-  }, []);
+    // Auto-advance to next incomplete exercise
+    if (currentIndex < totalExercises - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  }, [currentExercise, currentIndex, totalExercises]);
 
-  // ── Update weight ──────────────────────────────────────────────────────
-  const updateWeight = useCallback((exerciseId: string, weight: string) => {
-    setExerciseStates((prev) => {
-      const state = prev[exerciseId];
-      if (!state) return prev;
-      return { ...prev, [exerciseId]: { ...state, weight } };
-    });
-  }, []);
-
-  // ── Save completed workout ─────────────────────────────────────────────
   const handleComplete = async () => {
     try {
       await fetch('/api/workouts/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          workout: workout,
-          day: activeDay,
-          volume,
-          setsCompleted: completedSets,
-          xp: xpEarned,
+          workout,
+          dayLabel: day?.name || 'Workout',
+          totalVolume: volume,
+          totalSets: completedCount,
+          xpEarned,
+          exercises: flatExercises.filter(e => completedIds.has(e.id)).map(e => e.name),
           completedAt: new Date().toISOString(),
         }),
       });
-    } catch {
-      // Silently fail if API not available
-    }
+    } catch { /* silently fail */ }
     setShowCelebration(false);
-    router.push('/builder');
+    router.push('/profile');
   };
 
-  // ── Find current exercise (first incomplete) ──────────────────────────
-  const currentExercise: WorkoutExercise | null = useMemo(() => {
-    if (!day) return null;
-    return day.exercises.find((ex) => {
-      const state = exerciseStates[ex.id];
-      return state && state.sets.some((s) => !s.done);
-    }) ?? null;
-  }, [day, exerciseStates]);
-
-  // ── Loading state ──────────────────────────────────────────────────────
-  if (!workout || !day) {
+  if (!workout || !day || !currentExercise) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-500">Loading tracker...</div>
+      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ color: 'var(--whm)' }}>Loading tracker...</div>
       </main>
     );
   }
 
+  const sectionColor = currentExercise.section === 'warmup' ? 'var(--gr)' :
+    currentExercise.section === 'cooldown' ? 'var(--pl)' : 'var(--og)';
+
+  const repsLabel = currentExercise.section === 'warmup'
+    ? `${currentExercise.reps} each`
+    : currentExercise.section === 'cooldown'
+      ? '30s hold'
+      : `${currentExercise.sets} set${currentExercise.sets > 1 ? 's' : ''} \u00b7 ${currentExercise.reps} reps`;
+
   return (
-    <main className="min-h-screen pb-24">
+    <main style={{ minHeight: '100vh', paddingBottom: '6rem' }}>
       {/* ── Celebration Modal ─────────────────────────────────────────── */}
       {showCelebration && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-          <div className="card max-w-md w-full mx-4 text-center space-y-6 !p-8">
-            <div className="text-6xl">🎉</div>
-            <h2 className="font-[family-name:var(--font-heading)] text-3xl tracking-wide text-gradient-brand">
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 50,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)',
+        }}>
+          <div className="card" style={{ maxWidth: '400px', width: '100%', margin: '0 16px', textAlign: 'center', padding: '32px' }}>
+            <div style={{ fontSize: '3.5rem', marginBottom: '16px' }}>🎉</div>
+            <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.75rem', letterSpacing: 3, marginBottom: '20px' }} className="text-gradient-brand">
               WORKOUT COMPLETE!
             </h2>
-            <div className="flex items-center justify-around">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-[var(--gr)]">{volume.toLocaleString()}</div>
-                <div className="text-[11px] text-gray-500 uppercase tracking-wider">Volume (lbs)</div>
+            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '24px' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--gr)' }}>{volume.toLocaleString()}</div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1 }}>Volume (lbs)</div>
               </div>
-              <div className="w-px h-10 bg-white/10" />
-              <div className="text-center">
-                <div className="text-2xl font-bold text-[var(--og)]">{completedSets}</div>
-                <div className="text-[11px] text-gray-500 uppercase tracking-wider">Sets</div>
+              <div style={{ width: 1, background: 'var(--br)' }} />
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--og)' }}>{completedCount}</div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1 }}>Exercises</div>
               </div>
-              <div className="w-px h-10 bg-white/10" />
-              <div className="text-center">
-                <div className="text-2xl font-bold text-[var(--pl)]">+{xpEarned}</div>
-                <div className="text-[11px] text-gray-500 uppercase tracking-wider">XP</div>
+              <div style={{ width: 1, background: 'var(--br)' }} />
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--pl)' }}>+{xpEarned}</div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1 }}>XP</div>
               </div>
             </div>
-            <div className="flex flex-col gap-3 pt-2">
-              <button className="btn-primary w-full" onClick={handleComplete}>
-                Save & Continue
-              </button>
-              <button className="btn-ghost w-full text-sm" onClick={() => setShowCelebration(false)}>
-                Keep Editing
-              </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button className="btn-primary" onClick={handleComplete} style={{ width: '100%', justifyContent: 'center', display: 'flex', padding: '14px' }}>Save & Continue</button>
+              <button className="btn-ghost" onClick={() => setShowCelebration(false)} style={{ width: '100%', justifyContent: 'center', display: 'flex' }}>Keep Editing</button>
             </div>
           </div>
         </div>
       )}
 
       {/* ── Sticky Header ─────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-40 bg-[var(--bg)]/95 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-2xl mx-auto px-4 py-3">
-          {/* Current exercise & stats */}
-          <div className="flex items-center justify-between mb-2">
-            <div className="min-w-0">
-              <h2 className="font-[family-name:var(--font-heading)] text-lg tracking-wide text-gradient-white truncate">
-                {currentExercise ? `${currentExercise.emoji} ${currentExercise.name}` : 'All Done!'}
+      <div style={{
+        position: 'sticky', top: 56, zIndex: 40,
+        background: 'rgba(10,10,15,0.95)', backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255,255,255,0.05)',
+      }}>
+        <div style={{ maxWidth: 660, margin: '0 auto', padding: '12px 20px' }}>
+          {/* Top row: section + exercise name + stats + close */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <div style={{ minWidth: 0 }}>
+              <p style={{ fontSize: '0.65rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 2, margin: 0 }}>
+                {currentExercise.section === 'warmup' ? '🔥' : currentExercise.section === 'cooldown' ? '🧊' : '💪'} {currentExercise.sectionLabel}
+              </p>
+              <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.25rem', letterSpacing: 2, margin: '2px 0 0', color: '#fff' }}>
+                {currentExercise.emoji} {currentExercise.name.toUpperCase()}
               </h2>
-              <p className="text-xs text-gray-500">{day.name}</p>
             </div>
-            <div className="flex items-center gap-4 shrink-0 text-xs">
-              <div className="text-center">
-                <div className="font-bold text-[var(--pl)]">+{xpEarned}</div>
-                <div className="text-gray-600">XP</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+              <div style={{
+                padding: '6px 12px', borderRadius: '10px',
+                background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)',
+                textAlign: 'center',
+              }}>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--gr)' }}>{xpEarned}</div>
+                <div style={{ fontSize: '0.55rem', color: 'var(--whm)', textTransform: 'uppercase' }}>XP</div>
               </div>
-              <div className="text-center">
-                <div className="font-bold text-[var(--og)]">{volume.toLocaleString()}</div>
-                <div className="text-gray-600">lbs</div>
+              <div style={{
+                padding: '6px 12px', borderRadius: '10px',
+                background: 'rgba(255,255,255,0.04)', border: '1px solid var(--br)',
+                textAlign: 'center',
+              }}>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--whm)' }}>{volume}</div>
+                <div style={{ fontSize: '0.55rem', color: 'var(--whm)', textTransform: 'uppercase' }}>LBS</div>
               </div>
+              <button
+                onClick={() => router.push('/review')}
+                style={{
+                  width: 36, height: 36, borderRadius: '10px',
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid var(--br)',
+                  color: 'var(--whm)', cursor: 'pointer', fontSize: '1rem',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                ✕
+              </button>
             </div>
           </div>
 
           {/* Progress bar */}
-          <div className="h-2 rounded-full bg-white/5 overflow-hidden">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-[var(--og)] to-[var(--og2)] transition-all duration-500"
-              style={{ width: `${progressPct}%` }}
-            />
+          <div style={{ height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.05)', overflow: 'hidden' }}>
+            <div style={{
+              height: '100%', borderRadius: 2,
+              background: 'linear-gradient(90deg, var(--og), var(--og2))',
+              width: `${progressPct}%`, transition: 'width 0.5s',
+            }} />
           </div>
-          <div className="text-[10px] text-gray-500 mt-1 text-right">
-            {completedSets}/{totalSets} sets &middot; {progressPct}%
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
+            <span style={{ fontSize: '0.65rem', color: 'var(--whm)' }}>Exercise {currentIndex + 1} of {totalExercises}</span>
+            <span style={{ fontSize: '0.65rem', color: 'var(--og)' }}>{progressPct}%</span>
           </div>
         </div>
       </div>
 
-      {/* ── Day tabs ──────────────────────────────────────────────────── */}
-      {workout.days.length > 1 && (
-        <div className="max-w-2xl mx-auto px-4 pt-4 pb-2">
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {workout.days.map((d, i) => (
+      <div style={{ maxWidth: 660, margin: '0 auto', padding: '16px 20px' }}>
+        {/* ── Exercise Pills ──────────────────────────────────────────── */}
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px', marginBottom: '20px' }}>
+          {flatExercises.map((ex, i) => {
+            const isDone = completedIds.has(ex.id);
+            const isCurrent = i === currentIndex;
+            const pillColor = ex.section === 'warmup' ? 'var(--gr)' : ex.section === 'cooldown' ? 'var(--pl)' : 'var(--whm)';
+            return (
               <button
-                key={i}
-                onClick={() => { setActiveDay(i); setShowCelebration(false); }}
-                className={`chip whitespace-nowrap transition-all ${
-                  i === activeDay
-                    ? 'bg-[var(--og)]/20 border-[var(--og)] text-white'
-                    : 'hover:border-white/20'
-                }`}
+                key={ex.id}
+                onClick={() => setCurrentIndex(i)}
+                style={{
+                  whiteSpace: 'nowrap', cursor: 'pointer', flexShrink: 0,
+                  padding: '6px 14px', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 600,
+                  border: `1px solid ${isCurrent ? pillColor : isDone ? 'var(--gr)' : 'var(--br)'}`,
+                  background: isDone ? 'rgba(34,197,94,0.15)' : isCurrent ? 'rgba(255,255,255,0.06)' : 'transparent',
+                  color: isDone ? 'var(--gr)' : isCurrent ? pillColor : 'var(--whm)',
+                }}
               >
-                Day {i + 1}
+                {isDone ? '✓' : ''}{ex.emoji} {ex.name}
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
-      )}
 
-      <div className="max-w-2xl mx-auto px-4 pt-4 space-y-6">
-        {/* ── Warm Up ─────────────────────────────────────────────────── */}
-        <section>
-          <h3 className="font-[family-name:var(--font-heading)] text-sm tracking-wider text-gray-500 mb-2">
-            WARM UP
-          </h3>
-          <div className="card space-y-2" style={{ padding: "20px" }}>
-            {day.warmup.map((w, i) => {
-              const key = `warmup_${i}`;
-              const done = exerciseStates[key]?.sets[0]?.done ?? false;
-              return (
-                <button
-                  key={i}
-                  onClick={() => toggleSet(key, 0)}
-                  className={`flex items-center gap-3 w-full text-left text-sm py-1 transition-colors ${
-                    done ? 'text-[var(--gr)] line-through opacity-60' : 'text-gray-300'
-                  }`}
-                >
-                  <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs shrink-0 transition-colors ${
-                    done ? 'bg-[var(--gr)] border-[var(--gr)] text-black' : 'border-white/20'
-                  }`}>
-                    {done && '✓'}
-                  </span>
-                  {w}
-                </button>
-              );
-            })}
+        {/* ── Exercise Card ───────────────────────────────────────────── */}
+        <div style={{
+          borderRadius: 20, padding: '32px 24px',
+          background: currentExercise.section === 'warmup'
+            ? 'rgba(34,197,94,0.04)' : currentExercise.section === 'cooldown'
+              ? 'rgba(155,94,203,0.04)' : 'rgba(224,120,48,0.03)',
+          border: `1px solid ${currentExercise.section === 'warmup'
+            ? 'rgba(34,197,94,0.15)' : currentExercise.section === 'cooldown'
+              ? 'rgba(155,94,203,0.15)' : 'rgba(224,120,48,0.12)'}`,
+          textAlign: 'center',
+        }}>
+          {/* Emoji + How-to */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+            <div style={{ fontSize: '3rem' }}>{currentExercise.emoji}</div>
+            <a
+              href={`https://www.youtube.com/results?search_query=${encodeURIComponent(currentExercise.youtubeQuery)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                padding: '6px 14px', borderRadius: '10px',
+                background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)',
+                color: '#ef4444', fontSize: '0.75rem', fontWeight: 600,
+                textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px',
+              }}
+            >
+              <span style={{ fontSize: '0.8rem' }}>▶</span> How-to
+            </a>
           </div>
-        </section>
 
-        {/* ── Main Exercises ──────────────────────────────────────────── */}
-        <section>
-          <h3 className="font-[family-name:var(--font-heading)] text-sm tracking-wider text-gray-500 mb-2">
-            MAIN WORKOUT
-          </h3>
-          <div className="space-y-4">
-            {day.exercises.map((ex) => {
-              const state = exerciseStates[ex.id];
-              if (!state) return null;
-              const allDone = state.sets.every((s) => s.done);
+          {/* Name */}
+          <h2 style={{
+            fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem',
+            letterSpacing: 3, margin: '0 0 4px', textAlign: 'left',
+          }}>
+            {currentExercise.name.toUpperCase()}
+          </h2>
+          <p style={{ color: 'var(--whm)', fontSize: '0.85rem', textAlign: 'left', marginBottom: '20px' }}>
+            {repsLabel}
+          </p>
 
-              return (
-                <div
-                  key={ex.id}
-                  className={`card transition-all ${allDone ? 'border-[var(--gr)]/30 bg-[var(--gr)]/5' : ''}`}
-                  style={{ padding: "20px" }}
-                >
-                  {/* Exercise header */}
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-lg shrink-0">
-                      {ex.emoji}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className={`font-semibold text-sm truncate ${allDone ? 'text-[var(--gr)]' : 'text-white'}`}>
-                        {ex.name}
-                      </h4>
-                      <p className="text-xs text-gray-500 truncate">{ex.sets} &times; {ex.reps} &middot; {ex.category}</p>
-                    </div>
-                    {allDone && <span className="text-[var(--gr)] text-lg shrink-0">✓</span>}
-                  </div>
+          {/* Weight input for main exercises */}
+          {currentExercise.section === 'main' && (
+            <div style={{ marginBottom: '16px', textAlign: 'left' }}>
+              <label style={{ fontSize: '0.7rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1 }}>Weight (lbs)</label>
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="0"
+                value={weights[currentExercise.id] || ''}
+                onChange={(e) => setWeights(prev => ({ ...prev, [currentExercise.id]: e.target.value }))}
+                className="input-field"
+                style={{ marginTop: '6px', fontSize: '1.1rem', padding: '12px 16px' }}
+              />
+            </div>
+          )}
 
-                  {/* Weight input */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <label className="text-xs text-gray-500 shrink-0">Weight:</label>
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      placeholder="lbs"
-                      value={state.weight}
-                      onChange={(e) => updateWeight(ex.id, e.target.value)}
-                      className="input-field text-sm py-1.5 px-3 w-24"
-                    />
-                    <span className="text-xs text-gray-600">lbs</span>
-                  </div>
+          {/* Tip */}
+          {currentExercise.tip && (
+            <div style={{
+              padding: '14px 18px', borderRadius: '12px',
+              background: 'rgba(255,193,7,0.06)', border: '1px solid rgba(255,193,7,0.12)',
+              textAlign: 'left', marginBottom: '20px',
+            }}>
+              <p style={{ fontSize: '0.85rem', color: 'rgba(255,193,7,0.85)', margin: 0 }}>
+                💡 {currentExercise.tip}
+              </p>
+            </div>
+          )}
 
-                  {/* Set buttons */}
-                  <div className="flex gap-2 flex-wrap">
-                    {state.sets.map((s, i) => (
-                      <button
-                        key={i}
-                        onClick={() => toggleSet(ex.id, i)}
-                        className={`w-12 h-12 rounded-xl font-bold text-sm flex items-center justify-center transition-all border ${
-                          s.done
-                            ? 'bg-[var(--gr)] border-[var(--gr)] text-black shadow-[0_0_12px_rgba(34,197,94,0.3)]'
-                            : 'bg-white/5 border-white/10 text-gray-400 hover:border-white/25'
-                        }`}
-                      >
-                        {s.done ? '✓' : `S${i + 1}`}
-                      </button>
-                    ))}
-                  </div>
+          {/* Mark as Done button */}
+          {completedIds.has(currentExercise.id) ? (
+            <div style={{
+              width: '100%', padding: '18px', borderRadius: '16px',
+              background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)',
+              color: 'var(--gr)', fontSize: '1rem', fontWeight: 700,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+            }}>
+              ✓ Done
+            </div>
+          ) : (
+            <button
+              onClick={markDone}
+              style={{
+                width: '100%', padding: '18px', borderRadius: '16px',
+                background: 'rgba(255,255,255,0.06)', border: '1px solid var(--br)',
+                color: '#fff', fontSize: '1rem', fontWeight: 600,
+                cursor: 'pointer', transition: 'all 0.2s',
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
+              onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
+            >
+              Mark as Done
+            </button>
+          )}
+        </div>
 
-                  {/* Tip */}
-                  <p className="text-xs text-gray-600 mt-2 italic line-clamp-2">{ex.tip}</p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* ── Cool Down ───────────────────────────────────────────────── */}
-        <section>
-          <h3 className="font-[family-name:var(--font-heading)] text-sm tracking-wider text-gray-500 mb-2">
-            COOL DOWN
-          </h3>
-          <div className="card space-y-2" style={{ padding: "20px" }}>
-            {day.cooldown.map((c, i) => {
-              const key = `cooldown_${i}`;
-              const done = exerciseStates[key]?.sets[0]?.done ?? false;
-              return (
-                <button
-                  key={i}
-                  onClick={() => toggleSet(key, 0)}
-                  className={`flex items-center gap-3 w-full text-left text-sm py-1 transition-colors ${
-                    done ? 'text-[var(--gr)] line-through opacity-60' : 'text-gray-300'
-                  }`}
-                >
-                  <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs shrink-0 transition-colors ${
-                    done ? 'bg-[var(--gr)] border-[var(--gr)] text-black' : 'border-white/20'
-                  }`}>
-                    {done && '✓'}
-                  </span>
-                  {c}
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* ── Bottom actions ──────────────────────────────────────────── */}
-        <div className="flex flex-col gap-3 pt-4">
+        {/* ── Prev / Next Buttons ─────────────────────────────────────── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '20px' }}>
           <button
-            className="btn-primary w-full text-lg py-4 btn-glow font-[family-name:var(--font-heading)] tracking-wider disabled:opacity-40 disabled:animate-none"
-            disabled={completedSets < totalSets}
-            onClick={() => { setShowCelebration(true); spawnConfetti(); }}
+            className="btn-ghost"
+            disabled={currentIndex === 0}
+            onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
+            style={{ justifyContent: 'center', display: 'flex', padding: '16px' }}
           >
-            FINISH WORKOUT
+            &larr; Prev
           </button>
-          <button
-            className="btn-ghost w-full"
-            onClick={() => router.push('/review')}
-          >
-            &larr; Back to Review
-          </button>
+          {currentIndex < totalExercises - 1 ? (
+            <button
+              className="btn-ghost"
+              onClick={() => setCurrentIndex(currentIndex + 1)}
+              style={{ justifyContent: 'center', display: 'flex', padding: '16px', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
+            >
+              Next Exercise &rarr;
+            </button>
+          ) : (
+            <button
+              className="btn-primary"
+              disabled={completedCount < totalExercises}
+              onClick={() => { setShowCelebration(true); spawnConfetti(); }}
+              style={{ justifyContent: 'center', display: 'flex', padding: '16px' }}
+            >
+              Finish Workout
+            </button>
+          )}
         </div>
       </div>
     </main>

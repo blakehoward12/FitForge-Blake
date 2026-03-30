@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect, Suspense } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 export default function LoginPage() {
@@ -15,6 +15,7 @@ export default function LoginPage() {
 function LoginContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { data: session, status } = useSession();
   const returnUrl = searchParams.get("returnUrl") || "/builder";
 
   const [mode, setMode] = useState<"signin" | "signup">("signup");
@@ -23,6 +24,21 @@ function LoginContent() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Redirect if already signed in
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace(returnUrl);
+    }
+  }, [status, router, returnUrl]);
+
+  if (status === "loading" || status === "authenticated") {
+    return (
+      <main style={{ minHeight: "calc(100vh - 3.5rem)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <p style={{ color: "rgba(255,255,255,0.4)" }}>Loading...</p>
+      </main>
+    );
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
