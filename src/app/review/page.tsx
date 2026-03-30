@@ -2,9 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { GeneratedWorkout, WorkoutDay } from '@/lib/exercises';
+import type { GeneratedWorkout } from '@/lib/exercises';
 
 const STORAGE_WORKOUT_KEY = 'ff_generated_workout';
+
+/** Parse "High knees (30s)" → { name: "High knees", reps: "30s" } */
+function parseWarmupCooldown(str: string): { name: string; reps: string } {
+  const match = str.match(/^(.+?)\s*\((.+?)\)\s*$/);
+  if (match) return { name: match[1].trim(), reps: match[2].trim() };
+  return { name: str, reps: '' };
+}
 
 function formatReps(ex: { sets: number; reps: number }): string {
   if (ex.sets === 1) return `${ex.reps} reps`;
@@ -65,7 +72,6 @@ export default function ReviewPage() {
           border: '1px solid rgba(34,197,94,0.15)',
           marginBottom: '20px',
         }}>
-          {/* Section Header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
             <div style={{
               width: 48, height: 48, borderRadius: '50%',
@@ -78,13 +84,9 @@ export default function ReviewPage() {
               <p style={{ color: 'var(--whm)', fontSize: '0.8rem', margin: '2px 0 0' }}>{day.warmup.length} exercises</p>
             </div>
           </div>
-
-          {/* Warmup Exercises */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {day.warmup.map((w, i) => {
-              const parts = w.match(/^(.+?)(\d+\s*.*)$/);
-              const name = parts ? parts[1].trim() : w;
-              const reps = parts ? parts[2].trim() : '';
+              const { name, reps } = parseWarmupCooldown(w);
               return (
                 <div key={i} style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -92,7 +94,7 @@ export default function ReviewPage() {
                   background: 'rgba(34,197,94,0.04)', border: '1px solid rgba(34,197,94,0.08)',
                 }}>
                   <span style={{ fontSize: '0.9rem', color: '#fff' }}>{name}</span>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--gr)' }}>{reps || `${8 + i * 2} reps`}</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--gr)' }}>{reps}</span>
                 </div>
               );
             })}
@@ -106,7 +108,6 @@ export default function ReviewPage() {
           border: '1px solid rgba(224,120,48,0.12)',
           marginBottom: '20px',
         }}>
-          {/* Section Header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
             <div style={{
               width: 48, height: 48, borderRadius: '50%',
@@ -119,8 +120,6 @@ export default function ReviewPage() {
               <p style={{ color: 'var(--whm)', fontSize: '0.8rem', margin: '2px 0 0' }}>{day.exercises.length} exercises</p>
             </div>
           </div>
-
-          {/* Main Exercises */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {day.exercises.map((ex) => (
               <div key={ex.id} style={{
@@ -146,7 +145,6 @@ export default function ReviewPage() {
           border: '1px solid rgba(155,94,203,0.12)',
           marginBottom: '24px',
         }}>
-          {/* Section Header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
             <div style={{
               width: 48, height: 48, borderRadius: '50%',
@@ -159,12 +157,9 @@ export default function ReviewPage() {
               <p style={{ color: 'var(--whm)', fontSize: '0.8rem', margin: '2px 0 0' }}>{day.cooldown.length} exercises</p>
             </div>
           </div>
-
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {day.cooldown.map((c, i) => {
-              const parts = c.match(/^(.+?)(\d+\s*.*)$/);
-              const name = parts ? parts[1].trim() : c;
-              const reps = parts ? parts[2].trim() : '';
+              const { name, reps } = parseWarmupCooldown(c);
               return (
                 <div key={i} style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -172,7 +167,7 @@ export default function ReviewPage() {
                   background: 'rgba(155,94,203,0.03)', border: '1px solid rgba(155,94,203,0.06)',
                 }}>
                   <span style={{ fontSize: '0.9rem', color: '#fff' }}>{name}</span>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--pl)' }}>{reps || '30s'}</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--pl)' }}>{reps}</span>
                 </div>
               );
             })}

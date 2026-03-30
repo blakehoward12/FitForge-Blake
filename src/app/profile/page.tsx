@@ -285,19 +285,29 @@ export default function ProfilePage() {
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {recentWorkouts.map((w) => (
-              <div key={w.id} style={{
-                display: "flex", justifyContent: "space-between", alignItems: "center",
-                padding: "12px 16px", borderRadius: "12px", background: "rgba(255,255,255,0.03)",
-              }}>
+              <div
+                key={w.id}
+                onClick={() => router.push('/builder')}
+                style={{
+                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  padding: "12px 16px", borderRadius: "12px", background: "rgba(255,255,255,0.03)",
+                  cursor: "pointer", transition: "background 0.2s",
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+                onMouseOut={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+              >
                 <div>
                   <p style={{ fontWeight: 600, fontSize: "0.85rem", margin: 0 }}>{w.dayLabel}</p>
                   <p style={{ color: "var(--whm)", fontSize: "0.7rem", margin: "2px 0 0" }}>
                     {w.totalSets} sets &middot; {w.xpEarned} XP
                   </p>
                 </div>
-                <span style={{ color: "var(--whm)", fontSize: "0.75rem" }}>
-                  {new Date(w.completedAt).toLocaleDateString()}
-                </span>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span style={{ color: "var(--whm)", fontSize: "0.75rem" }}>
+                    {new Date(w.completedAt).toLocaleDateString()}
+                  </span>
+                  <span style={{ color: "var(--og)", fontSize: "0.8rem" }}>→</span>
+                </div>
               </div>
             ))}
           </div>

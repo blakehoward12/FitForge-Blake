@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import type { Equipment, Goal, Level } from '@/lib/exercises';
 import { generateWorkout } from '@/lib/exercises';
 
@@ -39,10 +40,12 @@ const LEVEL_OPTIONS: { id: Level; label: string; emoji: string; desc: string }[]
 
 const DAY_OPTIONS = [
   { days: 1, label: '1 Day', sub: 'Quick workout', price: null, badge: null, premium: false },
-  { days: 3, label: '3 Days', sub: 'Mon \u00b7 Wed \u00b7 Fri', price: '$20/mo', badge: '\uD83D\uDD12 Premium', premium: true },
-  { days: 5, label: '5 Days', sub: 'Mon \u2013 Fri', price: '$20/mo', badge: '\u2B50 Popular', premium: true },
-  { days: 7, label: '7 Days', sub: 'Full week', price: '$20/mo', badge: '\uD83D\uDD12 Premium', premium: true },
+  { days: 3, label: '3 Days', sub: 'Mon \u00b7 Wed \u00b7 Fri', price: '$20/mo', badge: '🔒 Premium', premium: true },
+  { days: 5, label: '5 Days', sub: 'Mon \u2013 Fri', price: '$20/mo', badge: '⭐ Popular', premium: true },
+  { days: 7, label: '7 Days', sub: 'Full week', price: '$20/mo', badge: '🔒 Premium', premium: true },
 ];
+
+const STRIPE_CHECKOUT_URL = 'https://buy.stripe.com/test_premium_fitforge';
 
 const FREE_WORKOUT_LIMIT = 3;
 const STORAGE_COUNT_KEY = 'ff_workout_count';
@@ -54,6 +57,7 @@ const STORAGE_WORKOUT_KEY = 'ff_generated_workout';
 
 export default function BuilderPage() {
   const router = useRouter();
+  const { data: session } = useSession();
 
   // Step state
   const [step, setStep] = useState<1 | 2>(1);
@@ -64,12 +68,15 @@ export default function BuilderPage() {
   const [level, setLevel] = useState<Level>('intermediate');
   const [planDays, setPlanDays] = useState<number>(1);
 
-  // Auth gate
+  // Modals
   const [showAuthGate, setShowAuthGate] = useState(false);
+  const [showPremiumGate, setShowPremiumGate] = useState(false);
+
+  const isPremium = false; // TODO: read from session/user data
 
   // ── Equipment toggle ──────────────────────────────────────────────────
   const toggleEquipment = useCallback((id: Equipment) => {
-    if (id === 'bodyweight') return; // Always selected
+    if (id === 'bodyweight') return;
     setEquipment((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
@@ -88,13 +95,22 @@ export default function BuilderPage() {
     localStorage.setItem(STORAGE_COUNT_KEY, String(c));
   };
 
+  // ── Handle clicking premium plan ─────────────────────────────────────
+  const handlePremiumPlanClick = (days: number) => {
+    if (isPremium) {
+      setPlanDays(days);
+    } else {
+      setShowPremiumGate(true);
+    }
+  };
+
   // ── Generate workout ──────────────────────────────────────────────────
   const handleGenerate = () => {
     if (!goal) return;
 
     const count = getFreeCount();
     if (count >= FREE_WORKOUT_LIMIT) {
-      setShowAuthGate(true);
+      setShowPremiumGate(true);
       return;
     }
 
@@ -104,45 +120,88 @@ export default function BuilderPage() {
     router.push('/review');
   };
 
-  // ── Auth gate modal ───────────────────────────────────────────────────
-  const AuthGateModal = () => (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="card max-w-md w-full mx-4 text-center space-y-5" style={{ padding: 32 }}>
-        <div className="text-5xl">🔒</div>
-        <h2 className="font-[family-name:var(--font-heading)] text-2xl tracking-wide text-gradient-brand">
-          Free Limit Reached
-        </h2>
-        <p className="text-gray-400 text-sm leading-relaxed">
-          You&apos;ve used {FREE_WORKOUT_LIMIT} free workouts. Sign in to generate unlimited plans and track your progress.
-        </p>
-        <div className="flex flex-col gap-3">
-          <button
-            className="btn-primary w-full"
-            onClick={() => router.push('/login?returnUrl=/builder')}
-          >
-            Sign In / Sign Up
-          </button>
-          <button
-            className="btn-ghost w-full"
-            onClick={() => setShowAuthGate(false)}
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
   const freeUsed = getFreeCount();
 
   return (
     <main className="min-h-screen pb-20">
-      {showAuthGate && <AuthGateModal />}
+      {/* ── Premium Gate Modal ─────────────────────────────────────── */}
+      {showPremiumGate && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 50,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
+        }}>
+          <div className="card" style={{ maxWidth: '440px', width: '100%', margin: '0 16px', textAlign: 'center', padding: '32px' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🚀</div>
+            <h2 style={{ ...bebas, fontSize: '1.75rem', letterSpacing: 3, marginBottom: '12px' }} className="text-gradient-brand">
+              UPGRADE TO PREMIUM
+            </h2>
+            <p style={{ color: 'var(--whm)', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '24px' }}>
+              {freeUsed >= FREE_WORKOUT_LIMIT
+                ? `You've used all ${FREE_WORKOUT_LIMIT} free workouts. Upgrade to Premium for unlimited access.`
+                : 'Unlock multi-day workout plans with Premium.'}
+            </p>
+
+            <div style={{
+              background: 'rgba(255,255,255,0.03)', border: '1px solid var(--br)',
+              borderRadius: '16px', padding: '20px', marginBottom: '20px', textAlign: 'left',
+            }}>
+              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--og)', marginBottom: '12px', ...bebas, letterSpacing: 2 }}>
+                $20/mo
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {[
+                  'Unlimited workout generation',
+                  '3-day, 5-day, and 7-day plans',
+                  'Full progress tracking & analytics',
+                  'Achievement badges & XP system',
+                  'Priority access to new features',
+                ].map((feature) => (
+                  <div key={feature} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.85rem' }}>
+                    <span style={{ color: 'var(--gr)', fontWeight: 700 }}>✓</span>
+                    <span style={{ color: 'var(--whi)' }}>{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {session?.user ? (
+                <a
+                  href={STRIPE_CHECKOUT_URL}
+                  className="btn-primary"
+                  style={{ width: '100%', justifyContent: 'center', display: 'flex', padding: '14px', textDecoration: 'none', boxSizing: 'border-box' }}
+                >
+                  Get Premium →
+                </a>
+              ) : (
+                <button
+                  className="btn-primary"
+                  style={{ width: '100%', padding: '14px' }}
+                  onClick={() => {
+                    setShowPremiumGate(false);
+                    router.push('/login?returnUrl=/builder');
+                  }}
+                >
+                  Sign Up & Get Premium →
+                </button>
+              )}
+              <button
+                className="btn-ghost"
+                style={{ width: '100%' }}
+                onClick={() => setShowPremiumGate(false)}
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <div style={{ maxWidth: 820, padding: '48px 24px 0 24px' }} className="mx-auto">
         <span className="chip" style={{ marginBottom: 14, display: 'inline-block' }}>
-          Equipment-First &middot; Up to 3 Free Workouts
+          Equipment-First &middot; {freeUsed < FREE_WORKOUT_LIMIT ? `${FREE_WORKOUT_LIMIT - freeUsed} Free Workouts Left` : 'Premium Required'}
         </span>
         <h1 style={{ ...bebas, fontSize: 'clamp(44px,7vw,88px)', lineHeight: 0.95, margin: 0, marginBottom: 14 }}>
           <span className="text-gradient-white">BUILD YOUR</span>
@@ -150,10 +209,10 @@ export default function BuilderPage() {
           <span className="text-gradient-brand">PROGRAM</span>
         </h1>
         <p style={{ color: 'rgba(255,255,255,.4)', fontSize: 14, fontWeight: 300, maxWidth: 460, lineHeight: 1.7, marginBottom: 40, marginTop: 0 }}>
-          Select your equipment and goal. We build a program using only what you have. Free accounts get 3 workouts &mdash; upgrade for unlimited multi-day plans.
+          Select your equipment and goal. We build a program using only what you have. Free accounts get {FREE_WORKOUT_LIMIT} single-day workouts &mdash; upgrade for unlimited multi-day plans.
         </p>
 
-        {/* Step indicator — single horizontal row */}
+        {/* Step indicator */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 32 }}>
           <div style={{
             width: 26, height: 26, borderRadius: '50%',
@@ -185,7 +244,6 @@ export default function BuilderPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 18 }}>
                 <span style={{ fontSize: 11, color: 'var(--whm)', fontWeight: 400 }}>Select all that apply</span>
               </div>
-
               <div className="eq-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 8 }}>
                 {EQUIPMENT_OPTIONS.map((eq) => {
                   const selected = equipment.has(eq.id);
@@ -214,19 +272,11 @@ export default function BuilderPage() {
                   );
                 })}
               </div>
-
-              {/* Hint */}
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,.3)', marginTop: 8, marginBottom: 20 }}>
                 💡 Bodyweight exercises are always included. Select additional equipment you have.
               </p>
-
-              {/* Next button - right aligned */}
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  className="btn-primary"
-                  style={{ padding: '12px 28px', fontSize: 12 }}
-                  onClick={() => setStep(2)}
-                >
+                <button className="btn-primary" style={{ padding: '12px 28px', fontSize: 12 }} onClick={() => setStep(2)}>
                   Next &rarr;
                 </button>
               </div>
@@ -237,7 +287,7 @@ export default function BuilderPage() {
         {/* ── STEP 2: Goal, Level, Days ──────────────────────────────── */}
         {step === 2 && (
           <section>
-            {/* Goal selection — card wrapper */}
+            {/* Goal selection */}
             <div className="card" style={{ padding: 28, marginBottom: 14 }}>
               <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 12 }}>
                 What&apos;s your primary goal?
@@ -250,28 +300,15 @@ export default function BuilderPage() {
                       key={g.id}
                       onClick={() => setGoal(g.id)}
                       style={{
-                        padding: '16px 10px',
-                        borderRadius: 14,
-                        background: selected
-                          ? 'linear-gradient(135deg,rgba(120,45,15,.3),rgba(90,45,130,.3))'
-                          : 'var(--whh)',
-                        border: selected
-                          ? '1px solid rgba(224,120,48,.4)'
-                          : '1px solid var(--br)',
-                        color: selected ? '#fff' : 'var(--whm)',
-                        cursor: 'pointer',
-                        transition: 'all 0.22s',
-                        textAlign: 'center',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 4,
+                        padding: '16px 10px', borderRadius: 14,
+                        background: selected ? 'linear-gradient(135deg,rgba(120,45,15,.3),rgba(90,45,130,.3))' : 'var(--whh)',
+                        border: selected ? '1px solid rgba(224,120,48,.4)' : '1px solid var(--br)',
+                        color: selected ? '#fff' : 'var(--whm)', cursor: 'pointer', transition: 'all 0.22s',
+                        textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
                       }}
                     >
                       <span style={{ fontSize: 24 }}>{g.emoji}</span>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: selected ? '#fff' : 'rgba(255,255,255,.75)' }}>
-                        {g.label}
-                      </span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: selected ? '#fff' : 'rgba(255,255,255,.75)' }}>{g.label}</span>
                       <span style={{ fontSize: 11, color: 'var(--whm)' }}>{g.desc}</span>
                     </button>
                   );
@@ -279,11 +316,9 @@ export default function BuilderPage() {
               </div>
             </div>
 
-            {/* Level selection — card wrapper */}
+            {/* Level selection */}
             <div className="card" style={{ padding: 28, marginBottom: 14 }}>
-              <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 4 }}>
-                Experience level
-              </h3>
+              <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 4 }}>Experience level</h3>
               <p style={{ fontSize: 13, color: 'var(--whm)', fontWeight: 300, margin: 0, marginBottom: 18 }}>
                 We use this to calibrate your sets, reps, and rest times.
               </p>
@@ -295,28 +330,15 @@ export default function BuilderPage() {
                       key={l.id}
                       onClick={() => setLevel(l.id)}
                       style={{
-                        padding: '18px 10px',
-                        borderRadius: 14,
-                        background: selected
-                          ? 'linear-gradient(135deg,rgba(120,45,15,.3),rgba(90,45,130,.3))'
-                          : 'var(--whh)',
-                        border: selected
-                          ? '1px solid rgba(224,120,48,.4)'
-                          : '1px solid var(--br)',
-                        color: selected ? '#fff' : 'var(--whm)',
-                        cursor: 'pointer',
-                        transition: 'all 0.22s',
-                        textAlign: 'center',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 4,
+                        padding: '18px 10px', borderRadius: 14,
+                        background: selected ? 'linear-gradient(135deg,rgba(120,45,15,.3),rgba(90,45,130,.3))' : 'var(--whh)',
+                        border: selected ? '1px solid rgba(224,120,48,.4)' : '1px solid var(--br)',
+                        color: selected ? '#fff' : 'var(--whm)', cursor: 'pointer', transition: 'all 0.22s',
+                        textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
                       }}
                     >
                       <span style={{ fontSize: 24, marginBottom: 8 }}>{l.emoji}</span>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: selected ? '#fff' : 'rgba(255,255,255,.75)' }}>
-                        {l.label}
-                      </span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: selected ? '#fff' : 'rgba(255,255,255,.75)' }}>{l.label}</span>
                       <span style={{ fontSize: 10, color: 'rgba(255,255,255,.35)', fontWeight: 400 }}>{l.desc}</span>
                     </button>
                   );
@@ -324,13 +346,11 @@ export default function BuilderPage() {
               </div>
             </div>
 
-            {/* Plan length — card wrapper */}
+            {/* Plan length */}
             <div className="card" style={{ padding: 28, marginBottom: 14 }}>
-              <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 6 }}>
-                Plan length
-              </h3>
+              <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 6 }}>Plan length</h3>
               <p style={{ fontSize: 13, color: 'var(--whm)', fontWeight: 300, margin: 0, marginBottom: 20 }}>
-                1-day is free. Multi-day plans unlock with Premium ($20/mo).
+                1-day is free (up to {FREE_WORKOUT_LIMIT} workouts). Multi-day plans unlock with Premium ($20/mo).
               </p>
               <div className="plan-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
                 {DAY_OPTIONS.map((d) => {
@@ -339,14 +359,13 @@ export default function BuilderPage() {
                   return (
                     <button
                       key={d.days}
-                      onClick={() => !d.premium && setPlanDays(d.days)}
+                      onClick={() => {
+                        if (d.premium) handlePremiumPlanClick(d.days);
+                        else setPlanDays(d.days);
+                      }}
                       style={{
-                        position: 'relative',
-                        borderRadius: 16,
-                        padding: '20px 10px',
-                        textAlign: 'center',
-                        cursor: d.premium ? 'default' : 'pointer',
-                        transition: 'all 0.22s',
+                        position: 'relative', borderRadius: 16, padding: '20px 10px',
+                        textAlign: 'center', cursor: 'pointer', transition: 'all 0.22s',
                         border: isFree && selected ? '2px solid #fff' : '1px solid var(--br)',
                         background: isFree && selected ? '#fff' : d.premium ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.06)',
                       }}
@@ -355,9 +374,7 @@ export default function BuilderPage() {
                         <span style={{
                           position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)',
                           fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' as const,
-                          background: d.badge.includes('Popular')
-                            ? 'linear-gradient(135deg,#b45309,#92400e)'
-                            : 'linear-gradient(135deg,var(--og),var(--og2))',
+                          background: d.badge.includes('Popular') ? 'linear-gradient(135deg,#b45309,#92400e)' : 'linear-gradient(135deg,var(--og),var(--og2))',
                           borderRadius: 100, padding: '3px 10px', color: '#fff', whiteSpace: 'nowrap'
                         }}>
                           {d.badge}
@@ -370,29 +387,12 @@ export default function BuilderPage() {
                         {d.sub}
                       </div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: isFree ? 'var(--gr)' : 'var(--og)' }}>
-                        {d.price ? d.price : '\u2713 Free'}
+                        {d.price ? d.price : '✓ Free'}
                       </div>
                     </button>
                   );
                 })}
               </div>
-            </div>
-
-            {/* Auth note */}
-            <div style={{
-              background: 'rgba(224,120,48,.06)',
-              border: '1px solid rgba(224,120,48,.15)',
-              borderRadius: 14,
-              padding: '14px 18px',
-              fontSize: 13,
-              color: 'rgba(255,255,255,.6)',
-              lineHeight: 1.6,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              marginBottom: 14,
-            }}>
-              🔐 You&apos;ll sign in or create a free account right before your workout is generated.
             </div>
 
             {/* Free usage counter */}
@@ -409,24 +409,20 @@ export default function BuilderPage() {
                   {[0, 1, 2].map((i) => (
                     <div key={i} style={{
                       height: 5, flex: 1, borderRadius: 100,
-                      background: i < freeUsed
-                        ? 'linear-gradient(135deg, var(--og), var(--og2))'
-                        : 'var(--br)',
+                      background: i < freeUsed ? 'linear-gradient(135deg, var(--og), var(--og2))' : 'var(--br)',
                       transition: 'background 0.3s',
                     }} />
                   ))}
                 </div>
               </div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--og)', whiteSpace: 'nowrap' }}>{freeUsed} / 3 used</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: freeUsed >= FREE_WORKOUT_LIMIT ? 'var(--og2)' : 'var(--og)', whiteSpace: 'nowrap' }}>
+                {freeUsed} / {FREE_WORKOUT_LIMIT} used
+              </div>
             </div>
 
-            {/* Bottom buttons: Back + Generate side by side */}
+            {/* Bottom buttons */}
             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              <button
-                className="btn-ghost"
-                style={{ padding: '12px 22px', fontSize: 12 }}
-                onClick={() => setStep(1)}
-              >
+              <button className="btn-ghost" style={{ padding: '12px 22px', fontSize: 12 }} onClick={() => setStep(1)}>
                 &larr; Back
               </button>
               <button

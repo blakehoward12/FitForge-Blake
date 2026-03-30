@@ -267,6 +267,11 @@ body::before {
   0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
+@keyframes confetti-burst {
+  0% { transform: translateY(-20px) translateX(0) rotate(0deg) scale(0); opacity: 0; }
+  10% { opacity: 1; transform: translateY(0) translateX(0) rotate(45deg) scale(1); }
+  100% { transform: translateY(100vh) translateX(var(--drift, 0px)) rotate(720deg) scale(0.5); opacity: 0; }
+}
 .confetti-piece {
   position: fixed;
   top: 0;

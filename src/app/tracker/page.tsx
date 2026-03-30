@@ -2,9 +2,21 @@
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import type { GeneratedWorkout, WorkoutDay } from '@/lib/exercises';
 
 const STORAGE_WORKOUT_KEY = 'ff_generated_workout';
+
+const equipLabels: Record<string, string> = {
+  bodyweight: 'Bodyweight', dumbbells: 'Dumbbells', barbell: 'Barbell',
+  cables: 'Cables', bands: 'Bands', bench: 'Bench', pullup: 'Pull-Up Bar',
+  full_gym: 'Full Gym',
+};
+
+const goalLabels: Record<string, string> = {
+  muscle: 'Build Muscle', strength: 'Strength', tone: 'Tone & Define',
+  fat_loss: 'Fat Loss', athletic: 'Athletic', endurance: 'Endurance',
+};
 
 // ---------------------------------------------------------------------------
 // Types
@@ -18,29 +30,57 @@ interface FlatExercise {
   sectionLabel: string;
   sets: number;
   reps: number;
+  repsLabel: string;
   tip: string;
   youtubeQuery: string;
   category: string;
 }
 
+/** Parse "High knees (30s)" → { name: "High knees", reps: "30s" } */
+function parseWarmupCooldown(str: string): { name: string; reps: string } {
+  const match = str.match(/^(.+?)\s*\((.+?)\)\s*$/);
+  if (match) return { name: match[1].trim(), reps: match[2].trim() };
+  return { name: str, reps: '' };
+}
+
 // ---------------------------------------------------------------------------
-// Confetti helper
+// High-quality confetti
 // ---------------------------------------------------------------------------
 
 function spawnConfetti() {
-  const colors = ['#e07830', '#c85a8a', '#9b5ecb', '#22c55e', '#5a2d82', '#fff'];
-  for (let i = 0; i < 60; i++) {
+  const colors = ['#e07830', '#c85a8a', '#9b5ecb', '#22c55e', '#5a2d82', '#fff', '#fbbf24', '#ef4444'];
+  const shapes = ['circle', 'rect', 'rect'];
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;';
+  document.body.appendChild(container);
+
+  for (let i = 0; i < 120; i++) {
     const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.left = `${Math.random() * 100}vw`;
-    el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    el.style.animationDelay = `${Math.random() * 1.5}s`;
-    el.style.animationDuration = `${2 + Math.random() * 2}s`;
-    el.style.width = `${6 + Math.random() * 8}px`;
-    el.style.height = `${6 + Math.random() * 8}px`;
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 5000);
+    const shape = shapes[Math.floor(Math.random() * shapes.length)];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const size = 6 + Math.random() * 10;
+    const x = Math.random() * 100;
+    const rotation = Math.random() * 360;
+    const duration = 1.8 + Math.random() * 1.5;
+    const drift = (Math.random() - 0.5) * 200;
+
+    el.style.cssText = `
+      position:absolute;
+      top:-20px;
+      left:${x}%;
+      width:${shape === 'circle' ? size : size * 0.6}px;
+      height:${size}px;
+      background:${color};
+      border-radius:${shape === 'circle' ? '50%' : '2px'};
+      transform:rotate(${rotation}deg);
+      animation:confetti-burst ${duration}s cubic-bezier(.25,.46,.45,.94) forwards;
+      --drift:${drift}px;
+      opacity:0.9;
+    `;
+    container.appendChild(el);
   }
+
+  setTimeout(() => container.remove(), 4000);
 }
 
 // ---------------------------------------------------------------------------
@@ -49,6 +89,7 @@ function spawnConfetti() {
 
 export default function TrackerPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [workout, setWorkout] = useState<GeneratedWorkout | null>(null);
   const [activeDay, setActiveDay] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -56,8 +97,10 @@ export default function TrackerPage() {
   const [weights, setWeights] = useState<Record<string, string>>({});
   const [showCelebration, setShowCelebration] = useState(false);
   const [xpEarned, setXpEarned] = useState(0);
+  const [feedCaption, setFeedCaption] = useState('');
+  const [postingToFeed, setPostingToFeed] = useState(false);
+  const [postedToFeed, setPostedToFeed] = useState(false);
 
-  // Load workout
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_WORKOUT_KEY);
     if (!raw) { router.replace('/builder'); return; }
@@ -66,58 +109,37 @@ export default function TrackerPage() {
 
   const day: WorkoutDay | null = workout?.days[activeDay] ?? null;
 
-  // Flatten all exercises into a single ordered list
   const flatExercises: FlatExercise[] = useMemo(() => {
     if (!day) return [];
     const list: FlatExercise[] = [];
 
     day.warmup.forEach((w, i) => {
-      const parts = w.match(/^(.+?)(\d+\s*.*)$/);
-      const name = parts ? parts[1].trim() : w;
-      const repsStr = parts ? parts[2].trim() : `${8 + i * 2} reps`;
+      const { name, reps } = parseWarmupCooldown(w);
       list.push({
-        id: `warmup_${i}`,
-        name,
-        emoji: ['🐛', '🔵', '🔃', '🔄'][i % 4],
-        section: 'warmup',
-        sectionLabel: 'WARM UP',
-        sets: 1,
-        reps: parseInt(repsStr) || 10,
-        tip: '',
-        youtubeQuery: `${name} exercise form`,
-        category: 'warmup',
+        id: `warmup_${i}`, name, emoji: ['🔥', '🔵', '🔃', '🔄'][i % 4],
+        section: 'warmup', sectionLabel: 'WARM UP',
+        sets: 1, reps: parseInt(reps) || 10, repsLabel: reps || '30s',
+        tip: '', youtubeQuery: `${name} exercise form`, category: 'warmup',
       });
     });
 
     day.exercises.forEach((ex) => {
       list.push({
-        id: ex.id,
-        name: ex.name,
-        emoji: ex.emoji,
-        section: 'main',
-        sectionLabel: 'MAIN WORKOUT',
-        sets: ex.sets,
-        reps: ex.reps,
-        tip: ex.tip,
-        youtubeQuery: ex.youtubeQuery,
-        category: ex.category,
+        id: ex.id, name: ex.name, emoji: ex.emoji,
+        section: 'main', sectionLabel: 'MAIN WORKOUT',
+        sets: ex.sets, reps: ex.reps,
+        repsLabel: `${ex.sets} set${ex.sets > 1 ? 's' : ''} \u00b7 ${ex.reps} reps`,
+        tip: ex.tip, youtubeQuery: ex.youtubeQuery, category: ex.category,
       });
     });
 
     day.cooldown.forEach((c, i) => {
-      const parts = c.match(/^(.+?)(\d+\s*.*)$/);
-      const name = parts ? parts[1].trim() : c;
+      const { name, reps } = parseWarmupCooldown(c);
       list.push({
-        id: `cooldown_${i}`,
-        name,
-        emoji: '🧊',
-        section: 'cooldown',
-        sectionLabel: 'COOL DOWN',
-        sets: 1,
-        reps: 1,
-        tip: '',
-        youtubeQuery: `${name} stretch`,
-        category: 'cooldown',
+        id: `cooldown_${i}`, name, emoji: '🧊',
+        section: 'cooldown', sectionLabel: 'COOL DOWN',
+        sets: 1, reps: 1, repsLabel: reps || '30s',
+        tip: '', youtubeQuery: `${name} stretch`, category: 'cooldown',
       });
     });
 
@@ -129,7 +151,6 @@ export default function TrackerPage() {
   const completedCount = completedIds.size;
   const progressPct = totalExercises > 0 ? Math.round((completedCount / totalExercises) * 100) : 0;
 
-  // Calculate volume
   const volume = useMemo(() => {
     if (!day) return 0;
     let total = 0;
@@ -142,12 +163,21 @@ export default function TrackerPage() {
     return total;
   }, [day, completedIds, weights]);
 
-  // XP calculation
-  useEffect(() => {
-    setXpEarned(completedCount * 10);
-  }, [completedCount]);
+  useEffect(() => { setXpEarned(completedCount * 10); }, [completedCount]);
 
-  // Check completion
+  // Auto-generate caption when celebration shows
+  useEffect(() => {
+    if (showCelebration && workout && day) {
+      const equipList = workout.equipment.map(e => equipLabels[e] || e).join(', ');
+      const goalLabel = goalLabels[workout.goal] || workout.goal;
+      const exerciseNames = day.exercises.slice(0, 3).map(e => e.name).join(', ');
+      const moreCount = day.exercises.length > 3 ? ` +${day.exercises.length - 3} more` : '';
+      setFeedCaption(
+        `Just crushed my ${goalLabel} workout! 💪🔥 ${day.exercises.length} exercises including ${exerciseNames}${moreCount}. ${volume > 0 ? `Moved ${volume.toLocaleString()} lbs total. ` : ''}Using ${equipList}. #FitForge`
+      );
+    }
+  }, [showCelebration, workout, day, volume]);
+
   useEffect(() => {
     if (totalExercises > 0 && completedCount === totalExercises && !showCelebration) {
       setShowCelebration(true);
@@ -162,11 +192,22 @@ export default function TrackerPage() {
       next.add(currentExercise.id);
       return next;
     });
-    // Auto-advance to next incomplete exercise
-    if (currentIndex < totalExercises - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
+    if (currentIndex < totalExercises - 1) setCurrentIndex(currentIndex + 1);
   }, [currentExercise, currentIndex, totalExercises]);
+
+  const handlePostToFeed = async () => {
+    if (!feedCaption.trim()) return;
+    setPostingToFeed(true);
+    try {
+      await fetch('/api/feed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ caption: feedCaption }),
+      });
+      setPostedToFeed(true);
+    } catch { /* silently fail */ }
+    setPostingToFeed(false);
+  };
 
   const handleComplete = async () => {
     try {
@@ -196,15 +237,6 @@ export default function TrackerPage() {
     );
   }
 
-  const sectionColor = currentExercise.section === 'warmup' ? 'var(--gr)' :
-    currentExercise.section === 'cooldown' ? 'var(--pl)' : 'var(--og)';
-
-  const repsLabel = currentExercise.section === 'warmup'
-    ? `${currentExercise.reps} each`
-    : currentExercise.section === 'cooldown'
-      ? '30s hold'
-      : `${currentExercise.sets} set${currentExercise.sets > 1 ? 's' : ''} \u00b7 ${currentExercise.reps} reps`;
-
   return (
     <main style={{ minHeight: '100vh', paddingBottom: '6rem' }}>
       {/* ── Celebration Modal ─────────────────────────────────────────── */}
@@ -214,7 +246,7 @@ export default function TrackerPage() {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)',
         }}>
-          <div className="card" style={{ maxWidth: '400px', width: '100%', margin: '0 16px', textAlign: 'center', padding: '32px' }}>
+          <div className="card" style={{ maxWidth: '420px', width: '100%', margin: '0 16px', textAlign: 'center', padding: '32px' }}>
             <div style={{ fontSize: '3.5rem', marginBottom: '16px' }}>🎉</div>
             <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.75rem', letterSpacing: 3, marginBottom: '20px' }} className="text-gradient-brand">
               WORKOUT COMPLETE!
@@ -235,6 +267,48 @@ export default function TrackerPage() {
                 <div style={{ fontSize: '0.65rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1 }}>XP</div>
               </div>
             </div>
+
+            {/* Post to Feed */}
+            {session?.user && (
+              <div style={{
+                background: 'rgba(255,255,255,0.03)', border: '1px solid var(--br)',
+                borderRadius: '14px', padding: '16px', marginBottom: '16px', textAlign: 'left',
+              }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: '8px' }}>
+                  Share to Feed
+                </div>
+                <textarea
+                  value={feedCaption}
+                  onChange={(e) => setFeedCaption(e.target.value)}
+                  rows={3}
+                  style={{
+                    width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid var(--br)',
+                    borderRadius: '10px', padding: '10px 12px', color: '#fff', fontSize: '0.85rem',
+                    resize: 'none', outline: 'none', fontFamily: "'DM Sans', sans-serif",
+                    lineHeight: 1.5, boxSizing: 'border-box',
+                  }}
+                />
+                {postedToFeed ? (
+                  <div style={{ color: 'var(--gr)', fontSize: '0.8rem', fontWeight: 600, marginTop: '8px' }}>
+                    ✓ Posted to feed!
+                  </div>
+                ) : (
+                  <button
+                    onClick={handlePostToFeed}
+                    disabled={postingToFeed}
+                    style={{
+                      marginTop: '8px', padding: '8px 18px', borderRadius: '100px',
+                      background: 'linear-gradient(135deg, var(--oe), var(--pm))',
+                      border: 'none', color: '#fff', fontSize: '0.7rem', fontWeight: 700,
+                      letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer',
+                    }}
+                  >
+                    {postingToFeed ? 'Posting...' : 'Post 🔥'}
+                  </button>
+                )}
+              </div>
+            )}
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <button className="btn-primary" onClick={handleComplete} style={{ width: '100%', justifyContent: 'center', display: 'flex', padding: '14px' }}>Save & Continue</button>
               <button className="btn-ghost" onClick={() => setShowCelebration(false)} style={{ width: '100%', justifyContent: 'center', display: 'flex' }}>Keep Editing</button>
@@ -250,7 +324,6 @@ export default function TrackerPage() {
         borderBottom: '1px solid rgba(255,255,255,0.05)',
       }}>
         <div style={{ maxWidth: 660, margin: '0 auto', padding: '12px 20px' }}>
-          {/* Top row: section + exercise name + stats + close */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
             <div style={{ minWidth: 0 }}>
               <p style={{ fontSize: '0.65rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 2, margin: 0 }}>
@@ -261,19 +334,11 @@ export default function TrackerPage() {
               </h2>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-              <div style={{
-                padding: '6px 12px', borderRadius: '10px',
-                background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)',
-                textAlign: 'center',
-              }}>
+              <div style={{ padding: '6px 12px', borderRadius: '10px', background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)', textAlign: 'center' }}>
                 <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--gr)' }}>{xpEarned}</div>
                 <div style={{ fontSize: '0.55rem', color: 'var(--whm)', textTransform: 'uppercase' }}>XP</div>
               </div>
-              <div style={{
-                padding: '6px 12px', borderRadius: '10px',
-                background: 'rgba(255,255,255,0.04)', border: '1px solid var(--br)',
-                textAlign: 'center',
-              }}>
+              <div style={{ padding: '6px 12px', borderRadius: '10px', background: 'rgba(255,255,255,0.04)', border: '1px solid var(--br)', textAlign: 'center' }}>
                 <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--whm)' }}>{volume}</div>
                 <div style={{ fontSize: '0.55rem', color: 'var(--whm)', textTransform: 'uppercase' }}>LBS</div>
               </div>
@@ -285,19 +350,11 @@ export default function TrackerPage() {
                   color: 'var(--whm)', cursor: 'pointer', fontSize: '1rem',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
-              >
-                ✕
-              </button>
+              >✕</button>
             </div>
           </div>
-
-          {/* Progress bar */}
           <div style={{ height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.05)', overflow: 'hidden' }}>
-            <div style={{
-              height: '100%', borderRadius: 2,
-              background: 'linear-gradient(90deg, var(--og), var(--og2))',
-              width: `${progressPct}%`, transition: 'width 0.5s',
-            }} />
+            <div style={{ height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, var(--og), var(--og2))', width: `${progressPct}%`, transition: 'width 0.5s' }} />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
             <span style={{ fontSize: '0.65rem', color: 'var(--whm)' }}>Exercise {currentIndex + 1} of {totalExercises}</span>
@@ -342,13 +399,11 @@ export default function TrackerPage() {
               ? 'rgba(155,94,203,0.15)' : 'rgba(224,120,48,0.12)'}`,
           textAlign: 'center',
         }}>
-          {/* Emoji + How-to */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
             <div style={{ fontSize: '3rem' }}>{currentExercise.emoji}</div>
             <a
               href={`https://www.youtube.com/results?search_query=${encodeURIComponent(currentExercise.youtubeQuery)}`}
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer"
               style={{
                 padding: '6px 14px', borderRadius: '10px',
                 background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)',
@@ -359,26 +414,18 @@ export default function TrackerPage() {
               <span style={{ fontSize: '0.8rem' }}>▶</span> How-to
             </a>
           </div>
-
-          {/* Name */}
-          <h2 style={{
-            fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem',
-            letterSpacing: 3, margin: '0 0 4px', textAlign: 'left',
-          }}>
+          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem', letterSpacing: 3, margin: '0 0 4px', textAlign: 'left' }}>
             {currentExercise.name.toUpperCase()}
           </h2>
           <p style={{ color: 'var(--whm)', fontSize: '0.85rem', textAlign: 'left', marginBottom: '20px' }}>
-            {repsLabel}
+            {currentExercise.repsLabel}
           </p>
 
-          {/* Weight input for main exercises */}
           {currentExercise.section === 'main' && (
             <div style={{ marginBottom: '16px', textAlign: 'left' }}>
               <label style={{ fontSize: '0.7rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1 }}>Weight (lbs)</label>
               <input
-                type="number"
-                inputMode="decimal"
-                placeholder="0"
+                type="number" inputMode="decimal" placeholder="0"
                 value={weights[currentExercise.id] || ''}
                 onChange={(e) => setWeights(prev => ({ ...prev, [currentExercise.id]: e.target.value }))}
                 className="input-field"
@@ -387,7 +434,6 @@ export default function TrackerPage() {
             </div>
           )}
 
-          {/* Tip */}
           {currentExercise.tip && (
             <div style={{
               padding: '14px 18px', borderRadius: '12px',
@@ -400,16 +446,13 @@ export default function TrackerPage() {
             </div>
           )}
 
-          {/* Mark as Done button */}
           {completedIds.has(currentExercise.id) ? (
             <div style={{
               width: '100%', padding: '18px', borderRadius: '16px',
               background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)',
               color: 'var(--gr)', fontSize: '1rem', fontWeight: 700,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-            }}>
-              ✓ Done
-            </div>
+            }}>✓ Done</div>
           ) : (
             <button
               onClick={markDone}
@@ -421,37 +464,21 @@ export default function TrackerPage() {
               }}
               onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
               onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
-            >
-              Mark as Done
-            </button>
+            >Mark as Done</button>
           )}
         </div>
 
         {/* ── Prev / Next Buttons ─────────────────────────────────────── */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '20px' }}>
-          <button
-            className="btn-ghost"
-            disabled={currentIndex === 0}
-            onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
-            style={{ justifyContent: 'center', display: 'flex', padding: '16px' }}
-          >
+          <button className="btn-ghost" disabled={currentIndex === 0} onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))} style={{ justifyContent: 'center', display: 'flex', padding: '16px' }}>
             &larr; Prev
           </button>
           {currentIndex < totalExercises - 1 ? (
-            <button
-              className="btn-ghost"
-              onClick={() => setCurrentIndex(currentIndex + 1)}
-              style={{ justifyContent: 'center', display: 'flex', padding: '16px', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
-            >
+            <button className="btn-ghost" onClick={() => setCurrentIndex(currentIndex + 1)} style={{ justifyContent: 'center', display: 'flex', padding: '16px', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}>
               Next Exercise &rarr;
             </button>
           ) : (
-            <button
-              className="btn-primary"
-              disabled={completedCount < totalExercises}
-              onClick={() => { setShowCelebration(true); spawnConfetti(); }}
-              style={{ justifyContent: 'center', display: 'flex', padding: '16px' }}
-            >
+            <button className="btn-primary" disabled={completedCount < totalExercises} onClick={() => { setShowCelebration(true); spawnConfetti(); }} style={{ justifyContent: 'center', display: 'flex', padding: '16px' }}>
               Finish Workout
             </button>
           )}
