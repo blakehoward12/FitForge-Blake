@@ -99,7 +99,6 @@ export default function TrackerPage() {
   const [xpEarned, setXpEarned] = useState(0);
   const [feedCaption, setFeedCaption] = useState('');
   const [postingToFeed, setPostingToFeed] = useState(false);
-  const [postedToFeed, setPostedToFeed] = useState(false);
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_WORKOUT_KEY);
@@ -195,22 +194,10 @@ export default function TrackerPage() {
     if (currentIndex < totalExercises - 1) setCurrentIndex(currentIndex + 1);
   }, [currentExercise, currentIndex, totalExercises]);
 
-  const handlePostToFeed = async () => {
-    if (!feedCaption.trim()) return;
+  const handlePostAndContinue = async () => {
     setPostingToFeed(true);
     try {
-      await fetch('/api/feed', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ caption: feedCaption }),
-      });
-      setPostedToFeed(true);
-    } catch { /* silently fail */ }
-    setPostingToFeed(false);
-  };
-
-  const handleComplete = async () => {
-    try {
+      // Save completed workout
       await fetch('/api/workouts/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -224,9 +211,18 @@ export default function TrackerPage() {
           completedAt: new Date().toISOString(),
         }),
       });
+      // Post to feed if caption exists
+      if (feedCaption.trim() && session?.user) {
+        await fetch('/api/feed', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ caption: feedCaption }),
+        });
+      }
     } catch { /* silently fail */ }
+    setPostingToFeed(false);
     setShowCelebration(false);
-    router.push('/profile');
+    router.push('/feed');
   };
 
   if (!workout || !day || !currentExercise) {
@@ -268,49 +264,36 @@ export default function TrackerPage() {
               </div>
             </div>
 
-            {/* Post to Feed */}
-            {session?.user && (
-              <div style={{
-                background: 'rgba(255,255,255,0.03)', border: '1px solid var(--br)',
-                borderRadius: '14px', padding: '16px', marginBottom: '16px', textAlign: 'left',
-              }}>
-                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: '8px' }}>
-                  Share to Feed
-                </div>
-                <textarea
-                  value={feedCaption}
-                  onChange={(e) => setFeedCaption(e.target.value)}
-                  rows={3}
-                  style={{
-                    width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid var(--br)',
-                    borderRadius: '10px', padding: '10px 12px', color: '#fff', fontSize: '0.85rem',
-                    resize: 'none', outline: 'none', fontFamily: "'DM Sans', sans-serif",
-                    lineHeight: 1.5, boxSizing: 'border-box',
-                  }}
-                />
-                {postedToFeed ? (
-                  <div style={{ color: 'var(--gr)', fontSize: '0.8rem', fontWeight: 600, marginTop: '8px' }}>
-                    ✓ Posted to feed!
-                  </div>
-                ) : (
-                  <button
-                    onClick={handlePostToFeed}
-                    disabled={postingToFeed}
-                    style={{
-                      marginTop: '8px', padding: '8px 18px', borderRadius: '100px',
-                      background: 'linear-gradient(135deg, var(--oe), var(--pm))',
-                      border: 'none', color: '#fff', fontSize: '0.7rem', fontWeight: 700,
-                      letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer',
-                    }}
-                  >
-                    {postingToFeed ? 'Posting...' : 'Post 🔥'}
-                  </button>
-                )}
+            {/* Share to Feed */}
+            <div style={{
+              background: 'rgba(255,255,255,0.03)', border: '1px solid var(--br)',
+              borderRadius: '14px', padding: '16px', marginBottom: '20px', textAlign: 'left',
+            }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: '8px' }}>
+                Share to Feed
               </div>
-            )}
+              <textarea
+                value={feedCaption}
+                onChange={(e) => setFeedCaption(e.target.value)}
+                rows={3}
+                style={{
+                  width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid var(--br)',
+                  borderRadius: '10px', padding: '10px 12px', color: '#fff', fontSize: '0.85rem',
+                  resize: 'none', outline: 'none', fontFamily: "'DM Sans', sans-serif",
+                  lineHeight: 1.5, boxSizing: 'border-box',
+                }}
+              />
+            </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <button className="btn-primary" onClick={handleComplete} style={{ width: '100%', justifyContent: 'center', display: 'flex', padding: '14px' }}>Save & Continue</button>
+              <button
+                className="btn-primary animate-glow"
+                onClick={handlePostAndContinue}
+                disabled={postingToFeed}
+                style={{ width: '100%', justifyContent: 'center', display: 'flex', padding: '16px', borderRadius: '16px', fontSize: '13px' }}
+              >
+                {postingToFeed ? 'Posting...' : 'Post & Continue 🔥'}
+              </button>
               <button className="btn-ghost" onClick={() => setShowCelebration(false)} style={{ width: '100%', justifyContent: 'center', display: 'flex' }}>Keep Editing</button>
             </div>
           </div>

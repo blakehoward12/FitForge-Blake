@@ -45,8 +45,6 @@ const DAY_OPTIONS = [
   { days: 7, label: '7 Days', sub: 'Full week', price: '$20/mo', badge: '🔒 Premium', premium: true },
 ];
 
-const STRIPE_CHECKOUT_URL = 'https://buy.stripe.com/test_premium_fitforge';
-
 const FREE_WORKOUT_LIMIT = 3;
 const STORAGE_COUNT_KEY = 'ff_workout_count';
 const STORAGE_WORKOUT_KEY = 'ff_generated_workout';
@@ -166,26 +164,16 @@ export default function BuilderPage() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {session?.user ? (
-                <a
-                  href={STRIPE_CHECKOUT_URL}
-                  className="btn-primary"
-                  style={{ width: '100%', justifyContent: 'center', display: 'flex', padding: '14px', textDecoration: 'none', boxSizing: 'border-box' }}
-                >
-                  Get Premium →
-                </a>
-              ) : (
-                <button
-                  className="btn-primary"
-                  style={{ width: '100%', padding: '14px' }}
-                  onClick={() => {
-                    setShowPremiumGate(false);
-                    router.push('/login?returnUrl=/builder');
-                  }}
-                >
-                  Sign Up & Get Premium →
-                </button>
-              )}
+              <button
+                className="btn-primary"
+                style={{ width: '100%', padding: '14px' }}
+                onClick={() => {
+                  setShowPremiumGate(false);
+                  router.push('/premium');
+                }}
+              >
+                Get Premium →
+              </button>
               <button
                 className="btn-ghost"
                 style={{ width: '100%' }}

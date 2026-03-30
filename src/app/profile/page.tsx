@@ -287,7 +287,15 @@ export default function ProfilePage() {
             {recentWorkouts.map((w) => (
               <div
                 key={w.id}
-                onClick={() => router.push('/builder')}
+                onClick={() => {
+                  // If there's a workout in localStorage, go to tracker flow
+                  const saved = localStorage.getItem('ff_generated_workout');
+                  if (saved) {
+                    router.push('/review');
+                  } else {
+                    router.push('/builder');
+                  }
+                }}
                 style={{
                   display: "flex", justifyContent: "space-between", alignItems: "center",
                   padding: "12px 16px", borderRadius: "12px", background: "rgba(255,255,255,0.03)",

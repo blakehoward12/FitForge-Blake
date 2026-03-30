@@ -338,38 +338,120 @@ export const EXERCISES: Record<string, Exercise> = {
 };
 
 // ---------------------------------------------------------------------------
-// Warmup & Cooldown Pools
+// Warmup & Cooldown Pools (equipment-tagged and contextual by day type)
 // ---------------------------------------------------------------------------
 
-export const WARMUP_POOL: string[] = [
-  'Arm circles (30s)',
-  'Leg swings (30s each)',
-  'Hip circles (30s)',
-  'High knees (30s)',
-  'Butt kicks (30s)',
-  'Jumping jacks (30s)',
-  'Bodyweight squats (10 reps)',
-  'Inchworms (5 reps)',
-  'Cat-cow stretch (30s)',
-  'Band pull-aparts (15 reps)',
-  'Shoulder dislocations (10 reps)',
-  'Glute bridges (10 reps)',
+interface WarmupItem {
+  name: string;
+  equipment: Equipment | 'none';
+}
+
+const UPPER_WARMUPS: WarmupItem[] = [
+  { name: 'Shoulder circles (30s each direction)', equipment: 'none' },
+  { name: 'Arm circles (30s each direction)', equipment: 'none' },
+  { name: 'Wrist rotations (30s)', equipment: 'none' },
+  { name: 'Cat-cow stretch (30s)', equipment: 'none' },
+  { name: 'Inchworms (5 reps)', equipment: 'none' },
+  { name: 'Scapular push-ups (10 reps)', equipment: 'none' },
+  { name: 'Wall slides (10 reps)', equipment: 'none' },
+  { name: 'Band pull-aparts (15 reps)', equipment: 'bands' },
+  { name: 'Shoulder dislocations (10 reps)', equipment: 'bands' },
+  { name: 'Light barbell press (bar only, 10 reps)', equipment: 'barbell' },
 ];
 
-export const COOLDOWN_POOL: string[] = [
-  'Standing quad stretch (30s each)',
-  'Standing hamstring stretch (30s each)',
-  'Chest doorway stretch (30s)',
-  'Cross-body shoulder stretch (30s each)',
-  'Seated forward fold (45s)',
-  'Child\'s pose (45s)',
-  'Supine twist (30s each)',
-  'Hip flexor stretch (30s each)',
-  'Calf stretch (30s each)',
-  'Neck rolls (30s)',
-  'Deep breathing (1 min)',
-  'Foam rolling (2 min)',
+const LOWER_WARMUPS: WarmupItem[] = [
+  { name: 'Hip circles (30s each direction)', equipment: 'none' },
+  { name: 'Leg swings (30s each leg)', equipment: 'none' },
+  { name: 'Bodyweight squats (10 reps)', equipment: 'none' },
+  { name: 'Glute bridges (10 reps)', equipment: 'none' },
+  { name: 'High knees (30s)', equipment: 'none' },
+  { name: 'Walking knee hugs (30s)', equipment: 'none' },
+  { name: 'Ankle circles (30s each)', equipment: 'none' },
+  { name: 'Lateral lunges (5 each side)', equipment: 'none' },
+  { name: 'Jump rope (1 min)', equipment: 'full_gym' },
 ];
+
+const FULL_BODY_WARMUPS: WarmupItem[] = [
+  { name: 'Arm circles (30s each direction)', equipment: 'none' },
+  { name: 'Hip circles (30s each direction)', equipment: 'none' },
+  { name: 'High knees (30s)', equipment: 'none' },
+  { name: 'Bodyweight squats (10 reps)', equipment: 'none' },
+  { name: 'Inchworms (5 reps)', equipment: 'none' },
+  { name: 'Cat-cow stretch (30s)', equipment: 'none' },
+  { name: 'Glute bridges (10 reps)', equipment: 'none' },
+  { name: 'Leg swings (30s each leg)', equipment: 'none' },
+  { name: 'Shoulder circles (30s each direction)', equipment: 'none' },
+  { name: 'Band pull-aparts (15 reps)', equipment: 'bands' },
+  { name: 'Jump rope (1 min)', equipment: 'full_gym' },
+];
+
+type DayCategory = 'upper' | 'lower' | 'full';
+
+function getDayCategory(dayType: DayType): DayCategory {
+  switch (dayType) {
+    case 'push':
+    case 'pull':
+    case 'upper':
+      return 'upper';
+    case 'legs':
+    case 'lower':
+      return 'lower';
+    default:
+      return 'full';
+  }
+}
+
+function getWarmupPool(dayType: DayType): WarmupItem[] {
+  switch (getDayCategory(dayType)) {
+    case 'upper':
+      return UPPER_WARMUPS;
+    case 'lower':
+      return LOWER_WARMUPS;
+    case 'full':
+      return FULL_BODY_WARMUPS;
+  }
+}
+
+/** Pick warmups filtered by user equipment and day type */
+function pickWarmups(dayType: DayType, userEquipment: Equipment[], count: number): string[] {
+  const pool = getWarmupPool(dayType);
+  const filtered = pool.filter(
+    (w) => w.equipment === 'none' || userEquipment.includes(w.equipment),
+  );
+  return pickN(filtered, count).map((w) => w.name);
+}
+
+interface CooldownItem {
+  name: string;
+  equipment: Equipment | 'none';
+}
+
+const COOLDOWN_POOL_ITEMS: CooldownItem[] = [
+  { name: 'Standing quad stretch (30s each)', equipment: 'none' },
+  { name: 'Standing hamstring stretch (30s each)', equipment: 'none' },
+  { name: 'Chest doorway stretch (30s)', equipment: 'none' },
+  { name: 'Cross-body shoulder stretch (30s each)', equipment: 'none' },
+  { name: 'Seated forward fold (45s)', equipment: 'none' },
+  { name: 'Child\'s pose (45s)', equipment: 'none' },
+  { name: 'Supine twist (30s each)', equipment: 'none' },
+  { name: 'Hip flexor stretch (30s each)', equipment: 'none' },
+  { name: 'Calf stretch (30s each)', equipment: 'none' },
+  { name: 'Neck rolls (30s)', equipment: 'none' },
+  { name: 'Deep breathing (1 min)', equipment: 'none' },
+  { name: 'Foam rolling (2 min)', equipment: 'full_gym' },
+];
+
+/** Pick cooldowns filtered by user equipment */
+function pickCooldowns(userEquipment: Equipment[], count: number): string[] {
+  const filtered = COOLDOWN_POOL_ITEMS.filter(
+    (c) => c.equipment === 'none' || userEquipment.includes(c.equipment),
+  );
+  return pickN(filtered, count).map((c) => c.name);
+}
+
+// Legacy exports for backward compatibility
+export const WARMUP_POOL: string[] = FULL_BODY_WARMUPS.map((w) => w.name);
+export const COOLDOWN_POOL: string[] = COOLDOWN_POOL_ITEMS.map((c) => c.name);
 
 // ---------------------------------------------------------------------------
 // Day Templates – which categories each day type trains
@@ -450,17 +532,26 @@ function pickN<T>(pool: T[], n: number): T[] {
   return shuffle(pool).slice(0, n);
 }
 
-/** Modify sets/reps based on experience level */
+/** Modify sets/reps based on experience level and exercise type */
 export function applyLevelModifier(
   sets: number,
   reps: number,
   level: Level,
+  isIsolation: boolean = false,
 ): { sets: number; reps: number } {
   switch (level) {
     case 'beginner':
-      return { sets: Math.max(2, sets - 1), reps };
+      // Reduce sets by 1, reduce reps slightly for compounds
+      return {
+        sets: Math.max(2, sets - 1),
+        reps: isIsolation ? Math.max(6, reps - 2) : Math.max(4, reps - 2),
+      };
     case 'advanced':
-      return { sets: sets + 1, reps };
+      // Add 1 set; increase reps for isolation work
+      return {
+        sets: sets + 1,
+        reps: isIsolation ? reps + 2 : reps,
+      };
     default:
       return { sets, reps };
   }
@@ -490,7 +581,8 @@ export function buildDay(
     const chosen = shuffle(catExercises).slice(0, 2);
     for (const [id, ex] of chosen) {
       const [baseSets, baseReps] = ex.sets[goal];
-      const { sets, reps } = applyLevelModifier(baseSets, baseReps, level);
+      const isIsolation = ex.sets === ISOLATION;
+      const { sets, reps } = applyLevelModifier(baseSets, baseReps, level, isIsolation);
       picked.push({
         id,
         name: ex.name,
@@ -518,9 +610,9 @@ export function buildDay(
   return {
     name: dayNames[dayType],
     type: dayType,
-    warmup: pickN(WARMUP_POOL, 4),
+    warmup: pickWarmups(dayType, userEquipment, 4),
     exercises: limited,
-    cooldown: pickN(COOLDOWN_POOL, 3),
+    cooldown: pickCooldowns(userEquipment, 3),
   };
 }
 
