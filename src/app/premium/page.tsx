@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -16,6 +17,35 @@ const FEATURES = [
 export default function PremiumPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubscribe = async () => {
+    if (!session?.user) {
+      router.push('/login?returnUrl=/premium');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/stripe/checkout', { method: 'POST' });
+      const data = await res.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else if (data.error === 'Stripe not configured' || data.error === 'Stripe price not configured') {
+        setError('Payment system is being set up. Please check back shortly.');
+      } else {
+        setError(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setError('Connection error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main style={{ minHeight: '100vh', paddingBottom: '4rem' }}>
@@ -55,35 +85,30 @@ export default function PremiumPage() {
           </div>
         </div>
 
+        {/* Error message */}
+        {error && (
+          <div style={{
+            background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)',
+            borderRadius: '12px', padding: '12px 16px', marginBottom: '16px',
+            color: '#ef4444', fontSize: '0.85rem', textAlign: 'center',
+          }}>
+            {error}
+          </div>
+        )}
+
         {/* CTA */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {session?.user ? (
-            <button
-              className="btn-primary animate-glow"
-              style={{
-                width: '100%', padding: '18px', fontSize: '14px', justifyContent: 'center',
-                display: 'flex', borderRadius: '16px',
-              }}
-              onClick={() => {
-                // In production, this would redirect to Stripe Checkout
-                // For now, show coming soon
-                alert('Stripe checkout integration coming soon! Premium features will be activated after payment.');
-              }}
-            >
-              Subscribe Now — $20/mo
-            </button>
-          ) : (
-            <button
-              className="btn-primary animate-glow"
-              style={{
-                width: '100%', padding: '18px', fontSize: '14px', justifyContent: 'center',
-                display: 'flex', borderRadius: '16px',
-              }}
-              onClick={() => router.push('/login?returnUrl=/premium')}
-            >
-              Sign Up & Get Premium →
-            </button>
-          )}
+          <button
+            className="btn-primary animate-glow"
+            style={{
+              width: '100%', padding: '18px', fontSize: '14px', justifyContent: 'center',
+              display: 'flex', borderRadius: '16px',
+            }}
+            onClick={handleSubscribe}
+            disabled={loading}
+          >
+            {loading ? 'Redirecting to checkout...' : session?.user ? 'Subscribe Now — $20/mo' : 'Sign Up & Subscribe — $20/mo'}
+          </button>
           <button
             className="btn-ghost"
             onClick={() => router.push('/builder')}

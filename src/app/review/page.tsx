@@ -18,6 +18,21 @@ function formatReps(ex: { sets: number; reps: number }): string {
   return `${ex.sets} \u00d7 ${ex.reps}`;
 }
 
+const goalLabels: Record<string, string> = {
+  muscle: 'Build Muscle', strength: 'Strength', tone: 'Tone & Define',
+  fat_loss: 'Fat Loss', athletic: 'Athletic', endurance: 'Endurance',
+};
+
+const levelLabels: Record<string, string> = {
+  beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced',
+};
+
+const equipLabels: Record<string, string> = {
+  bodyweight: 'Bodyweight', dumbbells: 'Dumbbells', barbell: 'Barbell',
+  cables: 'Cables', bands: 'Bands', bench: 'Bench', pullup: 'Pull-Up Bar',
+  full_gym: 'Full Gym',
+};
+
 export default function ReviewPage() {
   const router = useRouter();
   const [workout, setWorkout] = useState<GeneratedWorkout | null>(null);
@@ -42,6 +57,27 @@ export default function ReviewPage() {
   return (
     <main style={{ minHeight: '100vh', paddingBottom: '6rem' }}>
       <div style={{ maxWidth: 660, margin: '0 auto', padding: '24px 20px' }}>
+
+        {/* Workout Header */}
+        <div style={{ marginBottom: '28px' }}>
+          <span className="chip" style={{ marginBottom: 14, display: 'inline-block' }}>
+            {goalLabels[workout.goal] || workout.goal} &middot; {levelLabels[workout.level] || workout.level} &middot; {workout.days.length}-Day Plan
+          </span>
+          <h1 style={{
+            fontFamily: "'Bebas Neue', sans-serif",
+            fontSize: 'clamp(44px,8vw,80px)', lineHeight: 0.93,
+            margin: '0 0 10px',
+          }}>
+            <span className="text-gradient-white" style={{ display: 'block' }}>{day.name.toUpperCase()}</span>
+            <span className="text-gradient-brand" style={{ display: 'block' }}>READY</span>
+          </h1>
+          <p style={{ color: 'var(--whm)', fontSize: '0.85rem', fontWeight: 300, margin: '10px 0 4px', lineHeight: 1.6 }}>
+            Generated from: your equipment &middot; your goal &middot; {levelLabels[workout.level]?.toLowerCase() || workout.level} level
+          </p>
+          <p style={{ color: 'var(--og)', fontSize: '0.8rem', fontWeight: 500, margin: 0 }}>
+            Using: {workout.equipment.map(e => equipLabels[e] || e).join(', ')}
+          </p>
+        </div>
 
         {/* Day tabs */}
         {workout.days.length > 1 && (
