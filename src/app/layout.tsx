@@ -22,21 +22,12 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://fitforgelifts.co",
     siteName: "FitForge",
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "FitForge — Build. Track. Share.",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "FitForge — Build. Track. Share.",
     description:
       "AI workout building around your equipment, gamified gym tracking, a social fitness feed, and a creator marketplace.",
-    images: ["/og.png"],
   },
 };
 
