@@ -19,6 +19,7 @@ export function Nav() {
     { href: "/feed", label: "Feed" },
     { href: "/marketplace", label: "Marketplace" },
     { href: "/profile", label: "Profile" },
+    { href: "/faq", label: "FAQ" },
   ];
 
   return (

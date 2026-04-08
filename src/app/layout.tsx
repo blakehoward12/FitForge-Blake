@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import { Nav } from "@/components/nav";
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -31,6 +32,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main className="pt-[62px]">
               {children}
             </main>
+            <footer className="relative z-10 border-t py-8 px-8 text-center" style={{ borderColor: "rgba(255,255,255,.06)" }}>
+              <p className="text-[11px] tracking-[1px] uppercase" style={{ color: "rgba(255,255,255,.2)" }}>
+                <Link href="/faq" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>FAQ</Link>
+                {" · "}
+                <Link href="/privacy" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>Privacy Policy</Link>
+                {" · "}
+                <a href="mailto:blake@fitforgelifts.co" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>Contact</a>
+              </p>
+            </footer>
           </div>
         </SessionProvider>
       </body>
