@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "Build AI workouts around your gym, track gains with XP and streaks, share PRs with the community, and buy or sell programs from real coaches.",
   alternates: { canonical: "/" },
-  openGraph: { url: "https://fitforgelifts.co/" },
+  openGraph: { url: "https://fitforgelifts.co/", images: ["/opengraph-image"] },
 };
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };

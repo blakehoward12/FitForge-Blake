@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Buy workout programs from real coaches — or sell your own and keep 80% of every sale. Join the FitForge Creator Marketplace waitlist now.",
   alternates: { canonical: "/marketplace" },
-  openGraph: { url: "https://fitforgelifts.co/marketplace" },
+  openGraph: { url: "https://fitforgelifts.co/marketplace", images: ["/opengraph-image"] },
 };
 
 export default function MarketplaceLayout({ children }: { children: React.ReactNode }) {

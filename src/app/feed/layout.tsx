@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "The FitForge social feed — share PRs, post workout wins, follow real athletes, and stay motivated by people actually putting in the work.",
   alternates: { canonical: "/feed" },
-  openGraph: { url: "https://fitforgelifts.co/feed" },
+  openGraph: { url: "https://fitforgelifts.co/feed", images: ["/opengraph-image"] },
 };
 
 export default function FeedLayout({ children }: { children: React.ReactNode }) {

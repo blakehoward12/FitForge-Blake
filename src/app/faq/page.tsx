@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Common questions about FitForge — pricing, the AI workout builder, the creator marketplace, social feed, gamified tracking, and contact info.",
   alternates: { canonical: "/faq" },
-  openGraph: { url: "https://fitforgelifts.co/faq" },
+  openGraph: { url: "https://fitforgelifts.co/faq", images: ["/opengraph-image"] },
 };
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };

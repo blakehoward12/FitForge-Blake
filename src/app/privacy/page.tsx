@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "How FitForge collects, uses, and protects your data — account info, workout logs, Stripe payments, third-party services, and your rights.",
   alternates: { canonical: "/privacy" },
-  openGraph: { url: "https://fitforgelifts.co/privacy" },
+  openGraph: { url: "https://fitforgelifts.co/privacy", images: ["/opengraph-image"] },
 };
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };
