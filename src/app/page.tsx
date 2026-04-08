@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Marquee } from "@/components/marquee";
+
+export const metadata: Metadata = {
+  title: "FitForge — Build. Track. Share.",
+  description:
+    "The world's first social fitness marketplace. Build AI workouts around your equipment, track gains with gamified XP and streaks, share PRs with the community, and buy or sell programs from real coaches.",
+  alternates: { canonical: "/" },
+};
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };
 

@@ -5,13 +5,38 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "FitForge — Build. Track. Share.",
-  description: "AI workout building, gamified gym tracking, social fitness feed, and creator monetization — all in one place.",
+  metadataBase: new URL("https://fitforgelifts.co"),
+  title: {
+    default: "FitForge — Build. Track. Share.",
+    template: "%s | FitForge",
+  },
+  description:
+    "FitForge is the world's first social fitness marketplace. Build AI workouts around the equipment you actually have, track your gains, share PRs with the community, and buy or sell programs from real coaches.",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "FitForge — Build. Track. Share.",
-    description: "AI workout building, gamified gym tracking, social fitness feed, and creator monetization.",
+    description:
+      "AI workout building around your equipment, gamified gym tracking, a social fitness feed, and a creator marketplace — all in one place.",
     type: "website",
     url: "https://fitforgelifts.co",
+    siteName: "FitForge",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "FitForge — Build. Track. Share.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FitForge — Build. Track. Share.",
+    description:
+      "AI workout building around your equipment, gamified gym tracking, a social fitness feed, and a creator marketplace.",
+    images: ["/og.png"],
   },
 };
 

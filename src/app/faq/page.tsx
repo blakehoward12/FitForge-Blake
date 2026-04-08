@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "FAQ — Frequently Asked Questions",
+  description:
+    "Answers to common questions about FitForge — pricing, the AI workout builder, the creator marketplace, social feed, gamified tracking, supported equipment, and how to contact us.",
+  alternates: { canonical: "/faq" },
+};
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };
 
@@ -57,12 +65,12 @@ export default function FAQPage() {
               className="card"
               style={{ padding: "28px 32px" }}
             >
-              <h3
+              <h2
                 className="text-white mb-3"
                 style={{ ...bebas, fontSize: "clamp(18px,2.2vw,22px)", letterSpacing: 0.5 }}
               >
                 {item.q}
-              </h3>
+              </h2>
               <p className="font-light text-[14px] leading-[1.75]" style={{ color: "rgba(255,255,255,.5)" }}>
                 {item.a}
               </p>
@@ -92,8 +100,9 @@ export default function FAQPage() {
             href="mailto:blake@fitforgelifts.co"
             className="btn-primary"
             style={{ padding: "15px 36px", fontSize: 12, display: "inline-block" }}
+            aria-label="Email blake@fitforgelifts.co"
           >
-            blake@fitforgelifts.co →
+            blake@fitforgelifts.co
           </a>
         </div>
       </section>

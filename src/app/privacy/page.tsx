@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description:
+    "How FitForge collects, uses, and protects your personal information — covering account data, workout logs, payments via Stripe, third-party services, your rights, and how to contact us about your data.",
+  alternates: { canonical: "/privacy" },
+};
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };
 
@@ -68,12 +76,12 @@ export default function PrivacyPage() {
               className="card"
               style={{ padding: "28px 32px" }}
             >
-              <h3
+              <h2
                 className="text-white mb-3"
                 style={{ ...bebas, fontSize: "clamp(18px,2.2vw,22px)", letterSpacing: 0.5 }}
               >
                 {i + 1}. {section.title}
-              </h3>
+              </h2>
               <p className="font-light text-[14px] leading-[1.8]" style={{ color: "rgba(255,255,255,.5)" }}>
                 {section.body}
               </p>
