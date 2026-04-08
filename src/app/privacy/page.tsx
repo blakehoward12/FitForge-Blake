@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Privacy Policy & Data Protection",
   description:
-    "How FitForge collects, uses, and protects your data — account info, workout logs, Stripe payments, third-party services, and your rights.",
+    "How FitForge collects, uses, and protects your data — account info, workout logs, subscriptions, third-party services, and your rights.",
   alternates: { canonical: "/privacy" },
   openGraph: { url: "https://fitforgelifts.co/privacy", images: ["/opengraph-image"] },
 };
@@ -22,7 +22,11 @@ const sections = [
   },
   {
     title: "Data Storage & Security",
-    body: `Your data is stored securely using industry-standard encryption at rest and in transit. We use Turso (LibSQL) as our database provider. Payment processing is handled by Stripe, which is PCI-DSS compliant. We do not store full card numbers.`,
+    body: `Your data is stored securely using industry-standard encryption at rest and in transit. We use Turso (LibSQL) as our database provider. FitForge does not process or store credit card numbers — all payments are handled through Apple's in-app purchase system (see "Subscriptions & In-App Purchases" below).`,
+  },
+  {
+    title: "Subscriptions & In-App Purchases",
+    body: `FitForge offers auto-renewable subscriptions (Monthly and Yearly) managed through Apple's App Store. Payment is charged to your Apple ID account at confirmation of purchase. Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period — your account will be charged for renewal within 24 hours prior to the end of the current period at the rate of your selected plan. You can manage and cancel subscriptions at any time in your device's Settings → Apple ID → Subscriptions. We use RevenueCat to manage subscription status and entitlements across devices. RevenueCat may collect anonymous purchase and device data on our behalf — see their privacy policy at https://www.revenuecat.com/privacy for details.`,
   },
   {
     title: "Cookies & Analytics",
@@ -30,7 +34,7 @@ const sections = [
   },
   {
     title: "Third-Party Services",
-    body: `FitForge integrates with the following third-party services: Google (OAuth sign-in), Stripe (payments), and Turso (database). Each service has its own privacy policy governing how they handle data.`,
+    body: `FitForge integrates with the following third-party services: Apple (in-app purchases and App Store subscriptions), RevenueCat (subscription management and entitlements), Google (OAuth sign-in), and Turso (database). Each service has its own privacy policy governing how they handle data.`,
   },
   {
     title: "Your Rights",
@@ -61,7 +65,7 @@ export default function PrivacyPage() {
           <span className="text-gradient-brand block">POLICY</span>
         </h1>
         <p className="font-light text-[15px] leading-[1.75] max-w-[460px] mx-auto" style={{ color: "rgba(255,255,255,.45)" }}>
-          Last updated: April 2025
+          Last updated: April 2026
         </p>
         <p className="font-light text-[14px] leading-[1.75] max-w-[500px] mx-auto mt-4" style={{ color: "rgba(255,255,255,.4)" }}>
           We keep this simple. Here&apos;s exactly what we collect, why, and how you can control it.
