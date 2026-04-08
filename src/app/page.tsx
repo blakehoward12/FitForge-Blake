@@ -5,8 +5,9 @@ import { Marquee } from "@/components/marquee";
 export const metadata: Metadata = {
   title: "FitForge — Build. Track. Share.",
   description:
-    "The world's first social fitness marketplace. Build AI workouts around your equipment, track gains with gamified XP and streaks, share PRs with the community, and buy or sell programs from real coaches.",
+    "Build AI workouts around your gym, track gains with XP and streaks, share PRs with the community, and buy or sell programs from real coaches.",
   alternates: { canonical: "/" },
+  openGraph: { url: "https://fitforgelifts.co/" },
 };
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };

@@ -4,8 +4,9 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "FAQ — Frequently Asked Questions",
   description:
-    "Answers to common questions about FitForge — pricing, the AI workout builder, the creator marketplace, social feed, gamified tracking, supported equipment, and how to contact us.",
+    "Common questions about FitForge — pricing, the AI workout builder, the creator marketplace, social feed, gamified tracking, and contact info.",
   alternates: { canonical: "/faq" },
+  openGraph: { url: "https://fitforgelifts.co/faq" },
 };
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };

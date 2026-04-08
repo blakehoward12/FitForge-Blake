@@ -11,23 +11,13 @@ export const metadata: Metadata = {
     template: "%s | FitForge",
   },
   description:
-    "FitForge is the world's first social fitness marketplace. Build AI workouts around the equipment you actually have, track your gains, share PRs with the community, and buy or sell programs from real coaches.",
-  alternates: {
-    canonical: "/",
-  },
+    "Build AI workouts around your gym, track gains, share PRs with the community, and buy or sell programs on the social fitness marketplace.",
   openGraph: {
-    title: "FitForge — Build. Track. Share.",
-    description:
-      "AI workout building around your equipment, gamified gym tracking, a social fitness feed, and a creator marketplace — all in one place.",
     type: "website",
-    url: "https://fitforgelifts.co",
     siteName: "FitForge",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FitForge — Build. Track. Share.",
-    description:
-      "AI workout building around your equipment, gamified gym tracking, a social fitness feed, and a creator marketplace.",
   },
 };
 

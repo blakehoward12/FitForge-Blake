@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
+  title: "Privacy Policy & Data Protection",
   description:
-    "How FitForge collects, uses, and protects your personal information — covering account data, workout logs, payments via Stripe, third-party services, your rights, and how to contact us about your data.",
+    "How FitForge collects, uses, and protects your data — account info, workout logs, Stripe payments, third-party services, and your rights.",
   alternates: { canonical: "/privacy" },
+  openGraph: { url: "https://fitforgelifts.co/privacy" },
 };
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };
