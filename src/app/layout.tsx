@@ -32,7 +32,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <SessionProvider>
-          <div className="bg-radials" />
           <div className="relative z-10">
             <Nav />
             <main className="pt-[62px]">
