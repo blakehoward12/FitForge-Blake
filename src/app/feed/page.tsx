@@ -354,7 +354,7 @@ export default function FeedPage() {
         style={{
           padding: "7px 16px",
           borderRadius: "100px",
-          fontSize: "10px",
+          fontSize: "12px",
           fontWeight: 700,
           letterSpacing: "1px",
           textTransform: "uppercase",
@@ -471,7 +471,7 @@ export default function FeedPage() {
                 <span style={{ fontWeight: 600, fontSize: "14px" }}>{post.userName}</span>
                 <span style={{ fontSize: "13px", color: "var(--og)" }}>{"✓"}</span>
               </div>
-              <div style={{ fontSize: "11px", color: "var(--whm)", fontWeight: 400, marginTop: "1px" }}>
+              <div style={{ fontSize: "12px", color: "var(--whm)", fontWeight: 400, marginTop: "1px" }}>
                 {post.locationEmoji} {post.location} · {post.equipment} · {post.timeLabel}
               </div>
             </div>
@@ -581,7 +581,7 @@ export default function FeedPage() {
               <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                 <span style={{ fontWeight: 600, fontSize: "14px" }}>{post.userName}</span>
               </div>
-              <div style={{ fontSize: "11px", color: "var(--whm)", fontWeight: 400, marginTop: "1px" }}>
+              <div style={{ fontSize: "12px", color: "var(--whm)", fontWeight: 400, marginTop: "1px" }}>
                 {"\u{1F3CB}️"} FitForge · {timeAgo(post.createdAt)}
               </div>
             </div>
@@ -644,7 +644,7 @@ export default function FeedPage() {
                   onClick={handlePost}
                   disabled={posting || !postText.trim()}
                   className="btn-primary"
-                  style={{ padding: "8px 18px", fontSize: "11px" }}
+                  style={{ padding: "8px 18px", fontSize: "12px" }}
                 >
                   {posting ? "Posting..." : "Post \u{1F525}"}
                 </button>
@@ -656,11 +656,11 @@ export default function FeedPage() {
         <div className="auth-cta animate-fadeUp" style={{ marginBottom: "20px", marginTop: 0 }}>
           <div>
             <p style={{ fontSize: "13px", fontWeight: 600, margin: 0 }}>Create an account to post</p>
-            <p style={{ fontSize: "11px", color: "var(--whm)", fontWeight: 300, margin: "4px 0 0" }}>
+            <p style={{ fontSize: "12px", color: "var(--whm)", fontWeight: 300, margin: "4px 0 0" }}>
               Share your PRs and connect with the community.
             </p>
           </div>
-          <a href="/login?returnUrl=/feed" className="btn-primary" style={{ textDecoration: "none", padding: "9px 16px", fontSize: "10px" }}>
+          <a href="/login?returnUrl=/feed" className="btn-primary" style={{ textDecoration: "none", padding: "9px 16px", fontSize: "12px" }}>
             Join Free {"→"}
           </a>
         </div>

@@ -133,7 +133,7 @@ export default function MarketplacePage() {
                     style={{
                       display: "inline-block",
                       marginTop: "4px",
-                      fontSize: "10px",
+                      fontSize: "12px",
                       letterSpacing: "1.5px",
                       textTransform: "uppercase",
                       fontWeight: 700,
@@ -162,7 +162,7 @@ export default function MarketplacePage() {
                 >
                   {c.price}
                 </span>
-                <button className="btn-ghost" type="button" disabled style={{ padding: "9px 16px", fontSize: "10px" }}>
+                <button className="btn-ghost" type="button" disabled style={{ padding: "9px 16px", fontSize: "12px" }}>
                   Coming soon
                 </button>
               </div>

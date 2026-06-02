@@ -35,7 +35,7 @@ export function Nav() {
             <Link
               key={link.href}
               href={link.href}
-              className="hide-mobile relative group text-[11px] tracking-[2px] uppercase font-medium no-underline transition-colors duration-200 hover:text-white py-1"
+              className="hide-mobile relative group text-[12px] tracking-[2px] uppercase font-medium no-underline transition-colors duration-200 hover:text-white py-1"
               style={{ color: "rgba(255,255,255,.55)" }}
             >
               {link.label}
@@ -48,20 +48,20 @@ export function Nav() {
           {session?.user ? (
             <Link
               href="/profile"
-              className="hide-mobile flex items-center no-underline rounded-full text-[11px] font-semibold tracking-[1.5px] uppercase"
+              className="hide-mobile flex items-center no-underline rounded-full text-[12px] font-semibold tracking-[1.5px] uppercase"
               style={{
                 background: "linear-gradient(135deg,rgba(180,60,30,.7),rgba(120,40,160,.7))",
                 color: "#fff", padding: "10px 22px",
                 border: "1px solid rgba(255,255,255,.15)",
               }}
             >
-              <span className="flex items-center justify-center rounded-full mr-1.5 shrink-0 text-[10px] font-bold" style={{ width: 22, height: 22, background: "linear-gradient(135deg,var(--oe),var(--pm))" }}>
+              <span className="flex items-center justify-center rounded-full mr-1.5 shrink-0 text-[12px] font-bold" style={{ width: 22, height: 22, background: "linear-gradient(135deg,var(--oe),var(--pm))" }}>
                 {initials}
               </span>
               {session.user.name?.split(" ")[0]}
             </Link>
           ) : (
-            <Link href="/login" className="hide-mobile no-underline rounded-full text-[11px] font-semibold tracking-[1.5px] uppercase" style={{ background: "linear-gradient(135deg,rgba(180,60,30,.7),rgba(120,40,160,.7))", color: "#fff", padding: "10px 22px", border: "1px solid rgba(255,255,255,.15)" }}>
+            <Link href="/login" className="hide-mobile no-underline rounded-full text-[12px] font-semibold tracking-[1.5px] uppercase" style={{ background: "linear-gradient(135deg,rgba(180,60,30,.7),rgba(120,40,160,.7))", color: "#fff", padding: "10px 22px", border: "1px solid rgba(255,255,255,.15)" }}>
               Sign In
             </Link>
           )}

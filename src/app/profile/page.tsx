@@ -166,7 +166,7 @@ export default function ProfilePage() {
           <button
             onClick={() => signOut({ callbackUrl: "/" })}
             className="btn-ghost"
-            style={{ padding: "8px 18px", fontSize: "11px", alignSelf: "center" }}
+            style={{ padding: "8px 18px", fontSize: "12px", alignSelf: "center" }}
           >
             Sign Out
           </button>

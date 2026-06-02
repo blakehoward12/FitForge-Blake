@@ -185,7 +185,7 @@ export default function BuilderPage() {
                       <span style={{
                         width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: 10, fontWeight: 700, color: '#fff',
+                        fontSize: 12, fontWeight: 700, color: '#fff',
                         background: 'linear-gradient(135deg, var(--og), var(--pm))',
                       }}>✓</span>
                       <span style={{ color: 'var(--whi)', fontWeight: 300 }}>{feature}</span>
@@ -246,7 +246,7 @@ export default function BuilderPage() {
               fontSize: 12, fontWeight: 700, color: '#fff', flexShrink: 0,
               boxShadow: '0 4px 14px rgba(224,120,48,.35)',
             }}>{step >= 2 ? '✓' : '1'}</div>
-            <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase' as const, color: step === 1 ? '#fff' : 'var(--whm)' }}>Equipment</span>
+            <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase' as const, color: step === 1 ? '#fff' : 'var(--whm)' }}>Equipment</span>
           </div>
           <div style={{ width: 28, height: 2, borderRadius: 2, background: step >= 2 ? 'linear-gradient(90deg, var(--og2), var(--pm))' : 'var(--br)', flexShrink: 0, transition: 'background 0.3s' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
@@ -258,7 +258,7 @@ export default function BuilderPage() {
               fontSize: 12, fontWeight: 700, color: step >= 2 ? '#fff' : 'var(--whm)', flexShrink: 0,
               boxShadow: step >= 2 ? '0 4px 14px rgba(224,120,48,.35)' : 'none', transition: 'all 0.3s',
             }}>2</div>
-            <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase' as const, color: step === 2 ? '#fff' : 'var(--whm)' }}>Goal &amp; Length</span>
+            <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase' as const, color: step === 2 ? '#fff' : 'var(--whm)' }}>Goal &amp; Length</span>
           </div>
         </div>
       </div>
@@ -273,7 +273,7 @@ export default function BuilderPage() {
                   What equipment do you have access to?
                 </h2>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 20 }}>
-                  <span style={{ fontSize: 11, color: 'var(--whm)', fontWeight: 400, letterSpacing: 0.5 }}>Select all that apply</span>
+                  <span style={{ fontSize: 12, color: 'var(--whm)', fontWeight: 400, letterSpacing: 0.5 }}>Select all that apply</span>
                 </div>
                 <div className="eq-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 8 }}>
                   {EQUIPMENT_OPTIONS.map((eq) => {
@@ -304,17 +304,17 @@ export default function BuilderPage() {
                           }}>✓</span>
                         )}
                         <span style={{ fontSize: 24 }}>{eq.emoji}</span>
-                        <span style={{ fontSize: 11.5, fontWeight: 600, letterSpacing: 0.3, color: selected || isBodyweight ? '#fff' : 'rgba(255,255,255,.5)' }}>
+                        <span style={{ fontSize: 12.5, fontWeight: 600, letterSpacing: 0.3, color: selected || isBodyweight ? '#fff' : 'rgba(255,255,255,.5)' }}>
                           {eq.label}
                         </span>
-                        <span style={{ fontSize: 10, color: isBodyweight ? 'var(--og)' : 'rgba(255,255,255,.28)', fontWeight: 400 }}>
+                        <span style={{ fontSize: 12, color: isBodyweight ? 'var(--og)' : 'rgba(255,255,255,.28)', fontWeight: 400 }}>
                           {eq.sub}
                         </span>
                       </button>
                     );
                   })}
                 </div>
-                <p style={{ fontSize: 11.5, color: 'rgba(255,255,255,.35)', marginTop: 12, marginBottom: 22, lineHeight: 1.6 }}>
+                <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,.35)', marginTop: 12, marginBottom: 22, lineHeight: 1.6 }}>
                   💡 Bodyweight exercises are always included. Select additional equipment you have.
                 </p>
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -371,7 +371,7 @@ export default function BuilderPage() {
                     >
                       <span style={{ fontSize: 24 }}>{g.emoji}</span>
                       <span style={{ fontSize: 13, fontWeight: 600, color: selected ? '#fff' : 'rgba(255,255,255,.75)' }}>{g.label}</span>
-                      <span style={{ fontSize: 11, color: 'var(--whm)' }}>{g.desc}</span>
+                      <span style={{ fontSize: 12, color: 'var(--whm)' }}>{g.desc}</span>
                     </button>
                   );
                 })}
@@ -401,7 +401,7 @@ export default function BuilderPage() {
                     >
                       <span style={{ fontSize: 24, marginBottom: 8 }}>{l.emoji}</span>
                       <span style={{ fontSize: 13, fontWeight: 600, color: selected ? '#fff' : 'rgba(255,255,255,.75)' }}>{l.label}</span>
-                      <span style={{ fontSize: 10, color: 'rgba(255,255,255,.35)', fontWeight: 400 }}>{l.desc}</span>
+                      <span style={{ fontSize: 12, color: 'rgba(255,255,255,.35)', fontWeight: 400 }}>{l.desc}</span>
                     </button>
                   );
                 })}
@@ -445,7 +445,7 @@ export default function BuilderPage() {
                       <div style={{ ...bebas, fontSize: 26, color: isFree && selected ? '#07070d' : isFree ? '#fff' : 'rgba(255,255,255,.5)', lineHeight: 1, marginBottom: 3 }}>
                         {d.label}
                       </div>
-                      <div style={{ fontSize: 11, color: isFree && selected ? 'rgba(0,0,0,.5)' : 'var(--whm)', marginBottom: 6 }}>
+                      <div style={{ fontSize: 12, color: isFree && selected ? 'rgba(0,0,0,.5)' : 'var(--whm)', marginBottom: 6 }}>
                         {d.sub}
                       </div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: isFree ? 'var(--gr)' : 'var(--og)' }}>
@@ -465,7 +465,7 @@ export default function BuilderPage() {
               display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14
             }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 10, color: 'rgba(255,255,255,.5)', marginBottom: 8, letterSpacing: 1.5, textTransform: 'uppercase' as const, fontWeight: 600 }}>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginBottom: 8, letterSpacing: 1.5, textTransform: 'uppercase' as const, fontWeight: 600 }}>
                   Free workouts used
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>

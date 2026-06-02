@@ -135,13 +135,13 @@ export default function HomePage() {
 
           {/* Download the app — front & center */}
           <div className="mt-7 flex flex-col gap-3" style={{ animation: "fadeUp 0.7s ease 0.38s both" }}>
-            <span className="text-[11px] tracking-[2px] uppercase font-semibold flex items-center gap-2" style={{ color: "rgba(255,255,255,.65)" }}>
+            <span className="text-[12px] tracking-[2px] uppercase font-semibold flex items-center gap-2" style={{ color: "rgba(255,255,255,.65)" }}>
               <span style={{ color: "var(--og)" }}>●</span> Get the free app for iPhone
             </span>
             <StoreBadges />
           </div>
 
-          <p className="text-[11px] mt-5 tracking-[.5px]" style={{ color: "rgba(255,255,255,.4)", animation: "fadeUp 0.7s ease 0.42s both" }}>
+          <p className="text-[12px] mt-5 tracking-[.5px]" style={{ color: "rgba(255,255,255,.4)", animation: "fadeUp 0.7s ease 0.42s both" }}>
             No credit card needed · 1-day workouts free forever
           </p>
 
@@ -149,7 +149,7 @@ export default function HomePage() {
             {stats.map(([num, label]) => (
               <div key={label}>
                 <div className="text-gradient-white text-[clamp(34px,4vw,48px)] leading-none" style={bebas}>{num}</div>
-                <div className="text-[10px] tracking-[2px] uppercase mt-1.5" style={{ color: "rgba(255,255,255,.6)" }}>{label}</div>
+                <div className="text-[12px] tracking-[2px] uppercase mt-1.5" style={{ color: "rgba(255,255,255,.6)" }}>{label}</div>
               </div>
             ))}
           </div>
@@ -203,7 +203,7 @@ export default function HomePage() {
                 <ul className="flex flex-col gap-3 mb-8">
                   {p.bullets.map((b) => (
                     <li key={b} className="flex items-center gap-3 text-[15px] font-light" style={{ color: "rgba(255,255,255,.8)" }}>
-                      <span className="flex items-center justify-center rounded-full shrink-0 text-[11px] font-bold text-white" style={{ width: 22, height: 22, background: "linear-gradient(135deg, var(--og), var(--pm))" }}>✓</span>
+                      <span className="flex items-center justify-center rounded-full shrink-0 text-[12px] font-bold text-white" style={{ width: 22, height: 22, background: "linear-gradient(135deg, var(--og), var(--pm))" }}>✓</span>
                       {b}
                     </li>
                   ))}
@@ -250,7 +250,7 @@ export default function HomePage() {
               <Link href="/builder" className="btn-ghost" style={{ padding: "17px 40px", fontSize: 12 }}>Try the Builder</Link>
             </div>
             <div className="mt-7">
-              <span className="block text-[11px] tracking-[2px] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,.6)" }}>Or get it on iPhone</span>
+              <span className="block text-[12px] tracking-[2px] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,.6)" }}>Or get it on iPhone</span>
               <StoreBadges />
             </div>
           </div>

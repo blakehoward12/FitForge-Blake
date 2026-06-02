@@ -221,7 +221,7 @@ function LoginContent() {
               }}
             >
               <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.08)" }} />
-              <span style={{ color: "var(--whm)", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase" }}>or</span>
+              <span style={{ color: "var(--whm)", fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase" }}>or</span>
               <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.08)" }} />
             </div>
 
@@ -277,7 +277,7 @@ function LoginContent() {
               style={{
                 textAlign: "center",
                 color: "rgba(255,255,255,.45)",
-                fontSize: "11px",
+                fontSize: "12px",
                 marginTop: "16px",
                 lineHeight: 1.5,
               }}
@@ -311,7 +311,7 @@ function LoginContent() {
                   <Image src={src} alt="" fill sizes="34px" className="object-cover" />
                 </div>
               ))}
-              <div style={{ marginLeft: "-10px", width: "34px", height: "34px", borderRadius: "50%", border: "2px solid var(--bg)", background: "rgba(255,255,255,.08)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontWeight: 700, color: "var(--whm)" }}>
+              <div style={{ marginLeft: "-10px", width: "34px", height: "34px", borderRadius: "50%", border: "2px solid var(--bg)", background: "rgba(255,255,255,.08)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700, color: "var(--whm)" }}>
                 +496
               </div>
             </div>

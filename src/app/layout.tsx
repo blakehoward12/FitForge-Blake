@@ -39,12 +39,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {children}
             </main>
             <footer className="relative z-10 border-t py-8 px-8 text-center" style={{ borderColor: "rgba(255,255,255,.06)" }}>
-              <p className="text-[11px] tracking-[1px] uppercase" style={{ color: "rgba(255,255,255,.2)" }}>
+              <p className="text-[12px] tracking-[1px] uppercase" style={{ color: "rgba(255,255,255,.2)" }}>
+                <Link href="/about" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>About</Link>
+                {" · "}
                 <Link href="/faq" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>FAQ</Link>
                 {" · "}
                 <Link href="/privacy" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>Privacy Policy</Link>
                 {" · "}
-                <a href="mailto:blake@fitforgelifts.co" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>Contact</a>
+                <Link href="/contact" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>Contact</Link>
               </p>
             </footer>
           </div>
