@@ -34,7 +34,15 @@ html {
 }
 
 body {
-  background: var(--bg);
+  /* Continuous atmospheric glow that scrolls with the page (tiled down the full
+     document) — avoids the iOS position:fixed + overflow bug that left a black
+     gap below a fixed background layer on mobile. */
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(110% 50% at 0% 10%, rgba(120,45,15,.32) 0%, transparent 52%),
+    radial-gradient(110% 50% at 100% 60%, rgba(70,20,110,.34) 0%, transparent 52%);
+  background-repeat: repeat-y;
+  background-size: 100% 1500px;
   color: var(--whi);
   font-family: 'DM Sans', sans-serif;
   font-weight: 300;

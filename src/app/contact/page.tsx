@@ -23,7 +23,6 @@ export default function ContactPage() {
     <>
       {/* ───────────────────────── HERO ───────────────────────── */}
       <section className="relative px-8 pt-[120px] pb-12 text-center overflow-hidden">
-        <div className="bg-radials absolute inset-0 opacity-60" aria-hidden />
         <div className="relative z-10 max-w-[680px] mx-auto">
           <span className="chip mb-6 inline-block">We&apos;re listening</span>
           <h1 className="mb-5" style={{ ...bebas, fontSize: "clamp(48px,9vw,96px)", lineHeight: 0.9, letterSpacing: 1 }}>
