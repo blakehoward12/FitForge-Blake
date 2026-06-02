@@ -126,8 +126,8 @@ export default function ProfilePage() {
       <div className="relative animate-fadeUp" style={{ borderRadius: "0 0 24px 24px", overflow: "hidden" }}>
         <div className="relative" style={{ height: 200, width: "100%" }}>
           <Image
-            src="/img/generated/pillar2-xp.png"
-            alt="Athlete training in a moody gym"
+            src="/img/generated/profile-cover.png"
+            alt="Athlete training with battle ropes in a moody gym"
             fill
             priority
             sizes="(max-width: 640px) 100vw, 640px"
@@ -151,7 +151,7 @@ export default function ProfilePage() {
           }}>
             <div style={{ position: "relative", width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", border: "3px solid var(--bg)" }}>
               <Image
-                src="/img/generated/avatar2.png"
+                src="/img/generated/profile-avatar.png"
                 alt={displayName}
                 fill
                 sizes="96px"

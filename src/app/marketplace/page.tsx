@@ -28,21 +28,21 @@ const features = [
 
 const coaches = [
   {
-    img: "/img/generated/avatar5.png",
+    img: "/img/generated/coach1.png",
     name: "Marcus Bell",
     specialty: "Strength · 12 wk",
     bio: "Powerlifting coach. Built for raw numbers on the big three.",
     price: "$29",
   },
   {
-    img: "/img/generated/avatar6.png",
+    img: "/img/generated/coach2.png",
     name: "Elena Reyes",
     specialty: "Hypertrophy",
     bio: "Science-based splits engineered for visible, lasting size.",
     price: "$34",
   },
   {
-    img: "/img/generated/avatar4.png",
+    img: "/img/generated/coach3.png",
     name: "Theo Nguyen",
     specialty: "Mobility & Conditioning",
     bio: "Move better, recover faster, and outlast every session.",

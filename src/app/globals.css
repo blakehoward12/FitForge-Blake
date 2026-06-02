@@ -141,6 +141,25 @@ body::before {
   box-shadow: 0 12px 34px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.07);
 }
 
+/* App-store download badge */
+.store-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 20px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: #fff;
+  text-decoration: none;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 6px 22px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.14);
+  transition: transform .25s, background .25s, border-color .25s;
+}
+.store-badge:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.4); transform: translateY(-2px); }
+.store-badge svg { flex-shrink: 0; }
+
 /* Frosted-glass surface utility */
 .glass {
   background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04));

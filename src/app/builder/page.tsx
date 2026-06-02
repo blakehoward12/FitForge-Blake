@@ -327,8 +327,8 @@ export default function BuilderPage() {
               {/* Decorative action shot — desktop only */}
               <div className="hide-mobile" style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', minHeight: 320 }}>
                 <Image
-                  src="/img/generated/pillar1-equipment.png"
-                  alt="Athlete selecting equipment in a dark gym lit with orange and purple"
+                  src="/img/generated/builder-side.png"
+                  alt="Athlete loading weight plates onto a barbell in a dark gym"
                   fill
                   sizes="280px"
                   className="object-cover"

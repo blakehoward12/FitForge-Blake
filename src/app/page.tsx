@@ -73,6 +73,23 @@ const stats: [string, string][] = [
   ["50K+", "XP Earned Weekly"],
 ];
 
+// iOS App Store download badge.
+const APP_STORE_URL = "https://apps.apple.com/app/id6761792263";
+
+function StoreBadges({ className = "" }: { className?: string }) {
+  return (
+    <div className={`flex gap-3 flex-wrap ${className}`}>
+      <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" aria-label="Download FitForge on the App Store" className="store-badge">
+        <svg viewBox="0 0 384 512" width="22" height="22" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zM262.1 104.5c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+        <span className="flex flex-col leading-tight text-left">
+          <span className="text-[9px] tracking-[1px] uppercase opacity-70">Download on the</span>
+          <span className="text-[15px] font-semibold">App Store</span>
+        </span>
+      </a>
+    </div>
+  );
+}
+
 export default function HomePage() {
   return (
     <>
@@ -106,7 +123,16 @@ export default function HomePage() {
             <Link href="/builder" className="btn-primary" style={{ padding: "16px 36px", fontSize: 12 }}>Start Free →</Link>
             <Link href="/feed" className="btn-ghost" style={{ padding: "16px 36px", fontSize: 12 }}>Explore the Feed</Link>
           </div>
-          <p className="text-[11px] mt-5 tracking-[.5px]" style={{ color: "rgba(255,255,255,.4)", animation: "fadeUp 0.7s ease 0.35s both" }}>
+
+          {/* Download the app — front & center */}
+          <div className="mt-7 flex flex-col gap-3" style={{ animation: "fadeUp 0.7s ease 0.38s both" }}>
+            <span className="text-[11px] tracking-[2px] uppercase font-semibold flex items-center gap-2" style={{ color: "rgba(255,255,255,.65)" }}>
+              <span style={{ color: "var(--og)" }}>●</span> Get the free app for iPhone
+            </span>
+            <StoreBadges />
+          </div>
+
+          <p className="text-[11px] mt-5 tracking-[.5px]" style={{ color: "rgba(255,255,255,.4)", animation: "fadeUp 0.7s ease 0.42s both" }}>
             No credit card needed · 1-day workouts free forever
           </p>
 
@@ -206,6 +232,10 @@ export default function HomePage() {
             <div className="flex gap-3.5 flex-wrap">
               <Link href="/login" className="btn-primary btn-glow" style={{ padding: "17px 44px", fontSize: 12 }}>Create Free Account →</Link>
               <Link href="/builder" className="btn-ghost" style={{ padding: "17px 40px", fontSize: 12 }}>Try the Builder</Link>
+            </div>
+            <div className="mt-7">
+              <span className="block text-[11px] tracking-[2px] uppercase font-semibold mb-3" style={{ color: "rgba(255,255,255,.6)" }}>Or get it on iPhone</span>
+              <StoreBadges />
             </div>
           </div>
         </div>
