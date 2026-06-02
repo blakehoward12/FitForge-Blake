@@ -88,15 +88,17 @@ export default function HomePage() {
         />
         {/* Cinematic overlays — keep text legible, deepen brand mood */}
         <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,10,15,.82) 0%, rgba(10,10,15,.25) 38%, rgba(10,10,15,.55) 72%, rgba(10,10,15,.96) 100%)" }} />
+        {/* Left scrim so hero copy stays readable over the photo */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(10,10,15,.92) 0%, rgba(10,10,15,.66) 30%, rgba(10,10,15,.2) 56%, transparent 78%)" }} />
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 12% 88%, rgba(120,45,15,.45) 0%, transparent 48%), radial-gradient(ellipse at 88% 8%, rgba(90,45,130,.4) 0%, transparent 46%)" }} />
 
         <div className="relative z-10 w-full max-w-[1160px] mx-auto px-8 pb-20 pt-[140px]">
           <span className="chip mb-6 inline-block animate-fadeUp">The social fitness app built around you</span>
-          <h1 style={{ ...bebas, lineHeight: 0.86, letterSpacing: 1, animation: "fadeUp 0.7s ease 0.1s both" }}>
+          <h1 style={{ ...bebas, lineHeight: 0.86, letterSpacing: 1, filter: "drop-shadow(0 3px 16px rgba(0,0,0,.6))", animation: "fadeUp 0.7s ease 0.1s both" }}>
             <span className="text-gradient-white block text-[clamp(56px,11vw,150px)]">FORGE THE</span>
             <span className="text-gradient-brand block text-[clamp(56px,11vw,150px)]">BEST OF YOU</span>
           </h1>
-          <p className="text-[clamp(15px,1.9vw,19px)] max-w-[520px] leading-[1.65] mt-6 mb-9 font-light" style={{ color: "rgba(255,255,255,.7)", animation: "fadeUp 0.7s ease 0.2s both" }}>
+          <p className="text-[clamp(15px,1.9vw,19px)] max-w-[520px] leading-[1.65] mt-6 mb-9 font-light" style={{ color: "rgba(255,255,255,.85)", textShadow: "0 1px 12px rgba(0,0,0,.6)", animation: "fadeUp 0.7s ease 0.2s both" }}>
             Set your goals and gear. Follow guided workouts that earn you XP.
             Challenge your friends on the feed. This is training with a crew behind you.
           </p>
@@ -108,11 +110,11 @@ export default function HomePage() {
             No credit card needed · 1-day workouts free forever
           </p>
 
-          <div className="flex gap-[44px] flex-wrap mt-14 pt-9 border-t" style={{ borderColor: "rgba(255,255,255,.12)", animation: "fadeUp 0.7s ease 0.45s both" }}>
+          <div className="glass inline-flex gap-[40px] gap-y-5 flex-wrap mt-12 px-7 py-5 rounded-3xl" style={{ animation: "fadeUp 0.7s ease 0.45s both" }}>
             {stats.map(([num, label]) => (
               <div key={label}>
                 <div className="text-gradient-white text-[clamp(34px,4vw,48px)] leading-none" style={bebas}>{num}</div>
-                <div className="text-[10px] tracking-[2px] uppercase mt-1.5" style={{ color: "rgba(255,255,255,.5)" }}>{label}</div>
+                <div className="text-[10px] tracking-[2px] uppercase mt-1.5" style={{ color: "rgba(255,255,255,.6)" }}>{label}</div>
               </div>
             ))}
           </div>
@@ -161,11 +163,11 @@ export default function HomePage() {
               {/* Text */}
               <div className={p.flip ? "md:order-1" : ""}>
                 <span className="chip mb-5 inline-block" style={{ color: p.accent, borderColor: "rgba(255,255,255,.16)" }}>{p.chip}</span>
-                <h3 className="text-white whitespace-pre-line mb-5" style={{ ...bebas, fontSize: "clamp(34px,4.5vw,58px)", lineHeight: 0.94 }}>{p.title}</h3>
-                <p className="text-[15.5px] leading-[1.75] font-light mb-7" style={{ color: "rgba(255,255,255,.55)" }}>{p.desc}</p>
+                <h3 className="text-white whitespace-pre-line mb-5" style={{ ...bebas, fontSize: "clamp(38px,5vw,66px)", lineHeight: 0.94 }}>{p.title}</h3>
+                <p className="text-[17px] leading-[1.75] font-light mb-7" style={{ color: "rgba(255,255,255,.62)" }}>{p.desc}</p>
                 <ul className="flex flex-col gap-3 mb-8">
                   {p.bullets.map((b) => (
-                    <li key={b} className="flex items-center gap-3 text-[14px] font-light" style={{ color: "rgba(255,255,255,.75)" }}>
+                    <li key={b} className="flex items-center gap-3 text-[15px] font-light" style={{ color: "rgba(255,255,255,.8)" }}>
                       <span className="flex items-center justify-center rounded-full shrink-0 text-[11px] font-bold text-white" style={{ width: 22, height: 22, background: "linear-gradient(135deg, var(--og), var(--pm))" }}>✓</span>
                       {b}
                     </li>

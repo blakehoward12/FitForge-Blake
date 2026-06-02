@@ -24,7 +24,7 @@ export function Nav() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[500] px-10 py-3.5 flex items-center justify-between backdrop-blur-[20px]" style={{ background: "rgba(10,10,15,.6)" }}>
+      <nav className="fixed top-0 left-0 right-0 z-[500] px-10 py-3.5 flex items-center justify-between" style={{ background: "rgba(10,10,15,.55)", backdropFilter: "blur(22px) saturate(150%)", WebkitBackdropFilter: "blur(22px) saturate(150%)", borderBottom: "1px solid rgba(255,255,255,.08)", boxShadow: "0 8px 30px rgba(0,0,0,.35)" }}>
         <Link href="/" className="no-underline" style={bebas}>
           <span className="text-[22px] tracking-[3px] text-white opacity-90">
             FIT<span style={{ color: "var(--og)" }}>FORGE</span>
@@ -35,10 +35,14 @@ export function Nav() {
             <Link
               key={link.href}
               href={link.href}
-              className="hide-mobile text-[11px] tracking-[2px] uppercase font-medium no-underline transition-colors hover:text-white/85"
-              style={{ color: "rgba(255,255,255,.45)" }}
+              className="hide-mobile relative group text-[11px] tracking-[2px] uppercase font-medium no-underline transition-colors duration-200 hover:text-white py-1"
+              style={{ color: "rgba(255,255,255,.55)" }}
             >
               {link.label}
+              <span
+                className="absolute left-0 -bottom-0.5 h-[2px] w-full origin-left scale-x-0 rounded-full transition-transform duration-300 ease-out group-hover:scale-x-100"
+                style={{ background: "linear-gradient(135deg, var(--og), var(--og2), var(--pm))" }}
+              />
             </Link>
           ))}
           {session?.user ? (
