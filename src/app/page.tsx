@@ -149,10 +149,10 @@ export default function HomePage() {
                   />
                   <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, transparent 55%, rgba(10,10,15,.45) 100%)" }} />
                 </div>
-                {/* Floating step number */}
+                {/* Step number — anchored in the image's top-left corner */}
                 <div
-                  className="absolute -top-5 left-6 md:left-auto md:-left-5 flex items-center justify-center rounded-2xl text-white"
-                  style={{ ...bebas, width: 76, height: 76, fontSize: 38, background: "linear-gradient(135deg, var(--og), var(--og2), var(--pm))", boxShadow: "0 12px 40px rgba(224,120,48,.4)" }}
+                  className="absolute top-4 left-4 z-10 flex items-center justify-center rounded-2xl text-white"
+                  style={{ ...bebas, width: 64, height: 64, fontSize: 32, background: "linear-gradient(135deg, var(--og), var(--og2), var(--pm))", boxShadow: "0 10px 30px rgba(224,120,48,.45)" }}
                 >
                   {p.n}
                 </div>
