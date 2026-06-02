@@ -227,14 +227,14 @@ export default function TrackerPage() {
 
   if (!workout || !day || !currentExercise) {
     return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ color: 'var(--whm)' }}>Loading tracker...</div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main style={{ minHeight: '100vh', paddingBottom: '6rem' }}>
+    <div style={{ minHeight: '100vh', paddingBottom: '6rem' }}>
       {/* ── Celebration Modal ─────────────────────────────────────────── */}
       {showCelebration && (
         <div style={{
@@ -490,6 +490,6 @@ export default function TrackerPage() {
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

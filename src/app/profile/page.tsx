@@ -95,9 +95,9 @@ export default function ProfilePage() {
 
   if (status === "loading") {
     return (
-      <main style={{ maxWidth: "40rem", margin: "0 auto", padding: "4rem 1rem", textAlign: "center" }}>
+      <div style={{ maxWidth: "40rem", margin: "0 auto", padding: "4rem 1rem", textAlign: "center" }}>
         <p style={{ color: "rgba(255,255,255,0.4)" }}>Loading...</p>
-      </main>
+      </div>
     );
   }
 
@@ -121,12 +121,12 @@ export default function ProfilePage() {
   ];
 
   return (
-    <main style={{ maxWidth: "40rem", margin: "0 auto", padding: "0 1rem 1rem" }}>
+    <div style={{ maxWidth: "40rem", margin: "0 auto", padding: "0 1rem 1rem" }}>
       {/* ── Strava-style cover banner ───────────────────────────────── */}
       <div className="relative animate-fadeUp" style={{ borderRadius: "0 0 24px 24px", overflow: "hidden" }}>
         <div className="relative" style={{ height: 200, width: "100%" }}>
           <Image
-            src="/img/generated/profile-cover.png"
+            src="/img/generated/profile-cover.jpg"
             alt="Athlete training with battle ropes in a moody gym"
             fill
             priority
@@ -151,7 +151,7 @@ export default function ProfilePage() {
           }}>
             <div style={{ position: "relative", width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", border: "3px solid var(--bg)" }}>
               <Image
-                src="/img/generated/profile-avatar.png"
+                src="/img/generated/profile-avatar.jpg"
                 alt={displayName}
                 fill
                 sizes="96px"
@@ -353,6 +353,6 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }

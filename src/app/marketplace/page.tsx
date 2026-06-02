@@ -28,21 +28,21 @@ const features = [
 
 const coaches = [
   {
-    img: "/img/generated/coach1.png",
+    img: "/img/generated/coach1.jpg",
     name: "Marcus Bell",
     specialty: "Strength · 12 wk",
     bio: "Powerlifting coach. Built for raw numbers on the big three.",
     price: "$29",
   },
   {
-    img: "/img/generated/coach2.png",
+    img: "/img/generated/coach2.jpg",
     name: "Elena Reyes",
     specialty: "Hypertrophy",
     bio: "Science-based splits engineered for visible, lasting size.",
     price: "$34",
   },
   {
-    img: "/img/generated/coach3.png",
+    img: "/img/generated/coach3.jpg",
     name: "Theo Nguyen",
     specialty: "Mobility & Conditioning",
     bio: "Move better, recover faster, and outlast every session.",
@@ -54,7 +54,7 @@ export default function MarketplacePage() {
   const [email, setEmail] = useState("");
 
   return (
-    <main style={{ maxWidth: "960px", margin: "0 auto", padding: "56px 24px 96px" }}>
+    <div style={{ maxWidth: "960px", margin: "0 auto", padding: "56px 24px 96px" }}>
       {/* ───────────────────────── Heading ───────────────────────── */}
       <div style={{ textAlign: "center", marginBottom: "3.25rem" }} className="animate-fadeUp">
         <span
@@ -235,6 +235,7 @@ export default function MarketplacePage() {
           <input
             className="input-field"
             type="email"
+            aria-label="Email address"
             placeholder="your@email.com"
             required
             value={email}
@@ -246,6 +247,6 @@ export default function MarketplacePage() {
           </button>
         </form>
       </div>
-    </main>
+    </div>
   );
 }

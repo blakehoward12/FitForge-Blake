@@ -6,7 +6,7 @@ import { Marquee } from "@/components/marquee";
 export const metadata: Metadata = {
   title: "FitForge — Set your goals. Train along. Forge together.",
   description:
-    "Tell FitForge your goals and equipment, follow guided workouts that earn you XP, and challenge friends on the social feed. The fitness app built around real people.",
+    "Set your goals and equipment, follow guided workouts that earn XP, and challenge friends on the feed. The social fitness app built around you.",
   alternates: { canonical: "/" },
   openGraph: { url: "https://fitforgelifts.co/", images: ["/opengraph-image"] },
 };
@@ -36,7 +36,7 @@ const pillars: Pillar[] = [
     bullets: ["Pick your goal & experience", "Select your real equipment", "Get a plan in seconds"],
     cta: "Build my workout",
     href: "/builder",
-    img: "/img/generated/pillar1-equipment.png",
+    img: "/img/generated/pillar1-equipment.jpg",
     alt: "Athlete selecting a dumbbell in a dark gym lit with orange and purple",
     accent: "var(--og)",
   },
@@ -48,7 +48,7 @@ const pillars: Pillar[] = [
     bullets: ["Step-by-step guided sessions", "Earn XP & build streaks", "Unlock achievements"],
     cta: "Start training",
     href: "/builder",
-    img: "/img/generated/pillar2-xp.png",
+    img: "/img/generated/pillar2-xp.jpg",
     alt: "Athlete checking her workout on a phone mid-session in a moody gym",
     accent: "var(--gr)",
     flip: true,
@@ -61,7 +61,7 @@ const pillars: Pillar[] = [
     bullets: ["Post PRs & workout wins", "Follow athletes who push you", "Challenge your friends"],
     cta: "Open the feed",
     href: "/feed",
-    img: "/img/generated/pillar3-social.png",
+    img: "/img/generated/pillar3-social.jpg",
     alt: "Two friends high-fiving and celebrating after a workout",
     accent: "var(--og2)",
   },
@@ -97,7 +97,7 @@ export default function HomePage() {
       <section className="relative -mt-[62px] min-h-[100svh] flex items-end overflow-hidden">
         {/* Desktop: wide hero. Mobile: dedicated vertical hero (the wide one crops badly on phones). */}
         <Image
-          src="/img/generated/hero.png"
+          src="/img/generated/hero.jpg"
           alt="Athlete celebrating a finished set, lit in orange and purple"
           fill
           priority
@@ -105,7 +105,7 @@ export default function HomePage() {
           className="hidden md:block object-cover object-[70%_center]"
         />
         <Image
-          src="/img/generated/hero-mobile.png"
+          src="/img/generated/hero-mobile.jpg"
           alt="Athlete celebrating a finished set, lit in orange and purple"
           fill
           priority
@@ -221,14 +221,14 @@ export default function HomePage() {
       <section className="relative overflow-hidden">
         <div className="relative min-h-[560px] flex items-center">
           <Image
-            src="/img/generated/cta-group.png"
+            src="/img/generated/cta-group.jpg"
             alt="A group of athletes together in the gym"
             fill
             sizes="100vw"
             className="hidden md:block object-cover object-center"
           />
           <Image
-            src="/img/generated/cta-mobile.png"
+            src="/img/generated/cta-mobile.jpg"
             alt="A group of athletes together in the gym"
             fill
             sizes="100vw"

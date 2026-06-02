@@ -35,9 +35,9 @@ function LoginContent() {
 
   if (status === "loading" || status === "authenticated") {
     return (
-      <main style={{ minHeight: "calc(100vh - 3.5rem)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ minHeight: "calc(100vh - 3.5rem)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <p style={{ color: "rgba(255,255,255,0.4)" }}>Loading...</p>
-      </main>
+      </div>
     );
   }
 
@@ -79,14 +79,14 @@ function LoginContent() {
     pointerEvents: "none",
   };
 
-  const avatarImgs = ["/img/generated/avatar1.png", "/img/generated/avatar2.png", "/img/generated/avatar3.png", "/img/generated/avatar4.png"];
+  const avatarImgs = ["/img/generated/avatar1.jpg", "/img/generated/avatar2.jpg", "/img/generated/avatar3.jpg", "/img/generated/avatar4.jpg"];
 
   return (
     <>
-      <main className="-mt-[62px] min-h-[100svh] grid grid-cols-1 md:grid-cols-2">
+      <div className="-mt-[62px] min-h-[100svh] grid grid-cols-1 md:grid-cols-2">
         {/* Visual panel */}
         <div className="relative hidden md:block overflow-hidden">
-          <Image src="/img/generated/login-side.png" alt="Athlete training hard in a dark gym" fill priority sizes="50vw" className="object-cover object-top" />
+          <Image src="/img/generated/login-side.jpg" alt="Athlete training hard in a dark gym" fill priority sizes="50vw" className="object-cover object-top" />
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,10,15,.5) 0%, rgba(10,10,15,.15) 45%, rgba(10,10,15,.9) 100%)" }} />
           <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 20% 90%, rgba(120,45,15,.4) 0%, transparent 55%)" }} />
           <div className="absolute bottom-0 left-0 right-0 p-12">
@@ -105,7 +105,7 @@ function LoginContent() {
         <div style={{ width: "100%", maxWidth: "420px" }}>
           {/* Logo */}
           <div style={{ textAlign: "center", marginBottom: "36px" }}>
-            <div style={{ display: "inline-flex", alignItems: "baseline", gap: "3px" }}>
+            <h1 style={{ display: "inline-flex", alignItems: "baseline", gap: "3px", margin: 0 }}>
               <span style={{ ...bebasNeue, fontSize: "28px", letterSpacing: "3px", color: "#fff" }}>
                 FIT
               </span>
@@ -122,7 +122,7 @@ function LoginContent() {
               >
                 FORGE
               </span>
-            </div>
+            </h1>
             <p style={{ color: "rgba(255,255,255,.4)", fontSize: "13px", marginTop: "8px", fontWeight: 300 }}>
               Join 500+ people already forging.
             </p>
@@ -318,7 +318,7 @@ function LoginContent() {
           </div>
         </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

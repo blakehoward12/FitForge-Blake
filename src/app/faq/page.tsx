@@ -50,7 +50,7 @@ export default function FAQPage() {
       <section className="relative -mt-[62px] overflow-hidden">
         <div className="relative min-h-[440px] md:min-h-[520px] flex items-end">
           <Image
-            src="/img/generated/faq-hero.png"
+            src="/img/generated/faq-hero.jpg"
             alt="A friendly fitness coach in the gym ready to help"
             fill
             priority

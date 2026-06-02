@@ -49,10 +49,10 @@ export default function PremiumPage() {
   };
 
   return (
-    <main style={{ minHeight: '100vh', paddingBottom: '4rem' }}>
+    <div style={{ minHeight: '100vh', paddingBottom: '4rem' }}>
       {/* Hero banner */}
       <div className="relative -mt-[62px] h-[42vh] min-h-[320px] w-full overflow-hidden flex items-end">
-        <Image src="/img/generated/premium-hero.png" alt="Triumphant athlete after an intense workout" fill priority sizes="100vw" className="object-cover object-center" />
+        <Image src="/img/generated/premium-hero.jpg" alt="Triumphant athlete after an intense workout" fill priority sizes="100vw" className="object-cover object-center" />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(10,10,15,.7) 0%, rgba(10,10,15,.2) 40%, rgba(10,10,15,.98) 100%)' }} />
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 85% 20%, rgba(90,45,130,.4) 0%, transparent 50%)' }} />
         <div className="relative z-10 w-full max-w-[1160px] mx-auto px-6 pb-8 text-center">
@@ -134,6 +134,6 @@ export default function PremiumPage() {
           </p>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

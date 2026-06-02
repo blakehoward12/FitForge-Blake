@@ -34,12 +34,12 @@ interface DemoPost extends FeedPost {
 }
 
 const AVATARS = [
-  "/img/generated/avatar1.png",
-  "/img/generated/avatar2.png",
-  "/img/generated/avatar3.png",
-  "/img/generated/avatar4.png",
-  "/img/generated/avatar5.png",
-  "/img/generated/avatar6.png",
+  "/img/generated/avatar1.jpg",
+  "/img/generated/avatar2.jpg",
+  "/img/generated/avatar3.jpg",
+  "/img/generated/avatar4.jpg",
+  "/img/generated/avatar5.jpg",
+  "/img/generated/avatar6.jpg",
 ];
 
 // Deterministically map a user name to one of the six headshots so the same
@@ -602,7 +602,7 @@ export default function FeedPage() {
   }
 
   return (
-    <main style={{ maxWidth: "560px", margin: "0 auto", padding: "32px 16px 60px" }}>
+    <div style={{ maxWidth: "560px", margin: "0 auto", padding: "32px 16px 60px" }}>
       {/* Branded page header */}
       <header style={{ marginBottom: "26px" }} className="animate-fadeUp">
         <span className="chip" style={{ marginBottom: "14px", display: "inline-block" }}>The social feed</span>
@@ -675,6 +675,6 @@ export default function FeedPage() {
           return renderApiCard(post);
         })}
       </div>
-    </main>
+    </div>
   );
 }

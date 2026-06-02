@@ -122,7 +122,7 @@ export default function BuilderPage() {
   const freeUsed = getFreeCount();
 
   return (
-    <main className="min-h-screen pb-20">
+    <div className="min-h-screen pb-20">
       {/* ── Premium Gate Modal ─────────────────────────────────────── */}
       {showPremiumGate && (
         <div
@@ -269,9 +269,9 @@ export default function BuilderPage() {
           <section className="animate-fadeUp">
             <div className="grid grid-cols-1 md:grid-cols-[1fr_260px] gap-4 items-stretch">
               <div className="card" style={{ padding: 28 }}>
-                <h3 style={{ fontSize: 16, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 4 }}>
+                <h2 style={{ fontSize: 16, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 4 }}>
                   What equipment do you have access to?
-                </h3>
+                </h2>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 20 }}>
                   <span style={{ fontSize: 11, color: 'var(--whm)', fontWeight: 400, letterSpacing: 0.5 }}>Select all that apply</span>
                 </div>
@@ -327,7 +327,7 @@ export default function BuilderPage() {
               {/* Decorative action shot — desktop only */}
               <div className="hide-mobile" style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', minHeight: 320 }}>
                 <Image
-                  src="/img/generated/builder-side.png"
+                  src="/img/generated/builder-side.jpg"
                   alt="Athlete loading weight plates onto a barbell in a dark gym"
                   fill
                   sizes="280px"
@@ -351,9 +351,9 @@ export default function BuilderPage() {
           <section className="animate-fadeUp">
             {/* Goal selection */}
             <div className="card" style={{ padding: 28, marginBottom: 14 }}>
-              <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 12 }}>
+              <h2 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 12 }}>
                 What&apos;s your primary goal?
-              </h3>
+              </h2>
               <div className="goal-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
                 {GOAL_OPTIONS.map((g) => {
                   const selected = goal === g.id;
@@ -380,7 +380,7 @@ export default function BuilderPage() {
 
             {/* Level selection */}
             <div className="card" style={{ padding: 28, marginBottom: 14 }}>
-              <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 4 }}>Experience level</h3>
+              <h2 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 4 }}>Experience level</h2>
               <p style={{ fontSize: 13, color: 'var(--whm)', fontWeight: 300, margin: 0, marginBottom: 18 }}>
                 We use this to calibrate your sets, reps, and rest times.
               </p>
@@ -410,7 +410,7 @@ export default function BuilderPage() {
 
             {/* Plan length */}
             <div className="card" style={{ padding: 28, marginBottom: 14 }}>
-              <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 6 }}>Plan length</h3>
+              <h2 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 6 }}>Plan length</h2>
               <p style={{ fontSize: 13, color: 'var(--whm)', fontWeight: 300, margin: 0, marginBottom: 20 }}>
                 1-day is free (up to {FREE_WORKOUT_LIMIT} workouts). Multi-day plans unlock with Premium ($20/mo).
               </p>
@@ -501,6 +501,6 @@ export default function BuilderPage() {
           </section>
         )}
       </div>
-    </main>
+    </div>
   );
 }

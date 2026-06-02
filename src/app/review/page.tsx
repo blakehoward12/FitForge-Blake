@@ -46,16 +46,16 @@ export default function ReviewPage() {
 
   if (!workout) {
     return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ color: 'var(--whm)' }}>Loading workout...</div>
-      </main>
+      </div>
     );
   }
 
   const day = workout.days[activeDay];
 
   return (
-    <main style={{ minHeight: '100vh', paddingBottom: '6rem' }}>
+    <div style={{ minHeight: '100vh', paddingBottom: '6rem' }}>
       <div style={{ maxWidth: 660, margin: '0 auto', padding: '24px 20px' }}>
 
         {/* Workout Header */}
@@ -248,6 +248,6 @@ export default function ReviewPage() {
           </button>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
