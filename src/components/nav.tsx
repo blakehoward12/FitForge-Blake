@@ -26,8 +26,8 @@ export function Nav() {
     <>
       <nav className="fixed top-0 left-0 right-0 z-[500] px-10 py-3.5 flex items-center justify-between" style={{ background: "rgba(10,10,15,.55)", backdropFilter: "blur(22px) saturate(150%)", WebkitBackdropFilter: "blur(22px) saturate(150%)", borderBottom: "1px solid rgba(255,255,255,.08)", boxShadow: "0 8px 30px rgba(0,0,0,.35)" }}>
         <Link href="/" className="no-underline" style={bebas}>
-          <span className="text-[22px] tracking-[3px] text-white opacity-90">
-            FIT<span style={{ color: "var(--og)" }}>FORGE</span>
+          <span className="text-[22px] tracking-[2px] text-white opacity-90">
+            FIT<span style={{ color: "var(--og)" }}>FORGE</span>LIFTS
           </span>
         </Link>
         <div className="flex items-center gap-7">
