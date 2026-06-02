@@ -29,6 +29,10 @@
   --br: rgba(255,255,255,.08);
 }
 
+html {
+  background: var(--bg);
+}
+
 body {
   background: var(--bg);
   color: var(--whi);
@@ -55,7 +59,13 @@ body::before {
 
 .bg-radials {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  /* Cover the largest possible viewport so the mobile address-bar show/hide
+     never leaves a gap below the fixed layer (which showed black). */
+  height: 100vh;
+  height: 100lvh;
   z-index: 0;
   background:
     radial-gradient(ellipse at 5% 90%, rgba(120,45,15,.55) 0%, transparent 45%),
