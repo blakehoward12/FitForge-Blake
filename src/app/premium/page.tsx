@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };
 
@@ -48,17 +49,25 @@ export default function PremiumPage() {
   };
 
   return (
-    <main style={{ minHeight: '100vh', paddingBottom: '4rem' }}>
-      <div style={{ maxWidth: 520, margin: '0 auto', padding: '48px 20px' }}>
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🚀</div>
-          <h1 style={{ ...bebas, fontSize: 'clamp(36px,6vw,56px)', letterSpacing: 3, lineHeight: 1, margin: '0 0 8px' }}>
-            <span className="text-gradient-white">FIT</span>
-            <span className="text-gradient-brand">FORGE</span>
-            <span className="text-gradient-white" style={{ display: 'block', fontSize: 'clamp(28px,5vw,44px)', marginTop: 4 }}>PREMIUM</span>
+    <div style={{ minHeight: '100vh', paddingBottom: '4rem' }}>
+      {/* Hero banner */}
+      <div className="relative -mt-[62px] h-[42vh] min-h-[320px] w-full overflow-hidden flex items-end">
+        <Image src="/img/generated/premium-hero.jpg" alt="Triumphant athlete after an intense workout" fill priority sizes="100vw" className="object-cover object-center" />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(10,10,15,.7) 0%, rgba(10,10,15,.2) 40%, rgba(10,10,15,.98) 100%)' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 85% 20%, rgba(90,45,130,.4) 0%, transparent 50%)' }} />
+        <div className="relative z-10 w-full max-w-[1160px] mx-auto px-6 pb-8 text-center">
+          <span className="chip mb-4 inline-block" style={{ color: 'var(--og)' }}>Go further</span>
+          <h1 style={{ ...bebas, fontSize: 'clamp(44px,8vw,84px)', letterSpacing: 2, lineHeight: 0.9, margin: 0 }}>
+            <span className="text-gradient-white">FITFORGE </span>
+            <span className="text-gradient-brand">PREMIUM</span>
           </h1>
-          <p style={{ color: 'var(--whm)', fontSize: '0.9rem', lineHeight: 1.6, maxWidth: 380, margin: '0 auto' }}>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 520, margin: '0 auto', padding: '36px 20px 0' }}>
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <p style={{ color: 'var(--whm)', fontSize: '0.95rem', lineHeight: 1.6, maxWidth: 380, margin: '0 auto' }}>
             Unlock the full FitForge experience. Unlimited workouts, multi-day plans, and complete progress tracking.
           </p>
         </div>
@@ -125,6 +134,6 @@ export default function PremiumPage() {
           </p>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

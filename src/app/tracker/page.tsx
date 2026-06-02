@@ -227,49 +227,64 @@ export default function TrackerPage() {
 
   if (!workout || !day || !currentExercise) {
     return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ color: 'var(--whm)' }}>Loading tracker...</div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main style={{ minHeight: '100vh', paddingBottom: '6rem' }}>
+    <div style={{ minHeight: '100vh', paddingBottom: '6rem' }}>
       {/* ── Celebration Modal ─────────────────────────────────────────── */}
       {showCelebration && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 50,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)',
+          background: 'rgba(5,5,9,0.82)', backdropFilter: 'blur(14px)',
+          animation: 'fadeUp 0.4s ease both',
         }}>
-          <div className="card" style={{ maxWidth: '420px', width: '100%', margin: '0 16px', textAlign: 'center', padding: '32px' }}>
-            <div style={{ fontSize: '3.5rem', marginBottom: '16px' }}>🎉</div>
-            <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.75rem', letterSpacing: 3, marginBottom: '20px' }} className="text-gradient-brand">
+          {/* Brand glow behind the modal */}
+          <div style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            background: 'radial-gradient(ellipse at 50% 42%, rgba(224,120,48,.22) 0%, transparent 55%)',
+          }} />
+          <div className="card animate-pop" style={{
+            position: 'relative', maxWidth: '440px', width: '100%', margin: '0 16px',
+            textAlign: 'center', padding: '40px 32px',
+            background: 'linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.02))',
+            boxShadow: '0 40px 100px rgba(0,0,0,.6)',
+          }}>
+            <div style={{
+              width: 76, height: 76, margin: '0 auto 18px', borderRadius: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.6rem',
+              background: 'linear-gradient(135deg, var(--og), var(--og2), var(--pm))',
+              boxShadow: '0 12px 40px rgba(224,120,48,.45)',
+            }}>🎉</div>
+            <p style={{ fontSize: '0.65rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 2.5, margin: '0 0 6px' }}>
+              Session forged
+            </p>
+            <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.4rem', letterSpacing: 2, lineHeight: 0.95, marginBottom: '24px' }} className="text-gradient-brand">
               WORKOUT COMPLETE!
             </h2>
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '24px' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--gr)' }}>{volume.toLocaleString()}</div>
-                <div style={{ fontSize: '0.65rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1 }}>Volume (lbs)</div>
-              </div>
-              <div style={{ width: 1, background: 'var(--br)' }} />
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--og)' }}>{completedCount}</div>
-                <div style={{ fontSize: '0.65rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1 }}>Exercises</div>
-              </div>
-              <div style={{ width: 1, background: 'var(--br)' }} />
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--pl)' }}>+{xpEarned}</div>
-                <div style={{ fontSize: '0.65rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1 }}>XP</div>
-              </div>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '24px' }}>
+              {[
+                { v: volume.toLocaleString(), l: 'Volume (lbs)', c: 'var(--gr)', bg: 'rgba(34,197,94,0.08)', br: 'rgba(34,197,94,0.18)' },
+                { v: completedCount, l: 'Exercises', c: 'var(--og)', bg: 'rgba(224,120,48,0.08)', br: 'rgba(224,120,48,0.18)' },
+                { v: `+${xpEarned}`, l: 'XP', c: 'var(--pl)', bg: 'rgba(155,94,203,0.08)', br: 'rgba(155,94,203,0.18)' },
+              ].map((s) => (
+                <div key={s.l} style={{ flex: 1, padding: '14px 6px', borderRadius: '14px', background: s.bg, border: `1px solid ${s.br}` }}>
+                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.7rem', letterSpacing: 1, color: s.c, lineHeight: 1 }}>{s.v}</div>
+                  <div style={{ fontSize: '0.58rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 }}>{s.l}</div>
+                </div>
+              ))}
             </div>
 
             {/* Share to Feed */}
             <div style={{
               background: 'rgba(255,255,255,0.03)', border: '1px solid var(--br)',
-              borderRadius: '14px', padding: '16px', marginBottom: '20px', textAlign: 'left',
+              borderRadius: '16px', padding: '16px', marginBottom: '20px', textAlign: 'left',
             }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: '8px' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: '10px' }}>
                 Share to Feed
               </div>
               <textarea
@@ -278,7 +293,7 @@ export default function TrackerPage() {
                 rows={3}
                 style={{
                   width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid var(--br)',
-                  borderRadius: '10px', padding: '10px 12px', color: '#fff', fontSize: '0.85rem',
+                  borderRadius: '12px', padding: '12px 14px', color: '#fff', fontSize: '0.85rem',
                   resize: 'none', outline: 'none', fontFamily: "'DM Sans', sans-serif",
                   lineHeight: 1.5, boxSizing: 'border-box',
                 }}
@@ -290,7 +305,7 @@ export default function TrackerPage() {
                 className="btn-primary animate-glow"
                 onClick={handlePostAndContinue}
                 disabled={postingToFeed}
-                style={{ width: '100%', justifyContent: 'center', display: 'flex', padding: '16px', borderRadius: '16px', fontSize: '13px' }}
+                style={{ width: '100%', justifyContent: 'center', display: 'flex', padding: '16px', borderRadius: '100px', fontSize: '12px' }}
               >
                 {postingToFeed ? 'Posting...' : 'Post & Continue 🔥'}
               </button>
@@ -303,69 +318,75 @@ export default function TrackerPage() {
       {/* ── Sticky Header ─────────────────────────────────────────────── */}
       <div style={{
         position: 'sticky', top: 56, zIndex: 40,
-        background: 'rgba(10,10,15,0.95)', backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
+        background: 'rgba(10,10,15,0.78)', backdropFilter: 'blur(18px)',
+        borderBottom: '1px solid var(--br)',
+        boxShadow: '0 8px 30px rgba(0,0,0,.35)',
       }}>
-        <div style={{ maxWidth: 660, margin: '0 auto', padding: '12px 20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+        <div style={{ maxWidth: 660, margin: '0 auto', padding: '14px 20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
             <div style={{ minWidth: 0 }}>
-              <p style={{ fontSize: '0.65rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 2, margin: 0 }}>
+              <p style={{ fontSize: '0.62rem', color: 'var(--og)', textTransform: 'uppercase', letterSpacing: 2.5, margin: 0, fontWeight: 600 }}>
                 {currentExercise.section === 'warmup' ? '🔥' : currentExercise.section === 'cooldown' ? '🧊' : '💪'} {currentExercise.sectionLabel}
               </p>
-              <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.25rem', letterSpacing: 2, margin: '2px 0 0', color: '#fff' }}>
+              <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.35rem', letterSpacing: 2, margin: '3px 0 0', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {currentExercise.emoji} {currentExercise.name.toUpperCase()}
               </h2>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-              <div style={{ padding: '6px 12px', borderRadius: '10px', background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--gr)' }}>{xpEarned}</div>
-                <div style={{ fontSize: '0.55rem', color: 'var(--whm)', textTransform: 'uppercase' }}>XP</div>
+              <div style={{ padding: '7px 12px', borderRadius: '12px', background: 'rgba(155,94,203,0.12)', border: '1px solid rgba(155,94,203,0.22)', textAlign: 'center' }}>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.05rem', letterSpacing: 1, color: 'var(--pl)', lineHeight: 1 }}>{xpEarned}</div>
+                <div style={{ fontSize: '0.5rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 2 }}>XP</div>
               </div>
-              <div style={{ padding: '6px 12px', borderRadius: '10px', background: 'rgba(255,255,255,0.04)', border: '1px solid var(--br)', textAlign: 'center' }}>
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--whm)' }}>{volume}</div>
-                <div style={{ fontSize: '0.55rem', color: 'var(--whm)', textTransform: 'uppercase' }}>LBS</div>
+              <div style={{ padding: '7px 12px', borderRadius: '12px', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', textAlign: 'center' }}>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.05rem', letterSpacing: 1, color: 'var(--gr)', lineHeight: 1 }}>{volume}</div>
+                <div style={{ fontSize: '0.5rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 2 }}>LBS</div>
               </div>
               <button
                 onClick={() => router.push('/review')}
                 style={{
-                  width: 36, height: 36, borderRadius: '10px',
+                  width: 38, height: 38, borderRadius: '12px',
                   background: 'rgba(255,255,255,0.04)', border: '1px solid var(--br)',
                   color: 'var(--whm)', cursor: 'pointer', fontSize: '1rem',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'all 0.2s',
                 }}
+                onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#fff'; }}
+                onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'var(--whm)'; }}
               >✕</button>
             </div>
           </div>
-          <div style={{ height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.05)', overflow: 'hidden' }}>
-            <div style={{ height: '100%', borderRadius: 2, background: 'linear-gradient(90deg, var(--og), var(--og2))', width: `${progressPct}%`, transition: 'width 0.5s' }} />
+          <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.05)', overflow: 'hidden' }}>
+            <div style={{ height: '100%', borderRadius: 3, background: 'linear-gradient(90deg, var(--og), var(--og2), var(--pl))', width: `${progressPct}%`, transition: 'width 0.5s', boxShadow: '0 0 12px rgba(224,120,48,.5)' }} />
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
-            <span style={{ fontSize: '0.65rem', color: 'var(--whm)' }}>Exercise {currentIndex + 1} of {totalExercises}</span>
-            <span style={{ fontSize: '0.65rem', color: 'var(--og)' }}>{progressPct}%</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
+            <span style={{ fontSize: '0.65rem', color: 'var(--whm)', letterSpacing: 0.5 }}>Exercise {currentIndex + 1} of {totalExercises}</span>
+            <span style={{ fontSize: '0.65rem', color: 'var(--og)', fontWeight: 600 }}>{progressPct}%</span>
           </div>
         </div>
       </div>
 
       <div style={{ maxWidth: 660, margin: '0 auto', padding: '16px 20px' }}>
         {/* ── Exercise Pills ──────────────────────────────────────────── */}
-        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '10px', marginBottom: '20px' }}>
           {flatExercises.map((ex, i) => {
             const isDone = completedIds.has(ex.id);
             const isCurrent = i === currentIndex;
-            const pillColor = ex.section === 'warmup' ? 'var(--gr)' : ex.section === 'cooldown' ? 'var(--pl)' : 'var(--whm)';
+            const pillColor = ex.section === 'warmup' ? 'var(--gr)' : ex.section === 'cooldown' ? 'var(--pl)' : 'var(--og)';
             return (
               <button
                 key={ex.id}
                 onClick={() => setCurrentIndex(i)}
                 style={{
                   whiteSpace: 'nowrap', cursor: 'pointer', flexShrink: 0,
-                  padding: '6px 14px', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 600,
-                  border: `1px solid ${isCurrent ? pillColor : isDone ? 'var(--gr)' : 'var(--br)'}`,
-                  background: isDone ? 'rgba(34,197,94,0.15)' : isCurrent ? 'rgba(255,255,255,0.06)' : 'transparent',
+                  padding: '7px 15px', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 600,
+                  letterSpacing: 0.3, transition: 'all 0.2s',
+                  border: `1px solid ${isCurrent ? pillColor : isDone ? 'rgba(34,197,94,0.35)' : 'var(--br)'}`,
+                  background: isDone ? 'rgba(34,197,94,0.12)' : isCurrent ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.02)',
                   color: isDone ? 'var(--gr)' : isCurrent ? pillColor : 'var(--whm)',
+                  boxShadow: isCurrent ? `0 0 14px ${ex.section === 'warmup' ? 'rgba(34,197,94,.2)' : ex.section === 'cooldown' ? 'rgba(155,94,203,.2)' : 'rgba(224,120,48,.2)'}` : 'none',
                 }}
               >
-                {isDone ? '✓' : ''}{ex.emoji} {ex.name}
+                {isDone ? '✓ ' : ''}{ex.emoji} {ex.name}
               </button>
             );
           })}
@@ -373,57 +394,61 @@ export default function TrackerPage() {
 
         {/* ── Exercise Card ───────────────────────────────────────────── */}
         <div style={{
-          borderRadius: 20, padding: '32px 24px',
+          position: 'relative', borderRadius: 24, padding: '32px 24px', overflow: 'hidden',
           background: currentExercise.section === 'warmup'
-            ? 'rgba(34,197,94,0.04)' : currentExercise.section === 'cooldown'
-              ? 'rgba(155,94,203,0.04)' : 'rgba(224,120,48,0.03)',
+            ? 'linear-gradient(160deg, rgba(34,197,94,0.07), rgba(34,197,94,0.02))' : currentExercise.section === 'cooldown'
+              ? 'linear-gradient(160deg, rgba(155,94,203,0.07), rgba(155,94,203,0.02))' : 'linear-gradient(160deg, rgba(224,120,48,0.07), rgba(224,120,48,0.02))',
           border: `1px solid ${currentExercise.section === 'warmup'
-            ? 'rgba(34,197,94,0.15)' : currentExercise.section === 'cooldown'
-              ? 'rgba(155,94,203,0.15)' : 'rgba(224,120,48,0.12)'}`,
-          textAlign: 'center',
+            ? 'rgba(34,197,94,0.18)' : currentExercise.section === 'cooldown'
+              ? 'rgba(155,94,203,0.18)' : 'rgba(224,120,48,0.16)'}`,
+          boxShadow: '0 24px 60px rgba(0,0,0,.35)',
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-            <div style={{ fontSize: '3rem' }}>{currentExercise.emoji}</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px' }}>
+            <div style={{
+              width: 68, height: 68, borderRadius: 18, fontSize: '2.4rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'rgba(255,255,255,0.05)', border: '1px solid var(--br)',
+            }}>{currentExercise.emoji}</div>
             <a
               href={`https://www.youtube.com/results?search_query=${encodeURIComponent(currentExercise.youtubeQuery)}`}
               target="_blank" rel="noopener noreferrer"
               style={{
-                padding: '6px 14px', borderRadius: '10px',
+                padding: '8px 15px', borderRadius: '100px',
                 background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)',
-                color: '#ef4444', fontSize: '0.75rem', fontWeight: 600,
+                color: '#ef4444', fontSize: '0.72rem', fontWeight: 600, letterSpacing: 0.5,
                 textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px',
               }}
             >
               <span style={{ fontSize: '0.8rem' }}>▶</span> How-to
             </a>
           </div>
-          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem', letterSpacing: 3, margin: '0 0 4px', textAlign: 'left' }}>
+          <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2.3rem', letterSpacing: 2.5, lineHeight: 0.95, margin: '0 0 6px', textAlign: 'left' }}>
             {currentExercise.name.toUpperCase()}
           </h2>
-          <p style={{ color: 'var(--whm)', fontSize: '0.85rem', textAlign: 'left', marginBottom: '20px' }}>
+          <p style={{ color: 'var(--whm)', fontSize: '0.85rem', textAlign: 'left', marginBottom: '22px', letterSpacing: 0.3 }}>
             {currentExercise.repsLabel}
           </p>
 
           {currentExercise.section === 'main' && (
             <div style={{ marginBottom: '16px', textAlign: 'left' }}>
-              <label style={{ fontSize: '0.7rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1 }}>Weight (lbs)</label>
+              <label style={{ fontSize: '0.68rem', color: 'var(--whm)', textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 600 }}>Weight (lbs)</label>
               <input
                 type="number" inputMode="decimal" placeholder="0"
                 value={weights[currentExercise.id] || ''}
                 onChange={(e) => setWeights(prev => ({ ...prev, [currentExercise.id]: e.target.value }))}
                 className="input-field"
-                style={{ marginTop: '6px', fontSize: '1.1rem', padding: '12px 16px' }}
+                style={{ marginTop: '8px', fontSize: '1.1rem', padding: '12px 16px' }}
               />
             </div>
           )}
 
           {currentExercise.tip && (
             <div style={{
-              padding: '14px 18px', borderRadius: '12px',
-              background: 'rgba(255,193,7,0.06)', border: '1px solid rgba(255,193,7,0.12)',
+              padding: '14px 18px', borderRadius: '14px',
+              background: 'rgba(255,193,7,0.06)', border: '1px solid rgba(255,193,7,0.14)',
               textAlign: 'left', marginBottom: '20px',
             }}>
-              <p style={{ fontSize: '0.85rem', color: 'rgba(255,193,7,0.85)', margin: 0 }}>
+              <p style={{ fontSize: '0.85rem', color: 'rgba(255,193,7,0.85)', margin: 0, lineHeight: 1.55 }}>
                 💡 {currentExercise.tip}
               </p>
             </div>
@@ -431,23 +456,21 @@ export default function TrackerPage() {
 
           {completedIds.has(currentExercise.id) ? (
             <div style={{
-              width: '100%', padding: '18px', borderRadius: '16px',
-              background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)',
-              color: 'var(--gr)', fontSize: '1rem', fontWeight: 700,
+              width: '100%', padding: '18px', borderRadius: '100px',
+              background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)',
+              color: 'var(--gr)', fontSize: '0.95rem', fontWeight: 700, letterSpacing: 1,
+              textTransform: 'uppercase',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
             }}>✓ Done</div>
           ) : (
             <button
+              className="btn-primary"
               onClick={markDone}
               style={{
-                width: '100%', padding: '18px', borderRadius: '16px',
-                background: 'rgba(255,255,255,0.06)', border: '1px solid var(--br)',
-                color: '#fff', fontSize: '1rem', fontWeight: 600,
-                cursor: 'pointer', transition: 'all 0.2s',
+                width: '100%', justifyContent: 'center', display: 'flex',
+                padding: '18px', borderRadius: '100px', fontSize: '12px',
               }}
-              onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
-              onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
-            >Mark as Done</button>
+            >Mark as Done ✓</button>
           )}
         </div>
 
@@ -461,12 +484,12 @@ export default function TrackerPage() {
               Next Exercise &rarr;
             </button>
           ) : (
-            <button className="btn-primary" disabled={completedCount < totalExercises} onClick={() => { setShowCelebration(true); spawnConfetti(); }} style={{ justifyContent: 'center', display: 'flex', padding: '16px' }}>
-              Finish Workout
+            <button className="btn-primary btn-glow" disabled={completedCount < totalExercises} onClick={() => { setShowCelebration(true); spawnConfetti(); }} style={{ justifyContent: 'center', display: 'flex', padding: '16px' }}>
+              Finish Workout 🔥
             </button>
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

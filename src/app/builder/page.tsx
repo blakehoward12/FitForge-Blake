@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import type { Equipment, Goal, Level } from '@/lib/exercises';
@@ -121,66 +122,97 @@ export default function BuilderPage() {
   const freeUsed = getFreeCount();
 
   return (
-    <main className="min-h-screen pb-20">
+    <div className="min-h-screen pb-20">
       {/* ── Premium Gate Modal ─────────────────────────────────────── */}
       {showPremiumGate && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 50,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
-        }}>
-          <div className="card" style={{ maxWidth: '440px', width: '100%', margin: '0 16px', textAlign: 'center', padding: '32px' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🚀</div>
-            <h2 style={{ ...bebas, fontSize: '1.75rem', letterSpacing: 3, marginBottom: '12px' }} className="text-gradient-brand">
-              UPGRADE TO PREMIUM
-            </h2>
-            <p style={{ color: 'var(--whm)', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: '24px' }}>
-              {freeUsed >= FREE_WORKOUT_LIMIT
-                ? `You've used all ${FREE_WORKOUT_LIMIT} free workouts. Upgrade to Premium for unlimited access.`
-                : 'Unlock multi-day workout plans with Premium.'}
-            </p>
-
+        <div
+          onClick={() => setShowPremiumGate(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 50,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(5,5,9,0.78)', backdropFilter: 'blur(10px)',
+            padding: 16,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="card animate-fadeUp"
+            style={{
+              maxWidth: 440, width: '100%', textAlign: 'center', padding: '36px 32px',
+              position: 'relative',
+              background: 'linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.02))',
+              boxShadow: '0 40px 100px rgba(0,0,0,.6)',
+            }}
+          >
+            {/* Glow accent */}
             <div style={{
-              background: 'rgba(255,255,255,0.03)', border: '1px solid var(--br)',
-              borderRadius: '16px', padding: '20px', marginBottom: '20px', textAlign: 'left',
-            }}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--og)', marginBottom: '12px', ...bebas, letterSpacing: 2 }}>
-                $20/mo
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {[
-                  'Unlimited workout generation',
-                  '3-day, 5-day, and 7-day plans',
-                  'Full progress tracking & analytics',
-                  'Achievement badges & XP system',
-                  'Priority access to new features',
-                ].map((feature) => (
-                  <div key={feature} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.85rem' }}>
-                    <span style={{ color: 'var(--gr)', fontWeight: 700 }}>✓</span>
-                    <span style={{ color: 'var(--whi)' }}>{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+              position: 'absolute', inset: 0, borderRadius: 20, pointerEvents: 'none',
+              background: 'radial-gradient(ellipse at 50% 0%, rgba(224,120,48,.18) 0%, transparent 60%)',
+            }} />
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                width: 64, height: 64, margin: '0 auto 18px', borderRadius: 20,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 30,
+                background: 'linear-gradient(135deg, var(--og), var(--og2), var(--pm))',
+                boxShadow: '0 12px 40px rgba(224,120,48,.4)',
+              }}>🚀</div>
+              <h2 style={{ ...bebas, fontSize: '2rem', letterSpacing: 2, marginBottom: 10 }} className="text-gradient-brand">
+                UPGRADE TO PREMIUM
+              </h2>
+              <p style={{ color: 'var(--whm)', fontSize: '0.9rem', lineHeight: 1.7, marginBottom: 24, fontWeight: 300 }}>
+                {freeUsed >= FREE_WORKOUT_LIMIT
+                  ? `You've used all ${FREE_WORKOUT_LIMIT} free workouts. Upgrade to Premium for unlimited access.`
+                  : 'Unlock multi-day workout plans with Premium.'}
+              </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <button
-                className="btn-primary"
-                style={{ width: '100%', padding: '14px' }}
-                onClick={() => {
-                  setShowPremiumGate(false);
-                  router.push('/premium');
-                }}
-              >
-                Get Premium →
-              </button>
-              <button
-                className="btn-ghost"
-                style={{ width: '100%' }}
-                onClick={() => setShowPremiumGate(false)}
-              >
-                Go Back
-              </button>
+              <div style={{
+                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(224,120,48,.18)',
+                borderRadius: 16, padding: 22, marginBottom: 22, textAlign: 'left',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 16 }}>
+                  <span className="text-gradient-brand" style={{ fontSize: '2rem', ...bebas, letterSpacing: 1 }}>$20</span>
+                  <span style={{ fontSize: 12, color: 'var(--whm)', letterSpacing: 1, textTransform: 'uppercase' }}>/ month</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {[
+                    'Unlimited workout generation',
+                    '3-day, 5-day, and 7-day plans',
+                    'Full progress tracking & analytics',
+                    'Achievement badges & XP system',
+                    'Priority access to new features',
+                  ].map((feature) => (
+                    <div key={feature} style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: '0.86rem' }}>
+                      <span style={{
+                        width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 12, fontWeight: 700, color: '#fff',
+                        background: 'linear-gradient(135deg, var(--og), var(--pm))',
+                      }}>✓</span>
+                      <span style={{ color: 'var(--whi)', fontWeight: 300 }}>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <button
+                  className="btn-primary"
+                  style={{ width: '100%', padding: 15 }}
+                  onClick={() => {
+                    setShowPremiumGate(false);
+                    router.push('/premium');
+                  }}
+                >
+                  Get Premium →
+                </button>
+                <button
+                  className="btn-ghost"
+                  style={{ width: '100%' }}
+                  onClick={() => setShowPremiumGate(false)}
+                >
+                  Go Back
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -201,72 +233,114 @@ export default function BuilderPage() {
         </p>
 
         {/* Step indicator */}
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 32 }}>
-          <div style={{
-            width: 26, height: 26, borderRadius: '50%',
-            background: 'linear-gradient(135deg, var(--oe), var(--pm))',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 11, fontWeight: 700, color: '#fff', flexShrink: 0
-          }}>1</div>
-          <span style={{ fontSize: 11, fontWeight: 500, letterSpacing: 1, textTransform: 'uppercase' as const, color: step === 1 ? '#fff' : 'var(--whm)' }}>Equipment</span>
-          <div style={{ width: 24, height: 1, background: 'var(--br)', flexShrink: 0 }} />
-          <div style={{
-            width: 26, height: 26, borderRadius: '50%',
-            background: step >= 2 ? 'linear-gradient(135deg, var(--oe), var(--pm))' : 'var(--whh)',
-            border: step >= 2 ? 'none' : '1px solid var(--br)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 11, fontWeight: 700, color: step >= 2 ? '#fff' : 'var(--whm)', flexShrink: 0
-          }}>2</div>
-          <span style={{ fontSize: 11, fontWeight: 500, letterSpacing: 1, textTransform: 'uppercase' as const, color: step === 2 ? '#fff' : 'var(--whm)' }}>Goal &amp; Length</span>
+        <div style={{
+          display: 'inline-flex', gap: 14, alignItems: 'center', marginBottom: 36,
+          padding: '8px 16px 8px 8px', borderRadius: 100,
+          background: 'rgba(255,255,255,.03)', border: '1px solid var(--br)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+            <div style={{
+              width: 28, height: 28, borderRadius: '50%',
+              background: 'linear-gradient(135deg, var(--og), var(--og2), var(--pm))',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 12, fontWeight: 700, color: '#fff', flexShrink: 0,
+              boxShadow: '0 4px 14px rgba(224,120,48,.35)',
+            }}>{step >= 2 ? '✓' : '1'}</div>
+            <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase' as const, color: step === 1 ? '#fff' : 'var(--whm)' }}>Equipment</span>
+          </div>
+          <div style={{ width: 28, height: 2, borderRadius: 2, background: step >= 2 ? 'linear-gradient(90deg, var(--og2), var(--pm))' : 'var(--br)', flexShrink: 0, transition: 'background 0.3s' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+            <div style={{
+              width: 28, height: 28, borderRadius: '50%',
+              background: step >= 2 ? 'linear-gradient(135deg, var(--og), var(--og2), var(--pm))' : 'var(--whh)',
+              border: step >= 2 ? 'none' : '1px solid var(--br)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 12, fontWeight: 700, color: step >= 2 ? '#fff' : 'var(--whm)', flexShrink: 0,
+              boxShadow: step >= 2 ? '0 4px 14px rgba(224,120,48,.35)' : 'none', transition: 'all 0.3s',
+            }}>2</div>
+            <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase' as const, color: step === 2 ? '#fff' : 'var(--whm)' }}>Goal &amp; Length</span>
+          </div>
         </div>
       </div>
 
       <div style={{ maxWidth: 820, padding: '0 24px' }} className="mx-auto">
         {/* ── STEP 1: Equipment ──────────────────────────────────────── */}
         {step === 1 && (
-          <section>
-            <div className="card" style={{ padding: 28, marginBottom: 14 }}>
-              <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 4 }}>
-                What equipment do you have access to?
-              </h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 18 }}>
-                <span style={{ fontSize: 11, color: 'var(--whm)', fontWeight: 400 }}>Select all that apply</span>
+          <section className="animate-fadeUp">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_260px] gap-4 items-stretch">
+              <div className="card" style={{ padding: 28 }}>
+                <h2 style={{ fontSize: 16, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 4 }}>
+                  What equipment do you have access to?
+                </h2>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 20 }}>
+                  <span style={{ fontSize: 12, color: 'var(--whm)', fontWeight: 400, letterSpacing: 0.5 }}>Select all that apply</span>
+                </div>
+                <div className="eq-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 8 }}>
+                  {EQUIPMENT_OPTIONS.map((eq) => {
+                    const selected = equipment.has(eq.id);
+                    const isBodyweight = eq.id === 'bodyweight';
+                    return (
+                      <button
+                        key={eq.id}
+                        onClick={() => toggleEquipment(eq.id)}
+                        className={`eq-btn ${selected ? 'selected' : ''}`}
+                        style={isBodyweight ? {
+                          background: 'linear-gradient(135deg,rgba(120,45,15,.25),rgba(90,45,130,.25))',
+                          border: '1px solid rgba(224,120,48,.35)',
+                          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, textAlign: 'center',
+                          position: 'relative',
+                        } : {
+                          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, textAlign: 'center',
+                          position: 'relative',
+                        }}
+                      >
+                        {selected && (
+                          <span style={{
+                            position: 'absolute', top: 7, right: 7,
+                            width: 16, height: 16, borderRadius: '50%',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: 9, fontWeight: 700, color: '#fff',
+                            background: 'linear-gradient(135deg, var(--og), var(--pm))',
+                          }}>✓</span>
+                        )}
+                        <span style={{ fontSize: 24 }}>{eq.emoji}</span>
+                        <span style={{ fontSize: 12.5, fontWeight: 600, letterSpacing: 0.3, color: selected || isBodyweight ? '#fff' : 'rgba(255,255,255,.5)' }}>
+                          {eq.label}
+                        </span>
+                        <span style={{ fontSize: 12, color: isBodyweight ? 'var(--og)' : 'rgba(255,255,255,.28)', fontWeight: 400 }}>
+                          {eq.sub}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,.35)', marginTop: 12, marginBottom: 22, lineHeight: 1.6 }}>
+                  💡 Bodyweight exercises are always included. Select additional equipment you have.
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <button className="btn-primary" style={{ padding: '13px 30px', fontSize: 12 }} onClick={() => setStep(2)}>
+                    Next &rarr;
+                  </button>
+                </div>
               </div>
-              <div className="eq-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 8 }}>
-                {EQUIPMENT_OPTIONS.map((eq) => {
-                  const selected = equipment.has(eq.id);
-                  const isBodyweight = eq.id === 'bodyweight';
-                  return (
-                    <button
-                      key={eq.id}
-                      onClick={() => toggleEquipment(eq.id)}
-                      className={`eq-btn ${selected ? 'selected' : ''}`}
-                      style={isBodyweight ? {
-                        background: 'linear-gradient(135deg,rgba(120,45,15,.25),rgba(90,45,130,.25))',
-                        border: '1px solid rgba(224,120,48,.35)',
-                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, textAlign: 'center'
-                      } : {
-                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, textAlign: 'center'
-                      }}
-                    >
-                      <span style={{ fontSize: 22 }}>{eq.emoji}</span>
-                      <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: 0.5, color: selected || isBodyweight ? '#fff' : 'rgba(255,255,255,.45)' }}>
-                        {eq.label}
-                      </span>
-                      <span style={{ fontSize: 10, color: isBodyweight ? 'var(--og)' : 'rgba(255,255,255,.25)', fontWeight: 400 }}>
-                        {eq.sub}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,.3)', marginTop: 8, marginBottom: 20 }}>
-                💡 Bodyweight exercises are always included. Select additional equipment you have.
-              </p>
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <button className="btn-primary" style={{ padding: '12px 28px', fontSize: 12 }} onClick={() => setStep(2)}>
-                  Next &rarr;
-                </button>
+
+              {/* Decorative action shot — desktop only */}
+              <div className="hide-mobile" style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', minHeight: 320 }}>
+                <Image
+                  src="/img/generated/builder-side.jpg"
+                  alt="Athlete loading weight plates onto a barbell in a dark gym"
+                  fill
+                  sizes="280px"
+                  className="object-cover"
+                  style={{ objectPosition: '60% center' }}
+                />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, rgba(10,10,15,.15) 0%, rgba(10,10,15,.55) 70%, rgba(10,10,15,.9) 100%)' }} />
+                <div style={{ position: 'absolute', left: 18, right: 18, bottom: 18 }}>
+                  <span className="chip" style={{ marginBottom: 10, display: 'inline-block', color: 'var(--og)', borderColor: 'rgba(224,120,48,.3)' }}>Your Gear</span>
+                  <p style={{ ...bebas, fontSize: 26, lineHeight: 0.95, color: '#fff', margin: 0 }}>
+                    Built around<br />what you have
+                  </p>
+                </div>
               </div>
             </div>
           </section>
@@ -274,12 +348,12 @@ export default function BuilderPage() {
 
         {/* ── STEP 2: Goal, Level, Days ──────────────────────────────── */}
         {step === 2 && (
-          <section>
+          <section className="animate-fadeUp">
             {/* Goal selection */}
             <div className="card" style={{ padding: 28, marginBottom: 14 }}>
-              <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 12 }}>
+              <h2 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 12 }}>
                 What&apos;s your primary goal?
-              </h3>
+              </h2>
               <div className="goal-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
                 {GOAL_OPTIONS.map((g) => {
                   const selected = goal === g.id;
@@ -297,7 +371,7 @@ export default function BuilderPage() {
                     >
                       <span style={{ fontSize: 24 }}>{g.emoji}</span>
                       <span style={{ fontSize: 13, fontWeight: 600, color: selected ? '#fff' : 'rgba(255,255,255,.75)' }}>{g.label}</span>
-                      <span style={{ fontSize: 11, color: 'var(--whm)' }}>{g.desc}</span>
+                      <span style={{ fontSize: 12, color: 'var(--whm)' }}>{g.desc}</span>
                     </button>
                   );
                 })}
@@ -306,7 +380,7 @@ export default function BuilderPage() {
 
             {/* Level selection */}
             <div className="card" style={{ padding: 28, marginBottom: 14 }}>
-              <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 4 }}>Experience level</h3>
+              <h2 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 4 }}>Experience level</h2>
               <p style={{ fontSize: 13, color: 'var(--whm)', fontWeight: 300, margin: 0, marginBottom: 18 }}>
                 We use this to calibrate your sets, reps, and rest times.
               </p>
@@ -327,7 +401,7 @@ export default function BuilderPage() {
                     >
                       <span style={{ fontSize: 24, marginBottom: 8 }}>{l.emoji}</span>
                       <span style={{ fontSize: 13, fontWeight: 600, color: selected ? '#fff' : 'rgba(255,255,255,.75)' }}>{l.label}</span>
-                      <span style={{ fontSize: 10, color: 'rgba(255,255,255,.35)', fontWeight: 400 }}>{l.desc}</span>
+                      <span style={{ fontSize: 12, color: 'rgba(255,255,255,.35)', fontWeight: 400 }}>{l.desc}</span>
                     </button>
                   );
                 })}
@@ -336,7 +410,7 @@ export default function BuilderPage() {
 
             {/* Plan length */}
             <div className="card" style={{ padding: 28, marginBottom: 14 }}>
-              <h3 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 6 }}>Plan length</h3>
+              <h2 style={{ fontSize: 15, color: '#fff', fontWeight: 600, margin: 0, marginBottom: 6 }}>Plan length</h2>
               <p style={{ fontSize: 13, color: 'var(--whm)', fontWeight: 300, margin: 0, marginBottom: 20 }}>
                 1-day is free (up to {FREE_WORKOUT_LIMIT} workouts). Multi-day plans unlock with Premium ($20/mo).
               </p>
@@ -371,7 +445,7 @@ export default function BuilderPage() {
                       <div style={{ ...bebas, fontSize: 26, color: isFree && selected ? '#07070d' : isFree ? '#fff' : 'rgba(255,255,255,.5)', lineHeight: 1, marginBottom: 3 }}>
                         {d.label}
                       </div>
-                      <div style={{ fontSize: 11, color: isFree && selected ? 'rgba(0,0,0,.5)' : 'var(--whm)', marginBottom: 6 }}>
+                      <div style={{ fontSize: 12, color: isFree && selected ? 'rgba(0,0,0,.5)' : 'var(--whm)', marginBottom: 6 }}>
                         {d.sub}
                       </div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: isFree ? 'var(--gr)' : 'var(--og)' }}>
@@ -385,26 +459,28 @@ export default function BuilderPage() {
 
             {/* Free usage counter */}
             <div style={{
-              background: 'rgba(255,255,255,.03)', border: '1px solid var(--br)', borderRadius: 12,
-              padding: '12px 16px', marginBottom: 14,
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10
+              background: 'linear-gradient(135deg, rgba(120,45,15,.12), rgba(90,45,130,.12))',
+              border: '1px solid rgba(224,120,48,.18)', borderRadius: 14,
+              padding: '14px 18px', marginBottom: 14,
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14
             }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 6, letterSpacing: 0.5 }}>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,.5)', marginBottom: 8, letterSpacing: 1.5, textTransform: 'uppercase' as const, fontWeight: 600 }}>
                   Free workouts used
                 </div>
-                <div style={{ display: 'flex', gap: 5 }}>
-                  {[0, 1, 2].map((i) => (
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {Array.from({ length: FREE_WORKOUT_LIMIT }).map((_, i) => (
                     <div key={i} style={{
-                      height: 5, flex: 1, borderRadius: 100,
-                      background: i < freeUsed ? 'linear-gradient(135deg, var(--og), var(--og2))' : 'var(--br)',
-                      transition: 'background 0.3s',
+                      height: 6, flex: 1, borderRadius: 100,
+                      background: i < freeUsed ? 'linear-gradient(135deg, var(--og), var(--og2))' : 'rgba(255,255,255,.08)',
+                      boxShadow: i < freeUsed ? '0 0 12px rgba(224,120,48,.4)' : 'none',
+                      transition: 'all 0.3s',
                     }} />
                   ))}
                 </div>
               </div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: freeUsed >= FREE_WORKOUT_LIMIT ? 'var(--og2)' : 'var(--og)', whiteSpace: 'nowrap' }}>
-                {freeUsed} / {FREE_WORKOUT_LIMIT} used
+              <div style={{ ...bebas, fontSize: 20, letterSpacing: 1, color: freeUsed >= FREE_WORKOUT_LIMIT ? 'var(--og2)' : 'var(--og)', whiteSpace: 'nowrap', lineHeight: 1 }}>
+                {freeUsed} / {FREE_WORKOUT_LIMIT}
               </div>
             </div>
 
@@ -425,6 +501,6 @@ export default function BuilderPage() {
           </section>
         )}
       </div>
-    </main>
+    </div>
   );
 }

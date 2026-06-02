@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 interface FeedPost {
   id: string;
@@ -32,8 +33,23 @@ interface DemoPost extends FeedPost {
   avatarGradient: string;
 }
 
-function getInitials(name: string) {
-  return name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
+const AVATARS = [
+  "/img/generated/avatar1.jpg",
+  "/img/generated/avatar2.jpg",
+  "/img/generated/avatar3.jpg",
+  "/img/generated/avatar4.jpg",
+  "/img/generated/avatar5.jpg",
+  "/img/generated/avatar6.jpg",
+];
+
+// Deterministically map a user name to one of the six headshots so the same
+// athlete always gets the same face across the feed.
+function avatarFor(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  }
+  return AVATARS[hash % AVATARS.length];
 }
 
 function timeAgo(dateStr: string) {
@@ -65,7 +81,7 @@ const DEMO_POSTS: DemoPost[] = [
     heroSubSubtitle: "New personal record",
     heroGradient: "linear-gradient(135deg, var(--og), var(--og2), var(--pm))",
     location: "Equinox HY",
-    locationEmoji: "\u{1F3CB}\uFE0F",
+    locationEmoji: "\u{1F3CB}️",
     equipment: "Barbell + Bench",
     timeLabel: "2h ago",
     volume: "14,200kg",
@@ -115,7 +131,7 @@ const DEMO_POSTS: DemoPost[] = [
     heroSubSubtitle: "Workout complete",
     heroGradient: "linear-gradient(135deg, #1e40af, #3b82f6, #60a5fa)",
     location: "CrossFit Box",
-    locationEmoji: "\u{1F3CB}\uFE0F",
+    locationEmoji: "\u{1F3CB}️",
     equipment: "Full Gym",
     timeLabel: "6h ago",
     volume: "22,100kg",
@@ -178,8 +194,41 @@ const DEMO_POSTS: DemoPost[] = [
   },
 ];
 
+// Assign demo posts avatars in order, then map any other name deterministically.
+const DEMO_AVATAR_BY_NAME: Record<string, string> = DEMO_POSTS.reduce(
+  (acc, post, i) => {
+    acc[post.userName] = AVATARS[i % AVATARS.length];
+    return acc;
+  },
+  {} as Record<string, string>,
+);
+
+function avatarForPost(name: string) {
+  return DEMO_AVATAR_BY_NAME[name] ?? avatarFor(name);
+}
+
 function isDemoPost(post: FeedPost | DemoPost): post is DemoPost {
   return !!(post as DemoPost).heroNumber;
+}
+
+// Circular next/image avatar — positioned, fixed-size, overflow-hidden.
+function Avatar({ src, name, size = 38 }: { src: string; name: string; size?: number }) {
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        overflow: "hidden",
+        flexShrink: 0,
+        border: "1px solid var(--br)",
+        background: "var(--whh)",
+      }}
+    >
+      <Image src={src} alt={name} fill sizes={`${size}px`} className="object-cover" />
+    </div>
+  );
 }
 
 export default function FeedPage() {
@@ -265,11 +314,11 @@ export default function FeedPage() {
   const statBoxStyle: React.CSSProperties = {
     flex: 1,
     textAlign: "center" as const,
-    padding: "10px 4px",
+    padding: "12px 4px",
   };
   const statValueStyle: React.CSSProperties = {
     ...bebasNeue,
-    fontSize: "18px",
+    fontSize: "19px",
     color: "var(--whi)",
     lineHeight: 1.1,
   };
@@ -279,15 +328,15 @@ export default function FeedPage() {
     letterSpacing: "1.5px",
     textTransform: "uppercase" as const,
     color: "var(--whm)",
-    marginTop: "2px",
+    marginTop: "3px",
   };
   const actionBtnStyle: React.CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
     gap: "6px",
-    padding: "6px 12px",
-    borderRadius: "8px",
-    border: "none",
+    padding: "7px 13px",
+    borderRadius: "100px",
+    border: "1px solid transparent",
     background: "transparent",
     color: "var(--whm)",
     cursor: "pointer",
@@ -297,44 +346,106 @@ export default function FeedPage() {
     ...dmSans,
   };
 
+  function followButton(userName: string) {
+    const isFollowed = followedUsers.has(userName);
+    return (
+      <button
+        onClick={() => handleFollow(userName)}
+        style={{
+          padding: "7px 16px",
+          borderRadius: "100px",
+          fontSize: "12px",
+          fontWeight: 700,
+          letterSpacing: "1px",
+          textTransform: "uppercase",
+          cursor: "pointer",
+          transition: "all 0.2s",
+          flexShrink: 0,
+          ...dmSans,
+          ...(isFollowed
+            ? {
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.15)",
+                color: "var(--whm)",
+              }
+            : {
+                background: "linear-gradient(135deg, var(--og), var(--og2), var(--pm))",
+                border: "1px solid rgba(224,120,48,0.4)",
+                color: "#fff",
+              }),
+        }}
+      >
+        {isFollowed ? "Following" : "Follow"}
+      </button>
+    );
+  }
+
+  function actionRow(post: FeedPost | DemoPost, displayLikes: number, isLiked: boolean, comments: number) {
+    return (
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        padding: "12px 18px 16px",
+        gap: "6px",
+      }}>
+        <button
+          onClick={() => handleLike(post.id, post.isDemo)}
+          style={{
+            ...actionBtnStyle,
+            color: isLiked ? "#ef4444" : "var(--whm)",
+            background: isLiked ? "rgba(239,68,68,0.1)" : "rgba(255,255,255,0.04)",
+            borderColor: isLiked ? "rgba(239,68,68,0.25)" : "var(--br)",
+          }}
+        >
+          {isLiked ? "❤️" : "♡"} {displayLikes}
+        </button>
+        <button style={{ ...actionBtnStyle, background: "rgba(255,255,255,0.04)", borderColor: "var(--br)" }}>
+          {"💬"} {comments}
+        </button>
+        <div style={{ flex: 1 }} />
+        <button style={{ ...actionBtnStyle, background: "rgba(255,255,255,0.04)", borderColor: "var(--br)" }}>
+          {"\u{1F517}"} Share
+        </button>
+      </div>
+    );
+  }
+
   function renderDemoCard(post: DemoPost) {
     const isLiked = likedIds.has(post.id);
     const displayLikes = post.likes + (isLiked ? 1 : 0);
-    const isFollowed = followedUsers.has(post.userName);
 
     return (
-      <div key={post.id} className="card" style={{ overflow: "hidden" }}>
-        {/* Hero Card */}
+      <div key={post.id} className="card animate-fadeUp" style={{ padding: 0 }}>
+        {/* Hero stat block */}
         <div style={{
           background: post.heroGradient,
-          padding: "32px 24px 28px",
+          padding: "34px 24px 30px",
           textAlign: "center",
           position: "relative",
           overflow: "hidden",
         }}>
-          {/* Subtle pattern overlay */}
           <div style={{
             position: "absolute",
             inset: 0,
-            background: "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(0,0,0,0.15) 0%, transparent 50%)",
+            background: "radial-gradient(circle at 30% 15%, rgba(255,255,255,0.16) 0%, transparent 55%), radial-gradient(circle at 75% 90%, rgba(0,0,0,0.22) 0%, transparent 55%)",
             pointerEvents: "none",
           }} />
           <div style={{ position: "relative", zIndex: 1 }}>
-            <div style={{ fontSize: "36px", marginBottom: "4px" }}>{post.emoji}</div>
+            <div style={{ fontSize: "34px", marginBottom: "6px" }}>{post.emoji}</div>
             <div style={{
               ...bebasNeue,
-              fontSize: "64px",
-              lineHeight: 1,
+              fontSize: "66px",
+              lineHeight: 0.95,
               color: "#fff",
-              textShadow: "0 2px 20px rgba(0,0,0,0.3)",
+              textShadow: "0 2px 24px rgba(0,0,0,0.35)",
             }}>
               {post.heroNumber}
             </div>
             <div style={{
               ...bebasNeue,
-              fontSize: "20px",
+              fontSize: "21px",
               letterSpacing: "4px",
-              color: "rgba(255,255,255,0.9)",
+              color: "rgba(255,255,255,0.92)",
               marginTop: "2px",
             }}>
               {post.heroSubtitle}
@@ -342,8 +453,8 @@ export default function FeedPage() {
             <div style={{
               fontSize: "12px",
               fontWeight: 400,
-              color: "rgba(255,255,255,0.7)",
-              marginTop: "6px",
+              color: "rgba(255,255,255,0.72)",
+              marginTop: "8px",
               ...dmSans,
             }}>
               {post.heroSubSubtitle}
@@ -352,72 +463,27 @@ export default function FeedPage() {
         </div>
 
         {/* User Info Row */}
-        <div style={{ padding: "14px 18px 0" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            {/* Avatar */}
-            <div style={{
-              width: "38px",
-              height: "38px",
-              borderRadius: "50%",
-              background: post.avatarGradient,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "12px",
-              fontWeight: 700,
-              color: "#fff",
-              flexShrink: 0,
-            }}>
-              {getInitials(post.userName)}
-            </div>
-            {/* Name + info */}
+        <div style={{ padding: "16px 18px 0" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "11px" }}>
+            <Avatar src={avatarForPost(post.userName)} name={post.userName} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                 <span style={{ fontWeight: 600, fontSize: "14px" }}>{post.userName}</span>
-                <span style={{ fontSize: "13px", color: "#3b82f6" }}>{"\u2713"}</span>
+                <span style={{ fontSize: "13px", color: "var(--og)" }}>{"✓"}</span>
               </div>
-              <div style={{ fontSize: "11px", color: "var(--whm)", fontWeight: 400, marginTop: "1px" }}>
+              <div style={{ fontSize: "12px", color: "var(--whm)", fontWeight: 400, marginTop: "1px" }}>
                 {post.locationEmoji} {post.location} · {post.equipment} · {post.timeLabel}
               </div>
             </div>
-            {/* Follow Button */}
-            <button
-              onClick={() => handleFollow(post.userName)}
-              style={{
-                padding: "7px 16px",
-                borderRadius: "100px",
-                fontSize: "10px",
-                fontWeight: 700,
-                letterSpacing: "1px",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                flexShrink: 0,
-                ...dmSans,
-                ...(isFollowed
-                  ? {
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1px solid rgba(255,255,255,0.15)",
-                      color: "var(--whm)",
-                    }
-                  : {
-                      background: "linear-gradient(135deg, var(--pm), #3b1a5e)",
-                      border: "1px solid rgba(155,94,203,0.4)",
-                      color: "#fff",
-                    }
-                ),
-              }}
-            >
-              {isFollowed ? "Following" : "Follow"}
-            </button>
+            {followButton(post.userName)}
           </div>
         </div>
 
         {/* Stats Row */}
         <div style={{
           display: "flex",
-          margin: "14px 18px 0",
-          borderRadius: "12px",
+          margin: "16px 18px 0",
+          borderRadius: "14px",
           border: "1px solid var(--br)",
           overflow: "hidden",
           background: "var(--whh)",
@@ -444,37 +510,13 @@ export default function FeedPage() {
         </div>
 
         {/* Caption */}
-        <div style={{ padding: "14px 18px 0" }}>
-          <p style={{ fontSize: "14px", lineHeight: 1.6, margin: 0, color: "rgba(255,255,255,0.8)", fontWeight: 300 }}>
+        <div style={{ padding: "16px 18px 0" }}>
+          <p style={{ fontSize: "14px", lineHeight: 1.65, margin: 0, color: "rgba(255,255,255,0.82)", fontWeight: 300 }}>
             {post.caption}
           </p>
         </div>
 
-        {/* Action Row */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          padding: "12px 18px 14px",
-          gap: "4px",
-        }}>
-          <button
-            onClick={() => handleLike(post.id, post.isDemo)}
-            style={{
-              ...actionBtnStyle,
-              color: isLiked ? "#ef4444" : "var(--whm)",
-              background: isLiked ? "rgba(239,68,68,0.1)" : "transparent",
-            }}
-          >
-            {isLiked ? "\u2764\uFE0F" : "\u2661"} {displayLikes}
-          </button>
-          <button style={actionBtnStyle}>
-            {"\uD83D\uDCAC"} {commentCounts[post.id] ?? post.comments}
-          </button>
-          <div style={{ flex: 1 }} />
-          <button style={actionBtnStyle}>
-            {"\u{1F517}"}
-          </button>
-        </div>
+        {actionRow(post, displayLikes, isLiked, commentCounts[post.id] ?? post.comments)}
       </div>
     );
   }
@@ -482,14 +524,13 @@ export default function FeedPage() {
   function renderApiCard(post: FeedPost) {
     const isLiked = likedIds.has(post.id);
     const displayLikes = post.likes + (isLiked ? 1 : 0);
-    const isFollowed = followedUsers.has(post.userName);
 
     return (
-      <div key={post.id} className="card" style={{ overflow: "hidden" }}>
-        {/* Hero Card - generic blue for API posts */}
+      <div key={post.id} className="card animate-fadeUp" style={{ padding: 0 }}>
+        {/* Hero stat block */}
         <div style={{
-          background: "linear-gradient(135deg, var(--pm), var(--pl), var(--og2))",
-          padding: "28px 24px 24px",
+          background: "linear-gradient(135deg, var(--og), var(--og2), var(--pm))",
+          padding: "30px 24px 26px",
           textAlign: "center",
           position: "relative",
           overflow: "hidden",
@@ -497,25 +538,25 @@ export default function FeedPage() {
           <div style={{
             position: "absolute",
             inset: 0,
-            background: "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)",
+            background: "radial-gradient(circle at 30% 15%, rgba(255,255,255,0.16) 0%, transparent 55%)",
             pointerEvents: "none",
           }} />
           <div style={{ position: "relative", zIndex: 1 }}>
             <div style={{ fontSize: "32px", marginBottom: "4px" }}>{"\u{1F4AA}"}</div>
             <div style={{
               ...bebasNeue,
-              fontSize: "48px",
+              fontSize: "50px",
               lineHeight: 1,
               color: "#fff",
-              textShadow: "0 2px 20px rgba(0,0,0,0.3)",
+              textShadow: "0 2px 24px rgba(0,0,0,0.35)",
             }}>
               WORKOUT
             </div>
             <div style={{
               ...bebasNeue,
-              fontSize: "18px",
+              fontSize: "19px",
               letterSpacing: "4px",
-              color: "rgba(255,255,255,0.85)",
+              color: "rgba(255,255,255,0.9)",
               marginTop: "2px",
             }}>
               COMPLETE
@@ -523,8 +564,8 @@ export default function FeedPage() {
             <div style={{
               fontSize: "12px",
               fontWeight: 400,
-              color: "rgba(255,255,255,0.65)",
-              marginTop: "6px",
+              color: "rgba(255,255,255,0.7)",
+              marginTop: "8px",
               ...dmSans,
             }}>
               FitForge workout logged
@@ -533,118 +574,56 @@ export default function FeedPage() {
         </div>
 
         {/* User Info Row */}
-        <div style={{ padding: "14px 18px 0" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{
-              width: "38px",
-              height: "38px",
-              borderRadius: "50%",
-              background: "linear-gradient(135deg, var(--pm), var(--og))",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "12px",
-              fontWeight: 700,
-              color: "#fff",
-              flexShrink: 0,
-            }}>
-              {getInitials(post.userName)}
-            </div>
+        <div style={{ padding: "16px 18px 0" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "11px" }}>
+            <Avatar src={avatarForPost(post.userName)} name={post.userName} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                 <span style={{ fontWeight: 600, fontSize: "14px" }}>{post.userName}</span>
               </div>
-              <div style={{ fontSize: "11px", color: "var(--whm)", fontWeight: 400, marginTop: "1px" }}>
-                {"\u{1F3CB}\uFE0F"} FitForge · {timeAgo(post.createdAt)}
+              <div style={{ fontSize: "12px", color: "var(--whm)", fontWeight: 400, marginTop: "1px" }}>
+                {"\u{1F3CB}️"} FitForge · {timeAgo(post.createdAt)}
               </div>
             </div>
-            <button
-              onClick={() => handleFollow(post.userName)}
-              style={{
-                padding: "7px 16px",
-                borderRadius: "100px",
-                fontSize: "10px",
-                fontWeight: 700,
-                letterSpacing: "1px",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                flexShrink: 0,
-                ...dmSans,
-                ...(isFollowed
-                  ? {
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1px solid rgba(255,255,255,0.15)",
-                      color: "var(--whm)",
-                    }
-                  : {
-                      background: "linear-gradient(135deg, var(--pm), #3b1a5e)",
-                      border: "1px solid rgba(155,94,203,0.4)",
-                      color: "#fff",
-                    }
-                ),
-              }}
-            >
-              {isFollowed ? "Following" : "Follow"}
-            </button>
+            {followButton(post.userName)}
           </div>
         </div>
 
         {/* Caption */}
-        <div style={{ padding: "14px 18px 0" }}>
-          <p style={{ fontSize: "14px", lineHeight: 1.6, margin: 0, color: "rgba(255,255,255,0.8)", fontWeight: 300 }}>
+        <div style={{ padding: "16px 18px 0" }}>
+          <p style={{ fontSize: "14px", lineHeight: 1.65, margin: 0, color: "rgba(255,255,255,0.82)", fontWeight: 300 }}>
             {post.caption}
           </p>
         </div>
 
-        {/* Action Row */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          padding: "12px 18px 14px",
-          gap: "4px",
-        }}>
-          <button
-            onClick={() => handleLike(post.id, post.isDemo)}
-            style={{
-              ...actionBtnStyle,
-              color: isLiked ? "#ef4444" : "var(--whm)",
-              background: isLiked ? "rgba(239,68,68,0.1)" : "transparent",
-            }}
-          >
-            {isLiked ? "\u2764\uFE0F" : "\u2661"} {displayLikes}
-          </button>
-          <button style={actionBtnStyle}>
-            {"\uD83D\uDCAC"} 0
-          </button>
-          <div style={{ flex: 1 }} />
-          <button style={actionBtnStyle}>
-            {"\u{1F517}"}
-          </button>
-        </div>
+        {actionRow(post, displayLikes, isLiked, 0)}
       </div>
     );
   }
 
   return (
-    <main style={{ maxWidth: "560px", margin: "0 auto", padding: "20px 16px 60px" }}>
-      <h1 style={{ ...bebasNeue, fontSize: "36px", marginBottom: "22px" }}>
-        <span className="text-gradient-white">FIT</span>
-        <span className="text-gradient-brand">FEED</span>
-      </h1>
+    <div style={{ maxWidth: "560px", margin: "0 auto", padding: "32px 16px 60px" }}>
+      {/* Branded page header */}
+      <header style={{ marginBottom: "26px" }} className="animate-fadeUp">
+        <span className="chip" style={{ marginBottom: "14px", display: "inline-block" }}>The social feed</span>
+        <h1 style={{ ...bebasNeue, fontSize: "clamp(44px,12vw,64px)", lineHeight: 0.9, letterSpacing: "1px", margin: 0 }}>
+          <span className="text-gradient-white">THE </span>
+          <span className="text-gradient-brand">FITFEED</span>
+        </h1>
+        <p style={{ fontSize: "14px", lineHeight: 1.6, fontWeight: 300, color: "var(--whm)", marginTop: "10px", maxWidth: "420px" }}>
+          Real PRs, real streaks, real people. Follow the athletes who push you and
+          celebrate every rep with your crew.
+        </p>
+      </header>
 
       {/* Post Composer or Auth CTA */}
       {isAuth ? (
-        <div className="card" style={{ padding: "18px", marginBottom: "20px", borderColor: "rgba(224,120,48,.18)" }}>
+        <div className="card animate-fadeUp" style={{ padding: "18px", marginBottom: "20px", borderColor: "rgba(224,120,48,.18)" }}>
           <div style={{ display: "flex", gap: "0.75rem" }}>
-            <div style={{
-              width: "38px", height: "38px", borderRadius: "50%",
-              background: "linear-gradient(135deg, var(--oe), var(--pm))",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: "12px", fontWeight: 700, color: "#fff", flexShrink: 0,
-            }}>
-              {session?.user?.name ? getInitials(session.user.name) : "ME"}
-            </div>
+            <Avatar
+              src={session?.user?.image || avatarFor(session?.user?.name || "avatar2")}
+              name={session?.user?.name || "You"}
+            />
             <div style={{ flex: 1 }}>
               <textarea
                 placeholder="Share your workout, PR, or progress..."
@@ -665,7 +644,7 @@ export default function FeedPage() {
                   onClick={handlePost}
                   disabled={posting || !postText.trim()}
                   className="btn-primary"
-                  style={{ padding: "8px 18px", fontSize: "11px" }}
+                  style={{ padding: "8px 18px", fontSize: "12px" }}
                 >
                   {posting ? "Posting..." : "Post \u{1F525}"}
                 </button>
@@ -674,15 +653,15 @@ export default function FeedPage() {
           </div>
         </div>
       ) : (
-        <div className="auth-cta" style={{ marginBottom: "20px", marginTop: 0 }}>
+        <div className="auth-cta animate-fadeUp" style={{ marginBottom: "20px", marginTop: 0 }}>
           <div>
             <p style={{ fontSize: "13px", fontWeight: 600, margin: 0 }}>Create an account to post</p>
-            <p style={{ fontSize: "11px", color: "var(--whm)", fontWeight: 300, margin: "4px 0 0" }}>
+            <p style={{ fontSize: "12px", color: "var(--whm)", fontWeight: 300, margin: "4px 0 0" }}>
               Share your PRs and connect with the community.
             </p>
           </div>
-          <a href="/login?returnUrl=/feed" className="btn-primary" style={{ textDecoration: "none", padding: "9px 16px", fontSize: "10px" }}>
-            Join Free {"\u2192"}
+          <a href="/login?returnUrl=/feed" className="btn-primary" style={{ textDecoration: "none", padding: "9px 16px", fontSize: "12px" }}>
+            Join Free {"→"}
           </a>
         </div>
       )}
@@ -696,6 +675,6 @@ export default function FeedPage() {
           return renderApiCard(post);
         })}
       </div>
-    </main>
+    </div>
   );
 }

@@ -29,6 +29,10 @@
   --br: rgba(255,255,255,.08);
 }
 
+html {
+  background: var(--bg);
+}
+
 body {
   background: var(--bg);
   color: var(--whi);
@@ -36,7 +40,6 @@ body {
   font-weight: 300;
   overflow-x: hidden;
   min-height: 100vh;
-  padding-top: 56px;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -56,7 +59,13 @@ body::before {
 
 .bg-radials {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  /* Cover the largest possible viewport so the mobile address-bar show/hide
+     never leaves a gap below the fixed layer (which showed black). */
+  height: 100vh;
+  height: 100lvh;
   z-index: 0;
   background:
     radial-gradient(ellipse at 5% 90%, rgba(120,45,15,.55) 0%, transparent 45%),
@@ -86,7 +95,7 @@ body::before {
   color: #fff;
   padding: 11px 24px;
   border-radius: 100px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -107,15 +116,15 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.92);
   padding: 11px 24px;
   border-radius: 100px;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
   cursor: pointer;
   transition: all 0.25s;
   font-family: 'DM Sans', sans-serif;
@@ -123,29 +132,64 @@ body::before {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.14);
 }
-.btn-ghost:hover { color: #fff; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+.btn-ghost:hover { color: #fff; background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.38); transform: translateY(-1px); }
 .btn-ghost:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .card {
-  background: rgba(255,255,255,0.03);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
   border: 1px solid var(--br);
   border-radius: 20px;
   overflow: hidden;
   word-break: break-word;
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  box-shadow: 0 12px 34px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+/* App-store download badge */
+.store-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 22px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--og), var(--og2), var(--pm));
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 8px 26px rgba(224,120,48,0.38), inset 0 1px 0 rgba(255,255,255,0.22);
+  transition: transform .25s, opacity .25s;
+}
+.store-badge:hover { transform: translateY(-2px); opacity: 0.94; }
+.store-badge svg { flex-shrink: 0; }
+
+/* Frosted-glass surface utility */
+.glass {
+  background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.16);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
 .chip {
   display: inline-block;
-  font-size: 10px;
-  letter-spacing: 2px;
+  font-size: 12px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.62);
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   padding: 5px 14px;
   border-radius: 100px;
   font-weight: 500;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .input-field {
