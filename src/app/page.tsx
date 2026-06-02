@@ -1,108 +1,212 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Marquee } from "@/components/marquee";
 
 export const metadata: Metadata = {
-  title: "FitForge — Build. Track. Share.",
+  title: "FitForge — Set your goals. Train along. Forge together.",
   description:
-    "Build AI workouts around your gym, track gains with XP and streaks, share PRs with the community, and buy or sell programs from real coaches.",
+    "Tell FitForge your goals and equipment, follow guided workouts that earn you XP, and challenge friends on the social feed. The fitness app built around real people.",
   alternates: { canonical: "/" },
   openGraph: { url: "https://fitforgelifts.co/", images: ["/opengraph-image"] },
 };
 
 const bebas = { fontFamily: "'Bebas Neue', sans-serif" };
 
-const features: { emoji: string; chip: string; title: string; desc: string; cta: string; href: string; large?: boolean; green?: boolean; soon?: boolean; small?: boolean; emojiSize: number; descMb: number; tags?: string[] }[] = [
-  { emoji: "🏋️", chip: "Equipment-First", title: "Workouts Built\nAround Your Gym", desc: "Select your equipment and goal — we build a program using only what you actually have. No generic plans.", cta: "Build My Workout →", href: "/builder", large: true, emojiSize: 28, descMb: 22 },
-  { emoji: "📱", chip: "Community", title: "Social Fitness\nFeed", desc: "Share PRs, post workout wins, follow athletes who push you.", cta: "Open Feed →", href: "/feed", emojiSize: 26, descMb: 20 },
-  { emoji: "🎮", chip: "Gamified", title: "Gamified Gym\nTracking", desc: "Earn XP, unlock achievements, build streaks.", cta: "Start Tracking →", href: "/builder", green: true, small: true, emojiSize: 24, descMb: 16 },
-  { emoji: "🎨", chip: "Creator Economy", title: "Creator\nMarketplace", desc: "Buy programs from real coaches. Or become one — upload your plan, set your price, keep 80%.", cta: "Join Waitlist →", href: "/marketplace", soon: true, small: true, emojiSize: 24, descMb: 14, tags: ["📖 Buy plans", "💰 Sell plans", "🤖 AI formatting"] },
+type Pillar = {
+  n: string;
+  chip: string;
+  title: string;
+  desc: string;
+  bullets: string[];
+  cta: string;
+  href: string;
+  img: string;
+  alt: string;
+  accent: string;
+  flip?: boolean;
+};
+
+const pillars: Pillar[] = [
+  {
+    n: "01",
+    chip: "Goals & Equipment",
+    title: "Built Around\nYour Body & Gear",
+    desc: "Tell FitForge your goal and exactly what you're working with — a full gym, a single pair of dumbbells, or just the floor. We forge a program that fits what you actually have. No generic plans, no wasted reps.",
+    bullets: ["Pick your goal & experience", "Select your real equipment", "Get a plan in seconds"],
+    cta: "Build my workout",
+    href: "/builder",
+    img: "/img/generated/pillar1-equipment.png",
+    alt: "Athlete selecting a dumbbell in a dark gym lit with orange and purple",
+    accent: "var(--og)",
+  },
+  {
+    n: "02",
+    chip: "Guided & Gamified",
+    title: "Follow Along.\nLevel Up.",
+    desc: "Hit start and the app walks you through it set by set — reps, weight, rest, and form tips on tap. Every session earns XP, builds your streak, and unlocks achievements. Your grind, finally rewarded.",
+    bullets: ["Step-by-step guided sessions", "Earn XP & build streaks", "Unlock achievements"],
+    cta: "Start training",
+    href: "/builder",
+    img: "/img/generated/pillar2-xp.png",
+    alt: "Athlete checking her workout on a phone mid-session in a moody gym",
+    accent: "var(--gr)",
+    flip: true,
+  },
+  {
+    n: "03",
+    chip: "Social Feed",
+    title: "Stronger\nTogether.",
+    desc: "Share PRs, react to your friends' wins, and throw down challenges on the FitFeed. Following the people who push you is the difference between starting and sticking. Train with your crew — even when you train alone.",
+    bullets: ["Post PRs & workout wins", "Follow athletes who push you", "Challenge your friends"],
+    cta: "Open the feed",
+    href: "/feed",
+    img: "/img/generated/pillar3-social.png",
+    alt: "Two friends high-fiving and celebrating after a workout",
+    accent: "var(--og2)",
+  },
+];
+
+const stats: [string, string][] = [
+  ["1,000+", "Workouts Forged"],
+  ["500+", "Athletes Training"],
+  ["50K+", "XP Earned Weekly"],
 ];
 
 export default function HomePage() {
   return (
     <>
-      {/* Hero */}
-      <section className="min-h-[calc(100vh-62px)] flex flex-col items-center justify-center text-center px-8 py-20 pb-15">
-        <span className="chip mb-9 animate-fadeUp">The world&apos;s first social fitness marketplace</span>
-        <h1 style={{ ...bebas, lineHeight: 0.9, letterSpacing: 1, animation: "fadeUp 0.7s ease 0.1s both" }}>
-          <span className="text-gradient-white block text-[clamp(90px,14vw,180px)]">FIT</span>
-          <span className="text-gradient-brand block text-[clamp(90px,14vw,180px)]">FORGE</span>
-        </h1>
-        <p className="text-[clamp(14px,1.8vw,17px)] max-w-[440px] leading-[1.75] mx-auto mt-7 mb-12 font-light" style={{ color: "rgba(255,255,255,.55)", animation: "fadeUp 0.7s ease 0.2s both" }}>
-          Workouts built around what you need.<br />Track it. Share it. Get paid for it.
-        </p>
-        <div className="flex gap-3.5 justify-center flex-wrap mb-4" style={{ animation: "fadeUp 0.7s ease 0.3s both" }}>
-          <Link href="/builder" className="btn-primary" style={{ padding: "15px 34px", fontSize: 12 }}>Start Building →</Link>
-          <Link href="/feed" className="btn-ghost" style={{ padding: "15px 34px", fontSize: 12 }}>Explore Community</Link>
+      {/* ───────────────────────── HERO ───────────────────────── */}
+      <section className="relative -mt-[62px] min-h-[100svh] flex items-end overflow-hidden">
+        <Image
+          src="/img/generated/hero.png"
+          alt="Athlete celebrating a finished set, lit in orange and purple"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[70%_center]"
+        />
+        {/* Cinematic overlays — keep text legible, deepen brand mood */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,10,15,.82) 0%, rgba(10,10,15,.25) 38%, rgba(10,10,15,.55) 72%, rgba(10,10,15,.96) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 12% 88%, rgba(120,45,15,.45) 0%, transparent 48%), radial-gradient(ellipse at 88% 8%, rgba(90,45,130,.4) 0%, transparent 46%)" }} />
+
+        <div className="relative z-10 w-full max-w-[1160px] mx-auto px-8 pb-20 pt-[140px]">
+          <span className="chip mb-6 inline-block animate-fadeUp">The social fitness app built around you</span>
+          <h1 style={{ ...bebas, lineHeight: 0.86, letterSpacing: 1, animation: "fadeUp 0.7s ease 0.1s both" }}>
+            <span className="text-gradient-white block text-[clamp(56px,11vw,150px)]">FORGE THE</span>
+            <span className="text-gradient-brand block text-[clamp(56px,11vw,150px)]">BEST OF YOU</span>
+          </h1>
+          <p className="text-[clamp(15px,1.9vw,19px)] max-w-[520px] leading-[1.65] mt-6 mb-9 font-light" style={{ color: "rgba(255,255,255,.7)", animation: "fadeUp 0.7s ease 0.2s both" }}>
+            Set your goals and gear. Follow guided workouts that earn you XP.
+            Challenge your friends on the feed. This is training with a crew behind you.
+          </p>
+          <div className="flex gap-3.5 flex-wrap items-center" style={{ animation: "fadeUp 0.7s ease 0.3s both" }}>
+            <Link href="/builder" className="btn-primary" style={{ padding: "16px 36px", fontSize: 12 }}>Start Free →</Link>
+            <Link href="/feed" className="btn-ghost" style={{ padding: "16px 36px", fontSize: 12 }}>Explore the Feed</Link>
+          </div>
+          <p className="text-[11px] mt-5 tracking-[.5px]" style={{ color: "rgba(255,255,255,.4)", animation: "fadeUp 0.7s ease 0.35s both" }}>
+            No credit card needed · 1-day workouts free forever
+          </p>
+
+          <div className="flex gap-[44px] flex-wrap mt-14 pt-9 border-t" style={{ borderColor: "rgba(255,255,255,.12)", animation: "fadeUp 0.7s ease 0.45s both" }}>
+            {stats.map(([num, label]) => (
+              <div key={label}>
+                <div className="text-gradient-white text-[clamp(34px,4vw,48px)] leading-none" style={bebas}>{num}</div>
+                <div className="text-[10px] tracking-[2px] uppercase mt-1.5" style={{ color: "rgba(255,255,255,.5)" }}>{label}</div>
+              </div>
+            ))}
+          </div>
         </div>
-        <p className="text-[11px] mb-[70px] tracking-[.5px]" style={{ color: "rgba(255,255,255,.28)", animation: "fadeUp 0.7s ease 0.35s both" }}>
-          No credit card needed. 1-day workouts are free forever.
-        </p>
-        <div className="flex gap-[52px] justify-center flex-wrap" style={{ animation: "fadeUp 0.7s ease 0.4s both" }}>
-          {[["1,000+", "Workouts Created"], ["500+", "Active Users"], ["100+", "Creator Plans"]].map(([num, label]) => (
-            <div key={label} className="text-center">
-              <div className="text-gradient-white text-[44px] leading-none" style={bebas}>{num}</div>
-              <div className="text-[10px] tracking-[2px] uppercase" style={{ color: "rgba(255,255,255,.35)", marginTop: 5 }}>{label}</div>
+      </section>
+
+      <Marquee items={["Set Your Goals", "Train With Your Gear", "Earn Every Rep", "Follow Your Crew", "Forge Your Streak"]} />
+
+      {/* ───────────────────────── HOW IT WORKS ───────────────────────── */}
+      <section className="py-[100px] px-8 max-w-[1160px] mx-auto">
+        <div className="max-w-[620px] mb-[72px]">
+          <span className="chip mb-4 inline-block">How it works</span>
+          <h2 className="text-white mb-4" style={{ ...bebas, fontSize: "clamp(40px,6vw,76px)", lineHeight: 0.95 }}>
+            Three steps.<br />One stronger you.
+          </h2>
+          <p className="text-[16px] leading-[1.7] font-light" style={{ color: "rgba(255,255,255,.5)" }}>
+            FitForge turns &ldquo;I should work out&rdquo; into a plan you actually follow — built from your gear,
+            powered by XP, and backed by people who push you.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-[88px] md:gap-[120px]">
+          {pillars.map((p) => (
+            <div key={p.n} className="grid grid-cols-1 md:grid-cols-2 gap-9 md:gap-16 items-center">
+              {/* Image */}
+              <div className={`relative ${p.flip ? "md:order-2" : ""}`}>
+                <div className="relative aspect-[3/4] rounded-[24px] overflow-hidden card !p-0" style={{ boxShadow: "0 30px 80px rgba(0,0,0,.5)" }}>
+                  <Image
+                    src={p.img}
+                    alt={p.alt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, transparent 55%, rgba(10,10,15,.45) 100%)" }} />
+                </div>
+                {/* Floating step number */}
+                <div
+                  className="absolute -top-5 left-6 md:left-auto md:-left-5 flex items-center justify-center rounded-2xl text-white"
+                  style={{ ...bebas, width: 76, height: 76, fontSize: 38, background: "linear-gradient(135deg, var(--og), var(--og2), var(--pm))", boxShadow: "0 12px 40px rgba(224,120,48,.4)" }}
+                >
+                  {p.n}
+                </div>
+              </div>
+
+              {/* Text */}
+              <div className={p.flip ? "md:order-1" : ""}>
+                <span className="chip mb-5 inline-block" style={{ color: p.accent, borderColor: "rgba(255,255,255,.16)" }}>{p.chip}</span>
+                <h3 className="text-white whitespace-pre-line mb-5" style={{ ...bebas, fontSize: "clamp(34px,4.5vw,58px)", lineHeight: 0.94 }}>{p.title}</h3>
+                <p className="text-[15.5px] leading-[1.75] font-light mb-7" style={{ color: "rgba(255,255,255,.55)" }}>{p.desc}</p>
+                <ul className="flex flex-col gap-3 mb-8">
+                  {p.bullets.map((b) => (
+                    <li key={b} className="flex items-center gap-3 text-[14px] font-light" style={{ color: "rgba(255,255,255,.75)" }}>
+                      <span className="flex items-center justify-center rounded-full shrink-0 text-[11px] font-bold text-white" style={{ width: 22, height: 22, background: "linear-gradient(135deg, var(--og), var(--pm))" }}>✓</span>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+                <Link href={p.href} className="btn-primary" style={{ padding: "14px 30px", fontSize: 12 }}>{p.cta} →</Link>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      <Marquee items={["Workouts Built Around YOU", "Equipment-First Training", "Social Fitness Feed", "Track Every Set", "Creator Marketplace"]} />
+      <Marquee items={["Your Equipment. Your Goals. Your Program.", "Structure Beats Vibes", "Train. Track. Forge."]} reverse />
 
-      {/* Features */}
-      <section className="py-[90px] px-8 max-w-[1160px] mx-auto">
-        <span className="chip mb-4">What we built</span>
-        <h2 className="text-white mb-3.5" style={{ ...bebas, fontSize: "clamp(40px,6vw,70px)", lineHeight: 1 }}>Four features.<br />One platform.</h2>
-        <p className="text-[15px] max-w-[480px] leading-[1.7] font-light mb-12" style={{ color: "rgba(255,255,255,.4)" }}>
-          AI workout building, gamified gym tracking, social fitness feed, and creator monetization — all in one place.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-3.5">
-          {features.map((f) => (
-            <Link
-              key={f.title}
-              href={f.href}
-              className={`card no-underline flex flex-col min-h-[280px] transition-transform hover:-translate-y-[3px] ${f.large ? "p-8 md:p-10 md:col-span-1" : ""}`}
-              style={{
-                padding: f.large ? undefined : (f.small ? "32px" : "36px"),
-                ...(f.green ? { borderColor: "rgba(34,197,94,.14)", background: "radial-gradient(ellipse at 20% 80%,rgba(34,197,94,.07) 0%,transparent 60%),rgba(255,255,255,.02)" } : {}),
-                ...(f.large ? { background: "radial-gradient(ellipse at 75% 0%,rgba(90,45,130,.14) 0%,transparent 55%),rgba(255,255,255,.025)" } : {}),
-                ...(f.soon ? { position: "relative" as const, background: "radial-gradient(ellipse at 10% 90%,rgba(120,45,15,.16) 0%,transparent 60%),rgba(255,255,255,.02)" } : {}),
-              }}
-            >
-              {f.soon && (
-                <div className="absolute top-3.5 right-3.5 text-white text-[9px] font-bold tracking-[1.2px] uppercase py-1 rounded-full" style={{ paddingLeft: 9, paddingRight: 9, background: "linear-gradient(135deg,#b45309,#92400e)" }}>Soon</div>
-              )}
-              <div style={{ fontSize: f.emojiSize, marginBottom: f.small ? 12 : 14 }}>{f.emoji}</div>
-              <span className={`chip self-start ${f.green ? "!text-[#4ade80] !border-[rgba(34,197,94,.2)] !bg-[rgba(34,197,94,.05)]" : ""}`} style={{ marginBottom: f.small ? 10 : 12 }}>{f.chip}</span>
-              <h3 className="text-white leading-none flex-1 whitespace-pre-line" style={{ ...bebas, fontSize: f.large ? "clamp(28px,3.5vw,40px)" : (f.small ? "clamp(20px,2.2vw,26px)" : "clamp(24px,2.8vw,32px)"), marginBottom: f.small ? 8 : 10 }}>{f.title}</h3>
-              <p className="font-light" style={{ color: f.large ? "rgba(255,255,255,.45)" : "rgba(255,255,255,.4)", fontSize: f.large ? "14px" : (f.title.includes("Social") ? "13px" : "12px"), lineHeight: f.small ? 1.65 : 1.7, marginBottom: f.large ? 22 : f.descMb }}>{f.desc}</p>
-              {f.tags && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "16px" }}>
-                  {f.tags.map((tag) => (
-                    <span key={tag} style={{ background: "rgba(255,255,255,.05)", borderRadius: "100px", padding: "3px 10px", fontSize: "10px", color: "rgba(255,255,255,.4)" }}>{tag}</span>
-                  ))}
-                </div>
-              )}
-              <span className="font-bold tracking-[1.5px] uppercase" style={{ fontSize: f.small ? 11 : 12, color: f.green ? "#4ade80" : "var(--og)" }}>{f.cta}</span>
-            </Link>
-          ))}
+      {/* ───────────────────────── BOTTOM CTA ───────────────────────── */}
+      <section className="relative overflow-hidden">
+        <div className="relative min-h-[560px] flex items-center">
+          <Image
+            src="/img/generated/cta-group.png"
+            alt="A group of athletes together in the gym"
+            fill
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(10,10,15,.94) 0%, rgba(10,10,15,.7) 50%, rgba(10,10,15,.4) 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 0% 100%, rgba(120,45,15,.4) 0%, transparent 55%)" }} />
+
+          <div className="relative z-10 w-full max-w-[1160px] mx-auto px-8 py-24">
+            <h2 className="mb-4" style={{ ...bebas, fontSize: "clamp(40px,7vw,86px)", lineHeight: 0.92 }}>
+              <span className="text-gradient-white block">READY TO</span>
+              <span className="text-gradient-brand block">START FORGING?</span>
+            </h2>
+            <p className="text-[16px] font-light max-w-[440px] mb-9 leading-[1.7]" style={{ color: "rgba(255,255,255,.65)" }}>
+              Free to start. Your equipment, your goals, your crew — your program, built in seconds.
+            </p>
+            <div className="flex gap-3.5 flex-wrap">
+              <Link href="/login" className="btn-primary btn-glow" style={{ padding: "17px 44px", fontSize: 12 }}>Create Free Account →</Link>
+              <Link href="/builder" className="btn-ghost" style={{ padding: "17px 40px", fontSize: 12 }}>Try the Builder</Link>
+            </div>
+          </div>
         </div>
-      </section>
-
-      <Marquee items={["Your Equipment. Your Goals. Your Program.", "Structure Beats Vibes", "No Generic Plans"]} reverse />
-
-      {/* Bottom CTA */}
-      <section className="py-20 px-8 text-center">
-        <h2 className="mb-3.5" style={{ ...bebas, fontSize: "clamp(40px,6vw,72px)", lineHeight: 1 }}>
-          <span className="text-gradient-white block">READY TO</span>
-          <span className="text-gradient-brand block">START FORGING?</span>
-        </h2>
-        <p className="text-[15px] font-light max-w-[400px] mx-auto mb-8 leading-[1.7]" style={{ color: "rgba(255,255,255,.4)" }}>
-          Free to start. Your equipment, your goals, your program — built in seconds.
-        </p>
-        <Link href="/login" className="btn-primary" style={{ padding: "16px 42px", fontSize: 12 }}>Create Free Account →</Link>
       </section>
     </>
   );

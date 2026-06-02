@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "FAQ — Frequently Asked Questions",
@@ -45,34 +46,56 @@ const faqs = [
 export default function FAQPage() {
   return (
     <>
-      {/* Header */}
-      <section className="py-20 px-8 text-center max-w-[760px] mx-auto">
-        <span className="chip mb-6">Support</span>
-        <h1 className="text-white mb-4" style={{ ...bebas, fontSize: "clamp(52px,8vw,90px)", lineHeight: 0.95 }}>
-          <span className="text-gradient-white block">FREQUENTLY</span>
-          <span className="text-gradient-brand block">ASKED</span>
-        </h1>
-        <p className="font-light text-[15px] leading-[1.75] max-w-[460px] mx-auto" style={{ color: "rgba(255,255,255,.45)" }}>
-          Got questions? We&apos;ve got answers. Can&apos;t find what you&apos;re looking for — reach out directly below.
-        </p>
+      {/* ───────────────────────── HERO BANNER ───────────────────────── */}
+      <section className="relative -mt-[62px] overflow-hidden">
+        <div className="relative min-h-[440px] md:min-h-[520px] flex items-end">
+          <Image
+            src="/img/generated/cta-group.png"
+            alt="A group of athletes together in the gym"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          {/* Cinematic overlays — keep text legible, deepen brand mood */}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,10,15,.85) 0%, rgba(10,10,15,.4) 40%, rgba(10,10,15,.7) 78%, rgba(10,10,15,.98) 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 10% 90%, rgba(120,45,15,.45) 0%, transparent 50%), radial-gradient(ellipse at 90% 10%, rgba(90,45,130,.42) 0%, transparent 48%)" }} />
+
+          <div className="relative z-10 w-full max-w-[760px] mx-auto px-8 pb-14 pt-[150px] text-center">
+            <span className="chip mb-6 inline-block">Support</span>
+            <h1 className="mb-5" style={{ ...bebas, fontSize: "clamp(52px,9vw,96px)", lineHeight: 0.9, letterSpacing: 1 }}>
+              <span className="text-gradient-white block">FREQUENTLY</span>
+              <span className="text-gradient-brand block">ASKED</span>
+            </h1>
+            <p className="font-light text-[15px] leading-[1.75] max-w-[460px] mx-auto" style={{ color: "rgba(255,255,255,.7)" }}>
+              Got questions? We&apos;ve got answers. Can&apos;t find what you&apos;re looking for — reach out directly below.
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* FAQ Items */}
-      <section className="px-8 pb-16 max-w-[760px] mx-auto">
-        <div className="flex flex-col gap-3.5">
+      <section className="px-8 pt-16 pb-16 max-w-[760px] mx-auto">
+        <div className="flex flex-col gap-4">
           {faqs.map((item, i) => (
             <div
               key={i}
-              className="card"
+              className="card transition-colors hover:border-white/15"
               style={{ padding: "28px 32px" }}
             >
               <h2
-                className="text-white mb-3"
-                style={{ ...bebas, fontSize: "clamp(18px,2.2vw,22px)", letterSpacing: 0.5 }}
+                className="text-white mb-3 flex items-start gap-3.5"
+                style={{ ...bebas, fontSize: "clamp(18px,2.2vw,23px)", letterSpacing: 0.5, lineHeight: 1.1 }}
               >
-                {item.q}
+                <span
+                  className="shrink-0 text-white/90 text-[13px] mt-[3px]"
+                  style={{ ...bebas, color: "var(--og)" }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span>{item.q}</span>
               </h2>
-              <p className="font-light text-[14px] leading-[1.75]" style={{ color: "rgba(255,255,255,.5)" }}>
+              <p className="font-light text-[14px] leading-[1.75] pl-[34px]" style={{ color: "rgba(255,255,255,.5)" }}>
                 {item.a}
               </p>
             </div>
@@ -81,26 +104,27 @@ export default function FAQPage() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-16 px-8 text-center max-w-[760px] mx-auto">
+      <section className="pb-16 px-8 text-center max-w-[760px] mx-auto">
         <div
-          className="card"
+          className="card relative"
           style={{
-            padding: "52px 40px",
-            background: "radial-gradient(ellipse at 50% 0%,rgba(90,45,130,.14) 0%,transparent 60%),rgba(255,255,255,.025)",
+            padding: "56px 40px",
+            background: "radial-gradient(ellipse at 50% 0%,rgba(90,45,130,.18) 0%,transparent 62%),linear-gradient(135deg, rgba(120,45,15,.08), rgba(90,45,130,.06))",
+            borderColor: "rgba(224,120,48,.18)",
           }}
         >
           <span className="chip mb-5">Still have questions?</span>
-          <h2 className="text-white mb-3" style={{ ...bebas, fontSize: "clamp(32px,5vw,52px)", lineHeight: 1 }}>
+          <h2 className="text-white mb-3" style={{ ...bebas, fontSize: "clamp(32px,5vw,56px)", lineHeight: 0.95 }}>
             <span className="text-gradient-white block">GET IN</span>
             <span className="text-gradient-brand block">TOUCH</span>
           </h2>
-          <p className="font-light text-[15px] leading-[1.75] max-w-[400px] mx-auto mb-8" style={{ color: "rgba(255,255,255,.45)" }}>
+          <p className="font-light text-[15px] leading-[1.75] max-w-[400px] mx-auto mb-8" style={{ color: "rgba(255,255,255,.55)" }}>
             We read every message. Whether it&apos;s a bug, a feature idea, or a partnership — reach out and we&apos;ll get back to you.
           </p>
           <a
             href="mailto:blake@fitforgelifts.co"
-            className="btn-primary"
-            style={{ padding: "15px 36px", fontSize: 12, display: "inline-block" }}
+            className="btn-primary btn-glow"
+            style={{ padding: "16px 40px", fontSize: 12 }}
             aria-label="Email blake@fitforgelifts.co"
           >
             blake@fitforgelifts.co
