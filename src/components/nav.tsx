@@ -74,7 +74,7 @@ export function Nav() {
       </nav>
 
       {drawerOpen && (
-        <div className="fixed inset-0 z-[400] flex flex-col items-center justify-center gap-7 backdrop-blur-[24px]" style={{ background: "rgba(10,10,15,.97)" }}>
+        <div className="fixed inset-0 z-[600] flex flex-col items-center justify-center gap-7 backdrop-blur-[24px]" style={{ background: "rgba(10,10,15,.97)" }}>
           <button onClick={() => setDrawerOpen(false)} className="absolute top-5 right-5 bg-transparent border-none text-[28px] cursor-pointer" style={{ color: "var(--whm)" }}>✕</button>
           <Link href="/" onClick={() => setDrawerOpen(false)} className="text-[20px] tracking-[3px] text-white no-underline uppercase font-medium">Home</Link>
           {navLinks.map((link) => (
