@@ -146,18 +146,16 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 11px;
-  padding: 10px 20px;
+  padding: 11px 22px;
   border-radius: 14px;
-  background: rgba(255,255,255,0.09);
-  border: 1px solid rgba(255,255,255,0.22);
+  background: linear-gradient(135deg, var(--og), var(--og2), var(--pm));
+  border: 1px solid rgba(255,255,255,0.18);
   color: #fff;
   text-decoration: none;
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  box-shadow: 0 6px 22px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.14);
-  transition: transform .25s, background .25s, border-color .25s;
+  box-shadow: 0 8px 26px rgba(224,120,48,0.38), inset 0 1px 0 rgba(255,255,255,0.22);
+  transition: transform .25s, opacity .25s;
 }
-.store-badge:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.4); transform: translateY(-2px); }
+.store-badge:hover { transform: translateY(-2px); opacity: 0.94; }
 .store-badge svg { flex-shrink: 0; }
 
 /* Frosted-glass surface utility */
