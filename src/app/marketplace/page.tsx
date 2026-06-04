@@ -208,6 +208,29 @@ export default function MarketplacePage() {
         ))}
       </div>
 
+      {/* ───────────────────────── About the marketplace ───────────────────────── */}
+      <section style={{ maxWidth: "720px", margin: "0 auto 56px", textAlign: "left" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "18px", color: "rgba(255,255,255,.6)", fontWeight: 300, fontSize: "15.5px", lineHeight: 1.8 }}>
+          <p>
+            The FitForge Creator Marketplace turns great coaching into great software. Instead of selling a static PDF
+            that ends up forgotten in someone&apos;s downloads folder, coaches publish living programs that members
+            follow set by set inside the app — with guided timers, form tips, weight logging, and XP baked in.
+          </p>
+          <p>
+            Getting started is simple. Upload an existing plan and our AI formats it into a structured, day-by-day
+            program. Set your own price, publish to a community of motivated lifters, and keep 80% of every sale with
+            transparent, on-time payouts. You own your audience and your content — we just handle the tech, the
+            delivery, and the checkout.
+          </p>
+          <p>
+            For members, the marketplace means real programming from real, vetted coaches across strength,
+            hypertrophy, fat loss, mobility, and conditioning — all delivered in the same guided, gamified experience
+            you already use for your own workouts. No more guessing whether a plan is legit or whether you&apos;re doing
+            it right.
+          </p>
+        </div>
+      </section>
+
       {/* ───────────────────────── Waitlist ───────────────────────── */}
       <div
         className="card animate-glow"

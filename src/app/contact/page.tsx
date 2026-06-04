@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Contact FitForge",
+  title: "Contact Us — Support, Feedback & Partnerships",
   description:
     "Get in touch with the FitForge team — support, feedback, press, and partnerships. We read every message and aim to reply within one business day.",
   alternates: { canonical: "/contact" },
@@ -68,6 +68,39 @@ export default function ContactPage() {
           <a href="mailto:blake@fitforgelifts.co" className="btn-primary btn-glow" style={{ padding: "16px 40px", fontSize: 12 }} aria-label="Email blake@fitforgelifts.co">
             blake@fitforgelifts.co
           </a>
+        </div>
+      </section>
+
+      {/* What to expect */}
+      <section className="px-8 pb-20 max-w-[760px] mx-auto">
+        <div className="flex flex-col gap-5 font-light text-[15.5px] leading-[1.8]" style={{ color: "rgba(255,255,255,.6)" }}>
+          <h2 className="text-white" style={{ ...bebas, fontSize: "clamp(26px,4vw,40px)", lineHeight: 1 }}>What to expect when you reach out</h2>
+          <p>
+            FitForge is built and run by a small, dedicated team, so your message lands with a real person — not a
+            ticket queue. Whether you&apos;ve hit a bug mid-workout, have an idea for a feature, want to bring your
+            coaching programs to the marketplace, or you&apos;re exploring a partnership, we want to hear it. Honest
+            feedback from people who actually train is how the app gets better.
+          </p>
+          <p>
+            <strong className="text-white/85 font-medium">Support &amp; bugs:</strong> tell us what happened, what device
+            and app version you&apos;re on, and what you expected to see. Screenshots help us move fast. Most questions
+            are answered within one business day, and we&apos;ll always follow up until it&apos;s resolved.
+          </p>
+          <p>
+            <strong className="text-white/85 font-medium">Coaches &amp; creators:</strong> the FitForge marketplace lets
+            certified coaches turn their programs into guided, in-app plans and keep 80% of every sale. If that&apos;s
+            you, reach out and we&apos;ll get you early access and walk you through onboarding.
+          </p>
+          <p>
+            <strong className="text-white/85 font-medium">Press &amp; partnerships:</strong> for media requests, brand
+            collaborations, or integration ideas, email us with a short overview and the best way to reach you. We
+            review every serious inquiry and respond personally.
+          </p>
+          <p>
+            Prefer to browse first? Our <Link href="/faq" className="text-[var(--og)] no-underline hover:underline">FAQ</Link> covers
+            pricing, the equipment-first workout builder, gamified tracking, and privacy — and the{" "}
+            <Link href="/about" className="text-[var(--og)] no-underline hover:underline">About page</Link> explains why we built FitForge in the first place.
+          </p>
         </div>
       </section>
 

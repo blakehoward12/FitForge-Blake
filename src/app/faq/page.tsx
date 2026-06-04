@@ -41,6 +41,18 @@ const faqs = [
     q: "Is my data private?",
     a: "Yes. We take your data seriously. Read our Privacy Policy for full details on what we collect and how it's used.",
   },
+  {
+    q: "How is FitForge different from other fitness apps?",
+    a: "Most apps hand you a generic plan that assumes a perfect commercial gym and unlimited time. FitForge is equipment-first: you tell us exactly what you have — a full rack, a single pair of dumbbells, or just the floor — and the program is built around that. Then we make it stick with XP, streaks, achievements, and a community feed that keeps you accountable. It's training that fits your real life instead of the other way around.",
+  },
+  {
+    q: "Do I need a gym membership to use FitForge?",
+    a: "Not at all. FitForge works whether you train at a commercial gym, a home setup, or with nothing but your bodyweight. Because every program is generated from the equipment you select, you'll only ever get exercises you can actually perform with what you have on hand that day.",
+  },
+  {
+    q: "Is there a mobile app?",
+    a: "Yes — FitForge is available as a free iPhone app on the App Store, which is the best way to follow guided workouts, log sets in real time, and earn XP as you train. You can also explore the community feed and builder right here on the web.",
+  },
 ];
 
 export default function FAQPage() {

@@ -36,6 +36,7 @@ function LoginContent() {
   if (status === "loading" || status === "authenticated") {
     return (
       <div style={{ minHeight: "calc(100vh - 3.5rem)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <h1 className="sr-only">Sign in or create your FitForge account</h1>
         <p style={{ color: "rgba(255,255,255,0.4)" }}>Loading...</p>
       </div>
     );
