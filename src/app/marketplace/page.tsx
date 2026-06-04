@@ -162,7 +162,7 @@ export default function MarketplacePage() {
                 >
                   {c.price}
                 </span>
-                <button className="btn-ghost" type="button" disabled style={{ padding: "9px 16px", fontSize: "12px" }}>
+                <button className="btn-ghost" type="button" disabled style={{ padding: "13px 18px", fontSize: "12px" }}>
                   Coming soon
                 </button>
               </div>
@@ -227,6 +227,11 @@ export default function MarketplacePage() {
             hypertrophy, fat loss, mobility, and conditioning — all delivered in the same guided, gamified experience
             you already use for your own workouts. No more guessing whether a plan is legit or whether you&apos;re doing
             it right.
+          </p>
+          <p>
+            We&apos;re launching with a hand-picked group of coaches across the most-requested goals, and opening
+            applications to more creators shortly after. Join the waitlist below to be the first to browse new
+            programs, claim launch-week discounts, and — if you coach — to reserve your spot as a founding creator.
           </p>
         </div>
       </section>

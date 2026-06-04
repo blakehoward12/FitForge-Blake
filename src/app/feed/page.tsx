@@ -675,6 +675,28 @@ export default function FeedPage() {
           return renderApiCard(post);
         })}
       </div>
+
+      {/* Supporting content */}
+      <section style={{ marginTop: "44px", paddingTop: "32px", borderTop: "1px solid var(--br)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", color: "rgba(255,255,255,.55)", fontWeight: 300, fontSize: "15px", lineHeight: 1.8 }}>
+          <h2 style={{ ...bebasNeue, fontSize: "clamp(24px,7vw,32px)", color: "#fff", lineHeight: 1 }}>About the FitForge social feed</h2>
+          <p>
+            Progress is easier when you&apos;re not doing it alone. The FitFeed is where the FitForge community shares
+            personal records, workout wins, and day-to-day progress — the real, unfiltered grind, not highlight-reel
+            perfection. It&apos;s built to keep you motivated by people who are actually putting in the work.
+          </p>
+          <p>
+            Follow athletes who push you, react to their PRs, and post your own milestones straight from the tracker
+            the moment you finish a session. Every workout you complete can be shared with a tap, complete with the
+            volume, sets, and XP you earned — so your crew can celebrate the win with you and you can return the favor.
+          </p>
+          <p>
+            Friendly competition is part of the fun: challenge friends, chase streaks together, and stay accountable
+            when motivation dips. Whether you train at a packed commercial gym or alone in your garage, the feed makes
+            sure there&apos;s always a crew behind you.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }

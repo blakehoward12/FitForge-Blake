@@ -299,7 +299,7 @@ export default function BuilderPage() {
                             position: 'absolute', top: 7, right: 7,
                             width: 16, height: 16, borderRadius: '50%',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: 9, fontWeight: 700, color: '#fff',
+                            fontSize: 12, fontWeight: 700, color: '#fff',
                             background: 'linear-gradient(135deg, var(--og), var(--pm))',
                           }}>✓</span>
                         )}
@@ -435,7 +435,7 @@ export default function BuilderPage() {
                       {d.badge && (
                         <span style={{
                           position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)',
-                          fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' as const,
+                          fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' as const,
                           background: d.badge.includes('Popular') ? 'linear-gradient(135deg,#b45309,#92400e)' : 'linear-gradient(135deg,var(--og),var(--og2))',
                           borderRadius: 100, padding: '3px 10px', color: '#fff', whiteSpace: 'nowrap'
                         }}>
@@ -501,6 +501,31 @@ export default function BuilderPage() {
           </section>
         )}
       </div>
+
+      {/* Supporting content */}
+      <section style={{ maxWidth: 760, margin: "8px auto 0", padding: "40px 24px 0", borderTop: "1px solid var(--br)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, color: "rgba(255,255,255,.55)", fontWeight: 300, fontSize: 15, lineHeight: 1.8 }}>
+          <h2 style={{ ...bebas, fontSize: "clamp(24px,4vw,34px)", color: "#fff", lineHeight: 1 }}>How the equipment-first builder works</h2>
+          <p>
+            Most workout apps hand you a generic split that assumes a fully-stocked commercial gym and unlimited time.
+            FitForge takes the opposite approach. The builder asks just two things — your goal and the equipment you
+            actually have today — and instantly generates a complete, structured session built around exactly that.
+          </p>
+          <p>
+            Pick from full gym, dumbbells, barbell, cables, resistance bands, a bench, a pull-up bar, or pure
+            bodyweight, then choose a goal: build muscle, lose fat, gain strength, tone up, get athletic, or improve
+            endurance. We tailor the volume and exercise selection to your experience level — beginner, intermediate,
+            or advanced — and lay every workout out as a proper warm-up, main block, and cool-down so you always know
+            what to do next.
+          </p>
+          <p>
+            Every single-day workout is free, forever, with no credit card required. Upgrade to Premium for multi-day
+            programs — 3, 5, and 7-day splits like Push/Pull/Legs and Upper/Lower — plus unlimited generations. Once
+            you start a session in the tracker, you earn XP, build streaks, and unlock achievements, turning each
+            workout into measurable progress instead of a chore.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
