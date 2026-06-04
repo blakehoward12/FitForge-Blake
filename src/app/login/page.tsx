@@ -7,9 +7,12 @@ import Image from "next/image";
 
 export default function LoginPage() {
   return (
-    <Suspense>
-      <LoginContent />
-    </Suspense>
+    <>
+      <h1 className="sr-only">Sign in or create your FitForge account</h1>
+      <Suspense>
+        <LoginContent />
+      </Suspense>
+    </>
   );
 }
 
@@ -36,7 +39,6 @@ function LoginContent() {
   if (status === "loading" || status === "authenticated") {
     return (
       <div style={{ minHeight: "calc(100vh - 3.5rem)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <h1 className="sr-only">Sign in or create your FitForge account</h1>
         <p style={{ color: "rgba(255,255,255,0.4)" }}>Loading...</p>
       </div>
     );
@@ -106,7 +108,7 @@ function LoginContent() {
         <div style={{ width: "100%", maxWidth: "420px" }}>
           {/* Logo */}
           <div style={{ textAlign: "center", marginBottom: "36px" }}>
-            <h1 style={{ display: "inline-flex", alignItems: "baseline", gap: "3px", margin: 0 }}>
+            <div style={{ display: "inline-flex", alignItems: "baseline", gap: "3px" }}>
               <span style={{ ...bebasNeue, fontSize: "28px", letterSpacing: "3px", color: "#fff" }}>
                 FIT
               </span>
@@ -123,7 +125,7 @@ function LoginContent() {
               >
                 FORGE
               </span>
-            </h1>
+            </div>
             <p style={{ color: "rgba(255,255,255,.4)", fontSize: "13px", marginTop: "8px", fontWeight: 300 }}>
               Join 500+ people already forging.
             </p>
