@@ -695,6 +695,19 @@ export default function FeedPage() {
             when motivation dips. Whether you train at a packed commercial gym or alone in your garage, the feed makes
             sure there&apos;s always a crew behind you.
           </p>
+          <p>
+            Every post is tied to a real, completed workout, so what you see is genuine effort rather than staged
+            content. Hit a new bench press personal record, finish a brutal conditioning circuit, or simply close out
+            a tough week — share it in a tap and let the community cheer you on. Over time, your profile becomes a
+            visual history of how far you&apos;ve come: streaks, PRs, achievements, and total volume moved.
+          </p>
+          <p>
+            You decide who you follow and what you share. Keep it to a tight circle of training partners for
+            accountability, or follow athletes across strength, hypertrophy, fat loss, mobility, and conditioning for
+            fresh ideas and motivation. The result is a feed that actually helps you train — not another infinite
+            scroll designed to waste your time. Create a free account to start posting, following, and challenging
+            your friends today.
+          </p>
         </div>
       </section>
     </div>

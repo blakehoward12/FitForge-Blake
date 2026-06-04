@@ -524,6 +524,13 @@ export default function BuilderPage() {
             you start a session in the tracker, you earn XP, build streaks, and unlock achievements, turning each
             workout into measurable progress instead of a chore.
           </p>
+          <p>
+            Because the plan is generated from your real setup, you never waste a session staring at a machine you
+            don&apos;t have or skipping the half of a program you can&apos;t do. Training at home with a single pair of
+            adjustable dumbbells produces a genuinely different — but equally complete — workout than training at a
+            fully-equipped gym, and both will move you toward the same goal. That is what equipment-first really means:
+            no filler, no excuses, just the most effective session possible with what is in front of you right now.
+          </p>
         </div>
       </section>
     </div>
