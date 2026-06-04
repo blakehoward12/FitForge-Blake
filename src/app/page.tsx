@@ -236,7 +236,7 @@ export default function HomePage() {
               <span className="text-gradient-brand block">START FORGING?</span>
             </h2>
             <p className="text-[16px] font-light max-w-[440px] mb-9 leading-[1.7]" style={{ color: "rgba(255,255,255,.65)" }}>
-              Free to start. Your equipment, your goals, your crew — your program, built in seconds.
+              Free to start. Your equipment, goals, and crew — a program built in seconds.
             </p>
             <div className="flex gap-3.5 flex-wrap items-center">
               <StoreBadges glow />

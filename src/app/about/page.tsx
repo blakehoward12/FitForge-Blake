@@ -129,7 +129,7 @@ export default function AboutPage() {
           <span className="text-gradient-brand block">COMMUNITY</span>
         </h2>
         <p className="font-light text-[15px] leading-[1.7] max-w-[400px] mx-auto mb-8" style={{ color: "rgba(255,255,255,.5)" }}>
-          Free to start. Your equipment, your goals, your crew — built in seconds.
+          Free to start. Your equipment, goals, and crew — built in seconds.
         </p>
         <div className="flex gap-3.5 justify-center flex-wrap">
           <Link href="/builder" className="btn-primary" style={{ padding: "16px 40px", fontSize: 12 }}>Start Free →</Link>
