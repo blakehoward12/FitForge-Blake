@@ -37,16 +37,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main className="pt-[62px]">
               {children}
             </main>
-            <footer className="relative z-10 border-t py-8 px-8 text-center" style={{ borderColor: "rgba(255,255,255,.06)" }}>
-              <p className="text-[12px] tracking-[1px] uppercase" style={{ color: "rgba(255,255,255,.2)" }}>
-                <Link href="/about" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>About</Link>
-                {" · "}
-                <Link href="/faq" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>FAQ</Link>
-                {" · "}
-                <Link href="/privacy" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>Privacy Policy</Link>
-                {" · "}
-                <Link href="/contact" className="no-underline hover:text-white/50 transition-colors" style={{ color: "rgba(255,255,255,.2)" }}>Contact</Link>
-              </p>
+            <footer className="relative z-10 border-t py-6 px-8 text-center" style={{ borderColor: "rgba(255,255,255,.06)" }}>
+              <nav className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[12px] tracking-[1px] uppercase">
+                {[["/about", "About"], ["/faq", "FAQ"], ["/privacy", "Privacy Policy"], ["/contact", "Contact"]].map(([href, label]) => (
+                  <Link key={href} href={href} className="inline-flex items-center no-underline hover:text-white/60 transition-colors px-3 py-2.5 rounded-lg" style={{ color: "rgba(255,255,255,.28)" }}>{label}</Link>
+                ))}
+              </nav>
             </footer>
           </div>
         </SessionProvider>
