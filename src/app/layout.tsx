@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
   },
+  other: {
+    "facebook-domain-verification": "83iip13dpywxtk2pz21ucwnbxm3g7w",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

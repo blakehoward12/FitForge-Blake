@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
+import { sendMetaEvent } from "@/lib/meta-capi";
 
 export async function POST(req: Request) {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -34,6 +35,21 @@ export async function POST(req: Request) {
     if (userId) {
       await db.update(users).set({ isPremium: true }).where(eq(users.id, userId));
     }
+
+    // Server-side Purchase event (Meta Conversions API).
+    // event_id = session.id so it de-dupes against a browser pixel if added later.
+    const email = session.customer_email ?? session.customer_details?.email ?? null;
+    const value =
+      session.amount_total != null ? (session.amount_total / 100).toFixed(2) : undefined;
+    await sendMetaEvent({
+      eventName: "Purchase",
+      eventId: session.id,
+      actionSource: "website",
+      user: { email },
+      customData: value
+        ? { currency: (session.currency ?? "usd").toUpperCase(), value }
+        : undefined,
+    });
   }
 
   if (event.type === "customer.subscription.deleted") {
