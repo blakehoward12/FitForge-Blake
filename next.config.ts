@@ -6,11 +6,11 @@ import type { NextConfig } from "next";
 // Tighten later by adopting nonce-based CSP via middleware.
 const contentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.vercel-scripts.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.vercel-scripts.com https://connect.facebook.net",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https:",
-  "connect-src 'self' https://api.stripe.com https://*.stripe.com https://*.vercel-insights.com",
+  "connect-src 'self' https://api.stripe.com https://*.stripe.com https://*.vercel-insights.com https://www.facebook.com https://connect.facebook.net",
   "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
   "object-src 'none'",
   "base-uri 'self'",
