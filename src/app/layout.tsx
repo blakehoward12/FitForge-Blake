@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import { Nav } from "@/components/nav";
+import { MetaPixel } from "@/components/meta-pixel";
 import Link from "next/link";
 import "./globals.css";
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body>
+        <MetaPixel />
         <SessionProvider>
           <div className="relative z-10">
             <Nav />
