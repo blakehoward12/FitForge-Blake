@@ -6,25 +6,54 @@ import { useEffect, useRef } from "react";
 // Public Meta Pixel ID (safe to expose — it's visible in the browser anyway).
 const PIXEL_ID = "1019466564060703";
 
+type Fbq = ((...args: unknown[]) => void) & {
+  callMethod?: (...args: unknown[]) => void;
+  queue: unknown[];
+  push: unknown;
+  loaded: boolean;
+  version: string;
+};
+
 /**
- * The Meta Pixel base code (loader + initial PageView) lives in the document
- * <head> in app/layout.tsx, per Meta's install guidance. This component adds
- * the two things the raw snippet can't do on its own:
- *   1. Re-fire PageView on client-side (SPA) route changes.
- *   2. The <noscript> fallback pixel for JS-disabled visitors.
- *
- * Pairs with the server-side Conversions API (see lib/meta-capi.ts).
+ * Meta (Facebook) browser Pixel — loaded and fired entirely from useEffect so
+ * it is guaranteed to execute in the browser on mount, independent of any
+ * SSR/next-script strategy quirks. Fires PageView on load and on every
+ * client-side (SPA) route change. Pairs with the server-side Conversions API.
  */
 export function MetaPixel() {
   const pathname = usePathname();
   const initialized = useRef(false);
 
   useEffect(() => {
-    // The base code in <head> already sent the first PageView on load.
+    // First run: install the Meta Pixel base library, then fire the initial PageView.
     if (!initialized.current) {
       initialized.current = true;
+
+      if (!window.fbq) {
+        const n = function (...args: unknown[]) {
+          n.callMethod ? n.callMethod.apply(n, args) : n.queue.push(args);
+        } as Fbq;
+        n.queue = [];
+        n.push = n;
+        n.loaded = true;
+        n.version = "2.0";
+        window.fbq = n;
+        window._fbq = window._fbq || n;
+
+        const script = document.createElement("script");
+        script.async = true;
+        script.src = "https://connect.facebook.net/en_US/fbevents.js";
+        const first = document.getElementsByTagName("script")[0];
+        first?.parentNode?.insertBefore(script, first);
+
+        window.fbq("init", PIXEL_ID);
+      }
+
+      window.fbq("track", "PageView");
       return;
     }
+
+    // Subsequent client-side navigations.
     window.fbq?.("track", "PageView");
   }, [pathname]);
 
@@ -44,6 +73,7 @@ export function MetaPixel() {
 
 declare global {
   interface Window {
-    fbq?: (...args: unknown[]) => void;
+    fbq?: Fbq;
+    _fbq?: Fbq;
   }
 }
