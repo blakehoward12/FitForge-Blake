@@ -1,6 +1,5 @@
 "use client";
 
-import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
@@ -8,19 +7,20 @@ import { useEffect, useRef } from "react";
 const PIXEL_ID = "1019466564060703";
 
 /**
- * Meta (Facebook) browser Pixel. Loads fbevents.js once, fires the initial
- * PageView, then re-fires PageView on client-side route changes (a raw snippet
- * only fires on hard loads, missing SPA navigations).
+ * The Meta Pixel base code (loader + initial PageView) lives in the document
+ * <head> in app/layout.tsx, per Meta's install guidance. This component adds
+ * the two things the raw snippet can't do on its own:
+ *   1. Re-fire PageView on client-side (SPA) route changes.
+ *   2. The <noscript> fallback pixel for JS-disabled visitors.
  *
- * Pairs with the server-side Conversions API (see lib/meta-capi.ts); the CAPI
- * Purchase event uses event_id = Stripe session id for browser<>server dedup.
+ * Pairs with the server-side Conversions API (see lib/meta-capi.ts).
  */
 export function MetaPixel() {
   const pathname = usePathname();
   const initialized = useRef(false);
 
   useEffect(() => {
-    // The inline script below already sends the first PageView on load.
+    // The base code in <head> already sent the first PageView on load.
     if (!initialized.current) {
       initialized.current = true;
       return;
@@ -29,21 +29,16 @@ export function MetaPixel() {
   }, [pathname]);
 
   return (
-    <>
-      <Script id="meta-pixel" strategy="afterInteractive">
-        {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${PIXEL_ID}');fbq('track','PageView');`}
-      </Script>
-      <noscript>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          height="1"
-          width="1"
-          style={{ display: "none" }}
-          alt=""
-          src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`}
-        />
-      </noscript>
-    </>
+    <noscript>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        height="1"
+        width="1"
+        style={{ display: "none" }}
+        alt=""
+        src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`}
+      />
+    </noscript>
   );
 }
 
