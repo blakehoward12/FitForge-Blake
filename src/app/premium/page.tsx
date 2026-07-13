@@ -31,7 +31,17 @@ export default function PremiumPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/stripe/checkout', { method: 'POST' });
+      // Forward Meta Pixel cookies so the server-side Purchase event (CAPI)
+      // can match against the browser pixel (better attribution).
+      const readCookie = (name: string) => {
+        const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]+)'));
+        return m ? decodeURIComponent(m[1]) : undefined;
+      };
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ fbp: readCookie('_fbp'), fbc: readCookie('_fbc') }),
+      });
       const data = await res.json();
 
       if (data.url) {

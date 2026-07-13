@@ -37,15 +37,23 @@ export async function POST(req: Request) {
     }
 
     // Server-side Purchase event (Meta Conversions API).
-    // event_id = session.id so it de-dupes against a browser pixel if added later.
+    // event_id = session.id de-dupes against the browser pixel.
     const email = session.customer_email ?? session.customer_details?.email ?? null;
     const value =
       session.amount_total != null ? (session.amount_total / 100).toFixed(2) : undefined;
+    // Match signals captured at checkout time (see stripe/checkout route).
+    const md = session.metadata ?? {};
     await sendMetaEvent({
       eventName: "Purchase",
       eventId: session.id,
       actionSource: "website",
-      user: { email },
+      user: {
+        email,
+        fbp: md.fbp,
+        fbc: md.fbc,
+        clientIp: md.fbClientIp,
+        userAgent: md.fbUserAgent,
+      },
       customData: value
         ? { currency: (session.currency ?? "usd").toUpperCase(), value }
         : undefined,
